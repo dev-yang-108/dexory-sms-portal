@@ -1,0 +1,34 @@
+rules_version = '2';
+
+// Internal shop tool: anyone with the app URL can read/write.
+// No login screen, no per-user auth. Tighten this later (e.g. require
+// firebase.auth() sign-in) if the app URL ever needs to be shared beyond
+// the shop floor.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /stockItems/{stockNumber} {
+      allow read, write: if true;
+    }
+    match /transactions/{transactionId} {
+      allow read, write: if true;
+    }
+    match /workOrders/{workOrderNumber} {
+      allow read, write: if true;
+    }
+    match /partMaster/{partMasterId} {
+      allow read, write: if true;
+    }
+    match /batches/{batchNo} {
+      allow read, write: if true;
+    }
+    match /config/{docId} {
+      allow read, write: if true;
+    }
+    match /idns/{idnNo} {
+      allow read, write: if true;
+    }
+    match /cocs/{cocKey} {
+      allow read, write: if true;
+    }
+  }
+}
