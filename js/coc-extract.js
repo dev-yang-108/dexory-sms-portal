@@ -182,6 +182,13 @@ function findSupplier(lines, knownSuppliers) {
   const lower = lines.join("\n").toLowerCase();
   const known = (knownSuppliers || []).find((s) => s.name && lower.includes(s.name.toLowerCase()));
   if (known) return known.name;
+  // Logos often OCR as only part of the name, so also accept a supplier whose
+  // distinctive first word (5+ letters, e.g. "Shropshire") is on the page.
+  const byFirstWord = (knownSuppliers || []).filter((s) => {
+    const w = (s.name || "").split(/\s+/)[0].toLowerCase();
+    return w.length >= 5 && lower.includes(w);
+  });
+  if (byFirstWord.length === 1) return byFirstWord[0].name;
   // Our own company appears as the delivery address - never the supplier.
   const companyLine = lines
     .slice(0, 15)

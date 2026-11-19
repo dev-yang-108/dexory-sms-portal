@@ -86,17 +86,11 @@ export async function renderCocFormView() {
       <label>Supplier name</label>
       <input id="coc-supplier-name" list="coc-supplier-list" placeholder="e.g. Shropshire Stainless and Aluminium" />
     </div>
-    <div class="form-grid2">
-      <div class="form-group">
-        <label>Supplier code</label>
-        <input id="coc-supplier-code" class="mono" placeholder="e.g. SSA" />
-      </div>
-      <div class="form-group">
-        <label>CoC number</label>
-        <input id="coc-number" class="mono" placeholder="e.g. 1-213936" />
-      </div>
+    <div class="form-group">
+      <label>CoC number</label>
+      <input id="coc-number" class="mono" placeholder="e.g. 1-213936" />
     </div>
-    <div class="hint" id="coc-key-preview">Key: —</div>
+    <div class="hint" id="coc-key-preview">CoC reference: —</div>
     <div id="coc-existing-banner"></div>
 
     <div class="section-title">Lines</div>
@@ -127,10 +121,9 @@ export async function renderCocFormView() {
   wireUserSelect(userSelect, otherWrap);
 
   document.getElementById("coc-supplier-name").oninput = onSupplierNameInput;
-  document.getElementById("coc-supplier-code").oninput = refreshKeyPreview;
+  document.getElementById("coc-supplier-name").onblur = checkForExistingCoc;
   document.getElementById("coc-number").oninput = refreshKeyPreview;
   document.getElementById("coc-number").onblur = checkForExistingCoc;
-  document.getElementById("coc-supplier-code").onblur = checkForExistingCoc;
   document.getElementById("btn-add-line").onclick = () => {
     lines.push(blankLine());
     renderLines();
@@ -252,20 +245,29 @@ function applyExtractedResult(result) {
 }
 
 function onSupplierNameInput() {
-  const name = document.getElementById("coc-supplier-name").value.trim();
-  const match = knownSuppliers.find((s) => s.name === name);
-  if (match) {
-    const codeInput = document.getElementById("coc-supplier-code");
-    if (!codeInput.value.trim()) codeInput.value = match.code;
-  }
   refreshKeyPreview();
 }
 
+// Only the supplier's name is typed. The short code the CoC reference is
+// built from is a saved one for a known supplier, otherwise worked out from
+// the name's initials ("Shropshire Stainless and Aluminium" -> SSA), so it is
+// the same every time for the same supplier.
+function currentSupplierCode() {
+  const name = document.getElementById("coc-supplier-name").value.trim();
+  if (!name) return "";
+  const known = knownSuppliers.find((s) => s.name.toLowerCase() === name.toLowerCase());
+  if (known && known.code) return known.code;
+  const words = name.split(/[^A-Za-z0-9]+/).filter((w) => w && !/^(and|of|the|ltd|limited|plc|inc|llc|co)$/i.test(w));
+  if (words.length === 0) return "SUP";
+  if (words.length === 1) return words[0].slice(0, 3).toUpperCase();
+  return words.map((w) => w[0]).join("").slice(0, 6).toUpperCase();
+}
+
 function refreshKeyPreview() {
-  const code = document.getElementById("coc-supplier-code").value;
+  const code = currentSupplierCode();
   const num = document.getElementById("coc-number").value;
   const key = buildCocKey(code, num);
-  document.getElementById("coc-key-preview").textContent = "Key: " + (key || "—");
+  document.getElementById("coc-key-preview").textContent = "CoC reference: " + (key || "—");
   if (existingCoc && existingCoc.cocKey !== key) {
     existingCoc = null;
     renderExistingBanner();
@@ -274,13 +276,62 @@ function refreshKeyPreview() {
 }
 
 async function checkForExistingCoc() {
-  const code = document.getElementById("coc-supplier-code").value;
+  const code = currentSupplierCode();
   const num = document.getElementById("coc-number").value;
   const key = buildCocKey(code, num);
   if (!key) return;
   existingCoc = await getCoc(key);
   renderExistingBanner();
+  renderLines();
   renderSubmitLabel();
+}
+
+// A line whose part is already on the CoC that's already booked. Booking it
+// again would count the same delivery twice, so it is skipped unless the user
+// ticks "add again" (e.g. a genuine second delivery on the same CoC).
+function isDuplicateLine(line) {
+  const partNo = line.partNo.trim();
+  return !!existingCoc && !!partNo && (existingCoc.lines || []).some((l) => l.partNo === partNo);
+}
+
+function dupHTML(line) {
+  if (!isDuplicateLine(line)) return "";
+  const booked = (existingCoc.lines || []).filter((l) => l.partNo === line.partNo.trim()).reduce((s, l) => s + (l.qty || 0), 0);
+  return `
+    <div class="coc-dup">
+      <b>Already booked on this CoC</b> (${esc(booked)} pcs). It will be <b>skipped</b>, so the stock isn't counted twice.
+      <label style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+        <input type="checkbox" class="coc-dup-again" ${line.addAgain ? "checked" : ""} />
+        <span>Add it again anyway (a second delivery on the same CoC)</span>
+      </label>
+    </div>`;
+}
+
+function wireDup(line) {
+  const wrap = document.getElementById("coc-lines");
+  const row = wrap && wrap.querySelector(`[data-line="${line.id}"]`);
+  const box = row && row.querySelector(".coc-dup-again");
+  if (box) {
+    box.onchange = () => {
+      line.addAgain = box.checked;
+      renderSubmitLabel();
+    };
+  }
+}
+
+// Repaints just this line's "already booked" notice (not the whole list, so
+// typing isn't interrupted).
+function paintDup(line) {
+  const wrap = document.getElementById("coc-lines");
+  const slot = wrap && wrap.querySelector(`[data-line="${line.id}"] .coc-dup-slot`);
+  if (slot) slot.innerHTML = dupHTML(line);
+  wireDup(line);
+  renderSubmitLabel();
+}
+
+// Lines that will actually be booked from this form right now.
+function linesToBook() {
+  return lines.filter((l) => l.partNo.trim() && Number(l.qty) > 0 && (!isDuplicateLine(l) || l.addAgain));
 }
 
 function renderExistingBanner() {
@@ -292,8 +343,8 @@ function renderExistingBanner() {
   }
   box.innerHTML = `
     <div class="warn-box">
-      A CoC with this key already exists (${esc((existingCoc.lines || []).length)} line${(existingCoc.lines || []).length === 1 ? "" : "s"} so far).
-      Confirming below will add your new lines to it, not replace it.
+      <b>This CoC is already in the app</b> - booked${existingCoc.createdBy ? ` by ${esc(existingCoc.createdBy)}` : ""}${existingCoc.createdAt ? ` on ${esc(new Date(existingCoc.createdAt).toLocaleDateString("en-GB"))}` : ""}, ${esc((existingCoc.lines || []).length)} line${(existingCoc.lines || []).length === 1 ? "" : "s"} so far.
+      It is never replaced. Only parts that aren't on it yet will be added; parts already on it are skipped.
       <div class="kv" style="margin-top:8px;">
         ${(existingCoc.lines || [])
           .map(
@@ -309,7 +360,14 @@ function renderExistingBanner() {
 function renderSubmitLabel() {
   const btn = document.getElementById("btn-submit-coc");
   if (!btn) return;
-  btn.textContent = existingCoc ? "Add lines to existing CoC" : "Confirm & book in stock";
+  if (!existingCoc) {
+    btn.textContent = "Confirm & book in stock";
+    btn.disabled = false;
+    return;
+  }
+  const n = linesToBook().length;
+  btn.textContent = n ? `Add ${n} new line${n === 1 ? "" : "s"} to this CoC` : "Nothing new to add";
+  btn.disabled = n === 0;
 }
 
 function renderLines() {
@@ -324,11 +382,16 @@ function renderLines() {
 
     const partInput = row.querySelector(".coc-line-part");
     partInput.oninput = (e) => (line.partNo = e.target.value);
-    partInput.onblur = () => checkStockItem(line);
+    partInput.onblur = () => {
+      checkStockItem(line);
+      paintDup(line);
+    };
+    wireDup(line);
 
     const qtyInput = row.querySelector(".coc-line-qty");
     qtyInput.oninput = (e) => {
       line.qty = e.target.value;
+      renderSubmitLabel();
       if (line.stockItemChecked && !line.stockItemFound) {
         const flag = row.querySelector(".coc-stock-flag");
         if (flag) flag.outerHTML = stockFlagHTML(line);
@@ -366,6 +429,7 @@ function renderLines() {
       };
     });
   });
+  renderSubmitLabel();
 }
 
 // When at least one batch on a line has a qty, the line's total is the sum
@@ -464,6 +528,7 @@ function lineHTML(line, index) {
         </div>
       </div>
       ${stockFlagHTML(line)}
+      <div class="coc-dup-slot">${dupHTML(line)}</div>
 
       <div class="coc-batches">
         ${line.batches
@@ -485,15 +550,19 @@ function lineHTML(line, index) {
 
 async function submit() {
   const supplierName = document.getElementById("coc-supplier-name").value.trim();
-  const supplierCode = document.getElementById("coc-supplier-code").value.trim();
+  const supplierCode = currentSupplierCode();
   const cocNumber = document.getElementById("coc-number").value.trim();
 
-  if (!supplierName || !supplierCode || !cocNumber) {
-    toast("Enter supplier name, supplier code and CoC number.");
+  if (!supplierName || !cocNumber) {
+    toast("Enter the supplier name and CoC number.");
     return;
   }
 
-  const rawLines = lines
+  // Look again right now: someone else may have booked this CoC since the
+  // form was opened. Parts already on it are skipped (see isDuplicateLine).
+  await checkForExistingCoc();
+
+  const rawLines = linesToBook()
     .map((l) => ({
       partNo: l.partNo.trim(),
       partName: (l.partName || "").trim(),
@@ -521,7 +590,7 @@ async function submit() {
   const cleanedLines = Array.from(byPartNo.values());
 
   if (cleanedLines.length === 0) {
-    toast("Add at least one line with a part no. and qty.");
+    toast(existingCoc ? "Everything on this scan is already booked on that CoC - nothing to add." : "Add at least one line with a part no. and qty.");
     return;
   }
 

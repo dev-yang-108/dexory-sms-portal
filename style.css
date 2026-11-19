@@ -477,6 +477,10 @@ section{padding:0 16px 8px;}
    creates it in Prototype stock rather than Production. */
 .coc-proto{background:#FFF3D6;border:2px solid #E8A200;border-radius:10px;padding:10px 12px;color:#4A3300;font-size:14px;line-height:1.4;margin-top:8px;}
 .coc-proto input{width:100%;box-sizing:border-box;}
+/* Part already booked on this CoC: it is skipped unless ticked "add again". */
+.coc-dup{background:#FDE7E7;border:2px solid #D64545;border-radius:10px;padding:10px 12px;color:#5A1212;font-size:14px;line-height:1.4;margin-top:8px;}
+.coc-dup:empty{display:none;}
+.coc-dup input[type=checkbox]{width:auto;}
 .coc-batches{margin-top:10px;}
 .coc-batch-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
 .coc-batch-row input{flex:1;}
