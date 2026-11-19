@@ -682,37 +682,58 @@ function addLineBookInOps(batch, { cocKey, line, stockItem, existingBatch, user,
   const mergedQty = (existingBatch ? existingBatch.qtyAdded || 0 : 0) + qty;
   const mergedSupplierBatches = (existingBatch ? existingBatch.supplierBatches || [] : []).concat(line.batches || []);
 
+  // A part that is in the stock list books into Production. A part that is
+  // NOT is created as a new stock item with its quantity in Prototype (flagged
+  // needsReview so someone fills in its details). A later page of the same CoC
+  // adding to such a part stays in Prototype.
+  const isNew = !stockItem;
+  const createdHere = !!stockItem && stockItem.fromCoc === cocKey && stockItem.needsReview;
+  const area = isNew || createdHere ? "prototype" : "production";
+
   batch.set(batchRef(lineBatchNo), {
     batchNo: lineBatchNo,
-    stockNumber: stockItem ? stockItem.partNumber : (existingBatch && existingBatch.stockNumber) || "",
+    stockNumber: line.partNo,
     partNo: line.partNo,
     qtyAdded: mergedQty,
     blanksReceived: 0,
     piecesPerBlank: 0,
-    area: stockItem ? "production" : (existingBatch && existingBatch.area) || "",
+    area,
     bookInDate: now,
     createdAt: existingBatch ? existingBatch.createdAt : now,
     cocKey,
     supplierBatches: mergedSupplierBatches
   });
 
-  if (stockItem) {
-    const balanceAfter = areaQty(stockItem, "production") + qty;
-    const txRef = doc(transactionsRef());
-    batch.set(txRef, {
-      stockItemId: stockItem.partNumber,
-      stockNumber: stockItem.partNumber,
-      type: "book-in",
-      area: "production",
-      qty,
-      balanceAfter,
-      user,
-      note: `CoC ${cocKey}`,
-      workOrderNumber: "",
-      timestamp: now
+  const txRef = doc(transactionsRef());
+  batch.set(txRef, {
+    stockItemId: line.partNo,
+    stockNumber: line.partNo,
+    type: "book-in",
+    area,
+    qty,
+    balanceAfter: areaQty(stockItem || {}, area) + qty,
+    user,
+    note: isNew ? `CoC ${cocKey} (new part, Prototype)` : `CoC ${cocKey}`,
+    workOrderNumber: "",
+    timestamp: now
+  });
+
+  if (isNew) {
+    const base = blankStockItem();
+    batch.set(stockItemRef(line.partNo), {
+      ...base,
+      partNumber: line.partNo,
+      partName: (line.partName || "").trim(),
+      areas: { ...base.areas, prototype: { qty, location: "" } },
+      comments: `Created from CoC ${cocKey} - not in the stock list, so booked into Prototype. Needs its details filling in.`,
+      fromCoc: cocKey,
+      needsReview: true,
+      createdAt: now,
+      updatedAt: now
     });
+  } else {
     batch.update(stockItemRef(stockItem.partNumber), {
-      "areas.production.qty": increment(qty),
+      [`areas.${area}.qty`]: increment(qty),
       updatedAt: now
     });
   }
@@ -732,27 +753,34 @@ export async function confirmCoc({ supplierCode, supplierName, cocNumber, lines,
 
   const now = Date.now();
   const batch = writeBatch(db);
-  const missingStockItems = [];
+  const prepared = await prepareCocLines(cocKey, lines);
 
   batch.set(cocRef(cocKey), {
     cocKey,
     supplierCode: String(supplierCode).trim(),
     supplierName: supplierName || "",
     cocNumber: String(cocNumber).trim(),
-    lines,
+    lines: prepared.map((p) => p.line),
     createdAt: now,
     createdBy: user || ""
   });
 
+  prepared.forEach((p) => addLineBookInOps(batch, { cocKey, line: p.line, stockItem: p.stockItem, existingBatch: p.existingBatch, user, now }));
+
+  await batch.commit();
+  return { cocKey, missingStockItems: prepared.filter((p) => !p.stockItem).map((p) => p.line.partNo) };
+}
+
+// Looks up each line's stock item and existing batch row. A line whose part is
+// not in the stock list is tagged `prototype: true` on the stored CoC record.
+async function prepareCocLines(cocKey, lines) {
+  const out = [];
   for (const line of lines) {
     const stockItem = await getStockItem(line.partNo);
     const existingBatch = await getDoc(batchRef(cocLineBatchNo(cocKey, line.partNo))).then((s) => (s.exists() ? s.data() : null));
-    if (!stockItem) missingStockItems.push(line.partNo);
-    addLineBookInOps(batch, { cocKey, line, stockItem, existingBatch, user, now });
+    out.push({ line: stockItem ? line : { ...line, prototype: true }, stockItem, existingBatch });
   }
-
-  await batch.commit();
-  return { cocKey, missingStockItems };
+  return out;
 }
 
 // Appending more lines (e.g. a page that was missed the first time) to a CoC
@@ -765,22 +793,17 @@ export async function addLinesToCoc(cocKey, newLines, user) {
 
   const now = Date.now();
   const batch = writeBatch(db);
-  const missingStockItems = [];
+  const prepared = await prepareCocLines(cocKey, newLines);
 
   batch.update(cocRef(cocKey), {
-    lines: [...(existing.lines || []), ...newLines],
+    lines: [...(existing.lines || []), ...prepared.map((p) => p.line)],
     updatedAt: now
   });
 
-  for (const line of newLines) {
-    const stockItem = await getStockItem(line.partNo);
-    const existingBatch = await getDoc(batchRef(cocLineBatchNo(cocKey, line.partNo))).then((s) => (s.exists() ? s.data() : null));
-    if (!stockItem) missingStockItems.push(line.partNo);
-    addLineBookInOps(batch, { cocKey, line, stockItem, existingBatch, user, now });
-  }
+  prepared.forEach((p) => addLineBookInOps(batch, { cocKey, line: p.line, stockItem: p.stockItem, existingBatch: p.existingBatch, user, now }));
 
   await batch.commit();
-  return { cocKey, missingStockItems };
+  return { cocKey, missingStockItems: prepared.filter((p) => !p.stockItem).map((p) => p.line.partNo) };
 }
 
 /*

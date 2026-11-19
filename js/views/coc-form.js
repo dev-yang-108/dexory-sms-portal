@@ -30,6 +30,8 @@ let stagedFiles = [];
 // switches the form into "add these lines to it" mode instead of creating a
 // new one.
 let existingCoc = null;
+// Every stock part, for "did you mean" hints on part numbers that don't match.
+let stockParts = [];
 
 function blankLine() {
   lineSeq += 1;
@@ -41,6 +43,12 @@ export async function renderCocFormView() {
   existingCoc = null;
   stagedFiles = [];
   knownSuppliers = await listKnownSuppliers();
+  try {
+    stockParts = await listStockItems();
+  } catch (err) {
+    console.error(err);
+    stockParts = [];
+  }
 
   mount(`
     <header class="topbar">
@@ -48,7 +56,7 @@ export async function renderCocFormView() {
       <div class="topbar-title">Add stock via CoC</div>
     </header>
 
-    <div class="info-banner">Fill this in from the supplier's Certificate of Conformity. Nothing is saved until you confirm at the bottom.</div>
+    <div class="info-banner">Fill this in from the supplier's Certificate of Conformity. Part numbers must match your stock list: any that don't are highlighted, and will be created in Prototype stock. Nothing is saved until you confirm at the bottom.</div>
 
     ${
       isExtractionAvailable()
@@ -189,12 +197,7 @@ async function runScan() {
   statusBox.innerHTML = "";
 
   try {
-    let knownParts = [];
-    try {
-      knownParts = (await listStockItems()).map((s) => s.partNumber).filter(Boolean);
-    } catch (err) {
-      console.error(err);
-    }
+    const knownParts = stockParts.map((s) => s.partNumber).filter(Boolean);
     const result = await extractCocFromFiles(stagedFiles, {
       knownSuppliers,
       knownParts,
@@ -324,7 +327,15 @@ function renderLines() {
     partInput.onblur = () => checkStockItem(line);
 
     const qtyInput = row.querySelector(".coc-line-qty");
-    qtyInput.oninput = (e) => (line.qty = e.target.value);
+    qtyInput.oninput = (e) => {
+      line.qty = e.target.value;
+      if (line.stockItemChecked && !line.stockItemFound) {
+        const flag = row.querySelector(".coc-stock-flag");
+        if (flag) flag.outerHTML = stockFlagHTML(line);
+        wireFlag(line);
+      }
+    };
+    wireFlag(line);
 
     const removeLineBtn = row.querySelector(".coc-line-remove");
     if (removeLineBtn) {
@@ -373,17 +384,66 @@ function recomputeLineQty(line) {
 async function checkStockItem(line) {
   const partNo = line.partNo.trim();
   line.stockItemChecked = !!partNo;
-  line.stockItemFound = partNo ? !!(await getStockItem(partNo)) : false;
+  const item = partNo ? await getStockItem(partNo) : null;
+  line.stockItemFound = !!item;
+  line.stockItemName = item ? item.partName || item.name || "" : "";
   const wrap = document.getElementById("coc-lines");
   const flag = wrap && wrap.querySelector(`[data-line="${line.id}"] .coc-stock-flag`);
   if (flag) flag.outerHTML = stockFlagHTML(line);
+  wireFlag(line);
+}
+
+// A part number one character away from a real stock part - a likely misread.
+function closestStockPart(partNo) {
+  const near = stockParts.filter((p) => oneCharAway(p.partNumber, partNo));
+  return near.length === 1 ? near[0] : null;
+}
+
+function oneCharAway(a, b) {
+  if (!a || !b || a === b) return false;
+  if (Math.abs(a.length - b.length) > 1) return false;
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  if (a.length === b.length) return a.slice(i + 1) === b.slice(i + 1);
+  return a.length > b.length ? a.slice(i + 1) === b.slice(i) : a.slice(i) === b.slice(i + 1);
 }
 
 function stockFlagHTML(line) {
   if (!line.stockItemChecked) return `<div class="coc-stock-flag"></div>`;
-  return line.stockItemFound
-    ? `<div class="coc-stock-flag ok-box">In stock list - this line will book in automatically.</div>`
-    : `<div class="coc-stock-flag warn-box">No stock item "${esc(line.partNo)}" yet - the CoC record will still be saved, but stock won't move until one exists.</div>`;
+  if (line.stockItemFound) {
+    return `<div class="coc-stock-flag ok-box">In stock list${line.stockItemName ? `: <b>${esc(line.stockItemName)}</b>` : ""} - books into Production.</div>`;
+  }
+  const close = closestStockPart(line.partNo.trim());
+  return `
+    <div class="coc-stock-flag coc-proto">
+      <div><b>Not in the stock list.</b> Confirming will create <b class="mono">${esc(line.partNo)}</b> as a new part and book ${esc(line.qty || 0)} pcs into <b>PROTOTYPE stock</b>, not Production.</div>
+      ${
+        close
+          ? `<div style="margin-top:6px;">Did you mean <b class="mono">${esc(close.partNumber)}</b>${close.partName ? ` (${esc(close.partName)})` : ""}? <button type="button" class="btn coc-use-closest" style="padding:4px 10px;">Use ${esc(close.partNumber)}</button></div>`
+          : ""
+      }
+      <input class="coc-proto-name" placeholder="Part name (optional)" value="${esc(line.partName || "")}" style="margin-top:8px;" />
+    </div>`;
+}
+
+// Hooks up the inputs inside a line's flag box (they're rebuilt whenever the
+// flag is repainted).
+function wireFlag(line) {
+  const wrap = document.getElementById("coc-lines");
+  const row = wrap && wrap.querySelector(`[data-line="${line.id}"]`);
+  if (!row) return;
+  const nameInput = row.querySelector(".coc-proto-name");
+  if (nameInput) nameInput.oninput = (e) => (line.partName = e.target.value);
+  const useBtn = row.querySelector(".coc-use-closest");
+  if (useBtn) {
+    useBtn.onclick = () => {
+      const close = closestStockPart(line.partNo.trim());
+      if (!close) return;
+      line.partNo = close.partNumber;
+      renderLines();
+      checkStockItem(line);
+    };
+  }
 }
 
 function lineHTML(line, index) {
@@ -436,6 +496,7 @@ async function submit() {
   const rawLines = lines
     .map((l) => ({
       partNo: l.partNo.trim(),
+      partName: (l.partName || "").trim(),
       qty: Number(l.qty) || 0,
       batches: l.batches
         .filter((b) => b.batchNo.trim())
@@ -470,6 +531,20 @@ async function submit() {
     return;
   }
 
+  // Parts that aren't in the stock list go to Prototype - say so, line by
+  // line, before anything moves.
+  const toPrototype = [];
+  for (const l of cleanedLines) {
+    if (!(await getStockItem(l.partNo))) toPrototype.push(l);
+  }
+  if (toPrototype.length) {
+    const list = toPrototype.map((l) => `  ${l.partNo}: ${l.qty} pcs`).join("\n");
+    const ok = window.confirm(
+      `${toPrototype.length} part${toPrototype.length === 1 ? " is" : "s are"} not in the stock list and will be created in PROTOTYPE stock:\n\n${list}\n\nCheck the part numbers against the certificate. Continue?`
+    );
+    if (!ok) return;
+  }
+
   const submitBtn = document.getElementById("btn-submit-coc");
   submitBtn.disabled = true;
   submitBtn.textContent = "Saving…";
@@ -482,7 +557,7 @@ async function submit() {
       : await confirmCoc({ supplierCode, supplierName, cocNumber, lines: cleanedLines, user });
 
     if (result.missingStockItems.length > 0) {
-      toast(`CoC ${result.cocKey} saved. ${result.missingStockItems.length} line(s) need a stock item created before stock moves.`);
+      toast(`CoC ${result.cocKey} saved. ${result.missingStockItems.length} new part(s) created in Prototype stock - fill in their details.`);
     } else {
       toast(`CoC ${result.cocKey} saved and stock booked in.`);
     }

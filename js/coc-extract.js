@@ -24,8 +24,13 @@ const PDFJS_SRC = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.mi
 const PDFJS_WORKER_SRC = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 // Phone photos are 12MP+; OCR gains nothing past this and takes much longer.
-const MAX_IMAGE_EDGE = 2400;
+const MAX_IMAGE_EDGE = 2000;
 const MAX_PAGES = 8;
+const IMAGE_PASSES = [
+  { psm: "3", scale: 1 },
+  { psm: "6", scale: 2 },
+  { psm: "11", scale: 1.5 }
+];
 
 export function isExtractionAvailable() {
   return true;
@@ -53,9 +58,9 @@ function loadScript(src) {
 
 /* ---------- Reading pages into text ---------- */
 
-async function imageToCanvas(file) {
+async function imageToCanvas(file, extraScale = 1) {
   const bitmap = await createImageBitmap(file);
-  const scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(bitmap.width, bitmap.height));
+  const scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(bitmap.width, bitmap.height)) * extraScale;
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(bitmap.width * scale);
   canvas.height = Math.round(bitmap.height * scale);
@@ -69,13 +74,13 @@ async function imageToCanvas(file) {
 
 // psm "3" = whole page (best for part rows); "6" = one block (best for the
 // header's certificate number). Real photos read differently under each.
-async function ocrCanvases(canvases, onProgress, psm = "3") {
+async function ocrCanvases(canvases, onProgress, psm = "3", label = "") {
   await loadScript(TESSERACT_SRC);
   let pageNo = 0;
   const worker = await window.Tesseract.createWorker("eng", 1, {
     logger: (m) => {
       if (m.status === "recognizing text" && onProgress) {
-        onProgress(`Reading page ${pageNo} of ${canvases.length}… ${Math.round((m.progress || 0) * 100)}%`);
+        onProgress(`Reading page ${pageNo} of ${canvases.length}${label}… ${Math.round((m.progress || 0) * 100)}%`);
       } else if (onProgress && pageNo === 0) {
         onProgress("Getting the reading tool ready (first time only)…");
       }
@@ -207,14 +212,6 @@ function editDistance1(a, b) {
   return a.length > b.length ? a.slice(i + 1) === b.slice(i) : a.slice(i) === b.slice(i + 1);
 }
 
-// OCR slips a digit now and then (9 read as 8). If a read part number isn't a
-// real stock part but exactly one real part is one character away, use that.
-function snapToKnownPart(partNo, knownParts) {
-  if (!knownParts || !knownParts.length || knownParts.includes(partNo)) return partNo;
-  const near = knownParts.filter((k) => editDistance1(k, partNo));
-  return near.length === 1 ? near[0] : partNo;
-}
-
 export function parseCocText(rawText, knownSuppliers, knownParts) {
   const lines = String(rawText || "")
     .split(/\r?\n/)
@@ -226,7 +223,9 @@ export function parseCocText(rawText, knownSuppliers, knownParts) {
     const re = /\bDEX[\s\-]?([0-9O]{6,})/gi;
     let m;
     while ((m = re.exec(line))) {
-      const partNo = snapToKnownPart("DEX" + m[1].replace(/O/gi, "0"), knownParts);
+      // Never silently swapped for a similar stock part: a mismatch is shown
+      // to the user by the form instead (it may be a genuine new part).
+      const partNo = "DEX" + m[1].replace(/O/gi, "0");
       const qty = findUnitQty(line);
       parts.push({ partNo, lineIdx: i, qty, unitLine: qty ? i : -1, batches: [] });
     }
@@ -322,25 +321,26 @@ export async function extractCocFromFiles(files, { onProgress, knownSuppliers, k
   const list = Array.from(files || []);
   if (list.length === 0) throw new Error("Choose a photo or PDF first.");
 
-  let extraText = "";
-  const texts = [];
-  const canvases = [];
+  const pdfTexts = [];
+  const images = [];
+  // Photos are read three different ways (different layout mode and size);
+  // OCR rarely makes the same digit mistake in all three, so a vote across
+  // them catches a one-digit misread (e.g. 0197 read as 0187).
+  const passTexts = [];
   try {
     for (const f of list) {
       if (f.type === "application/pdf" || /\.pdf$/i.test(f.name || "")) {
-        texts.push(...(await readPdf(f, onProgress)));
+        pdfTexts.push(...(await readPdf(f, onProgress)));
       } else {
-        canvases.push(await imageToCanvas(f));
+        images.push(f);
       }
     }
-    if (canvases.length) {
-      const pass1 = await ocrCanvases(canvases, onProgress, "3");
-      texts.push(...pass1);
-      // A second look in "one block" mode often catches the certificate number
-      // the whole-page pass garbles; only worth the extra seconds if it's missing.
-      if (!findCocNumber(pass1.join("\n"))) {
-        if (onProgress) onProgress("Taking a second look for the certificate number…");
-        extraText = (await ocrCanvases(canvases, onProgress, "6")).join("\n");
+    if (images.length) {
+      for (const [i, pass] of IMAGE_PASSES.entries()) {
+        const canvases = [];
+        for (const f of images) canvases.push(await imageToCanvas(f, pass.scale));
+        const label = ` (look ${i + 1} of ${IMAGE_PASSES.length})`;
+        passTexts.push((await ocrCanvases(canvases, onProgress, pass.psm, label)).join("\n"));
       }
     }
   } catch (err) {
@@ -348,11 +348,32 @@ export async function extractCocFromFiles(files, { onProgress, knownSuppliers, k
     throw new Error(err.message && /internet|reading tool/i.test(err.message) ? err.message : "Couldn't read that file - try a clearer photo, or enter the details manually below.");
   }
 
-  const rawText = texts.join("\n");
-  if (rawText.replace(/\s/g, "").length < 20) {
+  const texts = passTexts.length ? passTexts.map((t) => [...pdfTexts, t].join("\n")) : [pdfTexts.join("\n")];
+  const rawText = texts.length > 1 ? texts.map((t, i) => `--- look ${i + 1} ---\n${t}`).join("\n\n") : texts[0];
+  if (texts.every((t) => t.replace(/\s/g, "").length < 20)) {
     throw new Error("Couldn't find any text on that page - try a clearer, well-lit photo, or enter the details manually below.");
   }
-  const result = parseCocText(rawText, knownSuppliers, knownParts);
-  if (!result.cocNumber && extraText) result.cocNumber = findCocNumber(extraText);
-  return { ...result, rawText: extraText ? rawText + "\n\n--- second read ---\n" + extraText : rawText };
+
+  const results = texts.map((t) => parseCocText(t, knownSuppliers, knownParts));
+  const result = voteOnResults(results, knownParts);
+  return { ...result, rawText };
+}
+
+// Merges the reads of one photo. The read that found the most part lines is
+// the base; each of its part numbers is replaced by whichever near-identical
+// spelling (within one character) most reads agree on.
+export function voteOnResults(results, knownParts) {
+  const base = results.reduce((best, r) => (r.lines.length > best.lines.length ? r : best), results[0]);
+  const votes = new Map();
+  results.forEach((r) => r.lines.forEach((l) => l.partNo && votes.set(l.partNo, (votes.get(l.partNo) || 0) + 1)));
+
+  const lines = base.lines.map((l) => {
+    if (!l.partNo) return l;
+    const cluster = [...votes.keys()].filter((p) => editDistance1(p, l.partNo));
+    cluster.sort((a, b) => votes.get(b) - votes.get(a) || Number((knownParts || []).includes(b)) - Number((knownParts || []).includes(a)));
+    return { ...l, partNo: cluster[0] || l.partNo };
+  });
+
+  const first = (key) => results.map((r) => r[key]).find(Boolean) || "";
+  return { supplierName: first("supplierName"), cocNumber: first("cocNumber"), lines };
 }

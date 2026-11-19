@@ -473,6 +473,10 @@ section{padding:0 16px 8px;}
 }
 .coc-line-remove:hover,.coc-batch-remove:hover{color:var(--red);}
 .coc-stock-flag:empty{display:none;}
+/* A CoC part that isn't in the stock list: loud on purpose, since confirming
+   creates it in Prototype stock rather than Production. */
+.coc-proto{background:#FFF3D6;border:2px solid #E8A200;border-radius:10px;padding:10px 12px;color:#4A3300;font-size:14px;line-height:1.4;margin-top:8px;}
+.coc-proto input{width:100%;box-sizing:border-box;}
 .coc-batches{margin-top:10px;}
 .coc-batch-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
 .coc-batch-row input{flex:1;}
