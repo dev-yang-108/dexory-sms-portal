@@ -1,0 +1,4465 @@
+{
+  "exportedAt": "2026-11-19T14:21:41.484Z",
+  "project": "dexory-cnc-stockflow",
+  "collections": {
+    "stockItems": {
+      "30mm plate stock": {
+        "rev": "",
+        "material": "Aluminium 5083",
+        "stockSize": "300x200x30",
+        "perRobotCycle": 1,
+        "form": "Blank",
+        "updatedAt": 1793400712809,
+        "createdAt": 1793400712677,
+        "piecesPerBlank": 1,
+        "areas": {
+          "prototype": {
+            "qty": 30,
+            "location": ""
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partName": "30mm plate stock",
+        "partNumber": "30mm plate stock",
+        "comments": "extra cut plates from base: base plate",
+        "perRobotCycle10Sec": 1
+      },
+      "50 mm plates": {
+        "rev": "",
+        "material": "Aluminium 5083",
+        "perRobotCycle": 1,
+        "piecesPerBlank": 1,
+        "partNumber": "50 mm plates",
+        "partName": "50 mm plates",
+        "perRobotCycle10Sec": 1,
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 4,
+            "location": ""
+          }
+        },
+        "createdAt": 1793400773671,
+        "comments": "extra cut pieces",
+        "updatedAt": 1793400773806,
+        "form": "Blank",
+        "stockSize": "200x600x50"
+      },
+      "DEX04110567": {
+        "createdAt": 1790888431904,
+        "updatedAt": 1793308382639,
+        "stockSize": "1\" sq x 50mm",
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX04110567",
+        "perRobotCycle10Sec": 8,
+        "comments": "",
+        "piecesPerBlank": 1,
+        "partName": "ARRI - Base - Strip Nut M10x20 - 1x2 - END STOPS",
+        "rev": "1",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle": 8
+      },
+      "DEX04122109": {
+        "material": "5000 or 6000 Series Aluminium",
+        "rev": "1",
+        "areas": {
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle10Sec": 16,
+        "piecesPerBlank": 1,
+        "form": "Blank",
+        "perRobotCycle": 13,
+        "partName": "ARRI - Tower - Nut Block",
+        "comments": "",
+        "partNumber": "DEX04122109",
+        "stockSize": "5/8\" sq x 35mm",
+        "createdAt": 1793308379698,
+        "updatedAt": 1793308379698
+      },
+      "DEX04122440": {
+        "stockSize": "",
+        "material": "400 Series Stainless Steel",
+        "createdAt": 1793308378966,
+        "updatedAt": 1793308378966,
+        "partNumber": "DEX04122440",
+        "piecesPerBlank": 1,
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "form": "Blank",
+        "perRobotCycle10Sec": 16,
+        "rev": "6",
+        "partName": "ARRI - Tower - Spring Compliance - Threaded Rod",
+        "perRobotCycle": 6,
+        "comments": ""
+      },
+      "DEX05110025": {
+        "material": "Stainless Steel Round Bar T303 1.4305 F9 tolerance",
+        "form": "Long bar",
+        "updatedAt": 1793562234868,
+        "createdAt": 1793562226682,
+        "piecesPerBlank": 5,
+        "perRobotCycle": 2,
+        "stockSize": "25mm x 997mm ",
+        "partNumber": "DEX05110025",
+        "partName": " B18 - Base - Rocker Arm - Shaft",
+        "rev": "3",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 41,
+            "location": ""
+          }
+        },
+        "comments": "",
+        "perRobotCycle10Sec": 2
+      },
+      "DEX05110033": {
+        "perRobotCycle10Sec": 4,
+        "perRobotCycle": 4,
+        "form": "Blank",
+        "partNumber": "DEX05110033",
+        "material": "5000 or 6000 Series Aluminium",
+        "rev": "1",
+        "updatedAt": 1793308379807,
+        "createdAt": 1793308379807,
+        "stockSize": "1 1/2\" x 997mm 6082 round bar",
+        "partName": "B18 - Base - Rocker Arm - Spacer",
+        "piecesPerBlank": 72,
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "comments": ""
+      },
+      "DEX05110081": {
+        "perRobotCycle": 1,
+        "perRobotCycle10Sec": 1,
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "createdAt": 1790888430693,
+        "partNumber": "DEX05110081",
+        "material": "5000 or 6000 Series Aluminium",
+        "updatedAt": 1793562018385,
+        "stockSize": "570 x 185 x 40mm",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "rev": "1",
+        "form": "Blank",
+        "partName": "B18 - Base - Frame - Cross Bulkhead - Thick"
+      },
+      "DEX05110092": {
+        "comments": "",
+        "piecesPerBlank": 1,
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partName": "B18 - Base - Frame - Front Left Corner Block - Thick Universal",
+        "form": "Blank",
+        "stockSize": "230 x 210 x 82.55mm",
+        "perRobotCycle10Sec": 1,
+        "perRobotCycle": 1,
+        "createdAt": 1790888430835,
+        "rev": "3",
+        "updatedAt": 1793308380027,
+        "material": "5000 or 6000 Series Aluminium",
+        "partNumber": "DEX05110092"
+      },
+      "DEX05110094": {
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "material": "5000 or 6000 Series Aluminium",
+        "perRobotCycle10Sec": 1,
+        "form": "Blank",
+        "rev": "3",
+        "partNumber": "DEX05110094",
+        "updatedAt": 1793308380133,
+        "partName": "B18 - Base - Frame - Front Right Corner Block - Thick",
+        "createdAt": 1790888430987,
+        "stockSize": "230 x 210 x 82.55mm",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "perRobotCycle": 1
+      },
+      "DEX05110099": {
+        "stockSize": "180 x 150 x 70mm",
+        "partNumber": "DEX05110099",
+        "rev": "2",
+        "updatedAt": 1793562343833,
+        "createdAt": 1792881681972,
+        "material": "5000 or 6000 Series Aluminium",
+        "areas": {
+          "production": {
+            "qty": 15,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "perRobotCycle10Sec": 2,
+        "piecesPerBlank": 1,
+        "comments": "Box of 10: 2x2 per layer, 3 layers · Min box 400x320x240mm · 51.0kg",
+        "form": "Blank",
+        "perRobotCycle": 2,
+        "partName": "B18 - Base - Base Mech - LiDAR Mounting Plate - Sick Safety"
+      },
+      "DEX05110100": {
+        "material": "5000 or 6000 Series Aluminium",
+        "form": "Blank",
+        "updatedAt": 1793308380282,
+        "piecesPerBlank": 1,
+        "createdAt": 1792881681900,
+        "perRobotCycle": 2,
+        "stockSize": "125 x 120 x 50mm",
+        "partNumber": "DEX05110100",
+        "partName": "B18 - Base - Base Mech - LiDAR Mounting Plate - Raised Hesai JT128",
+        "rev": "2",
+        "comments": "Box of 10: 3x2 per layer, 2 layers · Min box 400x260x120mm · 20.3kg",
+        "areas": {
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "perRobotCycle10Sec": 2
+      },
+      "DEX05110109": {
+        "piecesPerBlank": 1,
+        "partNumber": "DEX05110109",
+        "partName": "B18 - Base - Rocker Arm - Top Plate",
+        "form": "Blank",
+        "comments": "Box of 10: 3x2 per layer, 2 layers · Min box 480x290x120mm · 15.6kg",
+        "rev": "0",
+        "material": "5000 or 6000 Series Aluminium",
+        "perRobotCycle10Sec": 2,
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "createdAt": 1792881681807,
+        "perRobotCycle": 2,
+        "updatedAt": 1793308380366,
+        "stockSize": "148 x 130 x 30mm"
+      },
+      "DEX05110145": {
+        "perRobotCycle10Sec": 2,
+        "material": "5000 or 6000 Series Aluminium",
+        "piecesPerBlank": 1,
+        "perRobotCycle": 2,
+        "rev": "0",
+        "partName": "B18 - Base - Rocker Arm - Bearing Block - Centred Shaft",
+        "updatedAt": 1793308380444,
+        "createdAt": 1790888432037,
+        "form": "Blank",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "stockSize": "205 x 205 x 190mm",
+        "comments": "",
+        "partNumber": "DEX05110145"
+      },
+      "DEX05110160": {
+        "partName": "Split motor bracket",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 47
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "stockSize": "140x130x130mm",
+        "updatedAt": 1793618338394,
+        "piecesPerBlank": 1,
+        "comments": "Box of 10: 3x2 per layer, 2 layers · Min box 450x280x300mm · 63.9kg",
+        "createdAt": 1792881681714,
+        "partNumber": "DEX05110160",
+        "rev": "1",
+        "perRobotCycle10Sec": 1,
+        "form": "Blank",
+        "material": "AL 6082",
+        "perRobotCycle": 1
+      },
+      "DEX05110162": {
+        "updatedAt": 1795037409120,
+        "stockType": "Production",
+        "createdAt": 1790712465393,
+        "stockSize": "1100 x 700 x 30mm",
+        "partName": "B18 - Base - Frame - Bottom Plate - Front Notched",
+        "perRobotCycle": 1,
+        "currentQty": 0,
+        "stockNumber": "",
+        "comments": "8 WATERJET CUT+38",
+        "approxWeight": "38 KG",
+        "piecesPerBlank": 1,
+        "material": "5000 or 6000 Series Aluminium",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 14
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "A-4",
+            "qty": 42
+          }
+        },
+        "rev": "3",
+        "partNumber": "DEX05110162",
+        "location": "A-4",
+        "perRobotCycle10Sec": 1,
+        "form": "Waterjet profile"
+      },
+      "DEX05110163": {
+        "perRobotCycle10Sec": 2,
+        "perRobotCycle": 2,
+        "location": "A-3",
+        "approxWeight": "38 KG",
+        "stockNumber": "",
+        "piecesPerBlank": 4,
+        "partNumber": "DEX05110163",
+        "areas": {
+          "production": {
+            "qty": -2,
+            "location": "A-3"
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 33
+          }
+        },
+        "material": "5000 or 6000 Series Aluminium",
+        "stockSize": "1320 x 670 x 20mm",
+        "updatedAt": 1794731829118,
+        "comments": "4 per plate",
+        "createdAt": 1790711275382,
+        "stockType": "Production",
+        "form": "Blank",
+        "currentQty": 10,
+        "partName": "B18 - Base - Frame - Bridging Plate - Recessed",
+        "rev": "1"
+      },
+      "DEX05110164": {
+        "createdAt": 1792881681636,
+        "comments": "Box of 20: 2x2 per layer, 5 layers · Min box 500x500x340mm · 171.4kg",
+        "updatedAt": 1793700920525,
+        "form": "Blank",
+        "stockSize": "230 x 230 x 60mm",
+        "rev": "1",
+        "partName": "B18 - Base - Frame - Side Bracket - Notched",
+        "piecesPerBlank": 1,
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 70,
+            "location": ""
+          }
+        },
+        "partNumber": "DEX05110164",
+        "material": "5000 or 6000 Series Aluminium",
+        "perRobotCycle10Sec": 4,
+        "perRobotCycle": 4
+      },
+      "DEX05110165": {
+        "material": "5000 or 6000 Series Aluminium",
+        "partNumber": "DEX05110165",
+        "approxWeight": "48",
+        "perRobotCycle": 2,
+        "location": "A-2",
+        "updatedAt": 1793796246087,
+        "currentQty": 10,
+        "createdAt": 1790452684599,
+        "stockType": "Production",
+        "partName": "B18 - Base - Frame - Bulkhead Datum - Notched Base",
+        "piecesPerBlank": 1,
+        "stockSize": "1460mm x 205mm x 2.5in",
+        "areas": {
+          "production": {
+            "location": "A-2",
+            "qty": 25
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "comments": "",
+        "perRobotCycle10Sec": 2,
+        "form": "Blank",
+        "rev": "3",
+        "stockNumber": ""
+      },
+      "DEX05110166": {
+        "comments": "Box of 5: 2 per layer, 2 layers · Min box 500x450x300mm · 85.2kg",
+        "stockSize": "230mm x 211mm x 130mm",
+        "createdAt": 1792881681523,
+        "updatedAt": 1793308380865,
+        "form": "Blank",
+        "partName": "B18 - Base - Frame - Rear Left Corner Block - Added Clearance",
+        "partNumber": "DEX05110166",
+        "rev": "2",
+        "piecesPerBlank": 1,
+        "perRobotCycle": 1,
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "material": "5000 or 6000 Series Aluminium",
+        "perRobotCycle10Sec": 1
+      },
+      "DEX05110167": {
+        "rev": "3",
+        "stockSize": "230mm x 211mm x 130mm",
+        "updatedAt": 1793708896473,
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "createdAt": 1792881681255,
+        "partName": "B18 - Base - Frame - Rear Right Corner Block - Added Clearance",
+        "perRobotCycle": 1,
+        "comments": "Box of 5: 2 per layer, 2 layers · Min box 500x450x300mm · 85.2kg",
+        "perRobotCycle10Sec": 1,
+        "material": "5000 or 6000 Series Aluminium",
+        "partNumber": "DEX05110167",
+        "piecesPerBlank": 1,
+        "form": "Blank"
+      },
+      "DEX05110170": {
+        "rev": "2",
+        "partNumber": "DEX05110170",
+        "perRobotCycle": 2,
+        "comments": "",
+        "updatedAt": 1793308381029,
+        "piecesPerBlank": 7,
+        "createdAt": 1793308381029,
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "stockSize": "2\"x997mm 6082 round bar",
+        "form": "Blank",
+        "partName": "B18 - Base - Frame - Tower Locating Pin - Tall",
+        "perRobotCycle10Sec": 2,
+        "material": "5000 or 6000 Series Aluminium"
+      },
+      "DEX05120086": {
+        "material": "Aluminium 6000 Series T6",
+        "rev": "1",
+        "piecesPerBlank": 1,
+        "partNumber": "DEX05120086",
+        "updatedAt": 1793308382720,
+        "createdAt": 1793308382720,
+        "stockSize": "",
+        "perRobotCycle": 12,
+        "partName": "B18 - Tower - Belt Tensioner - Large Spring Plate",
+        "comments": "",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "form": "Blank",
+        "perRobotCycle10Sec": 12
+      },
+      "DEX05120087": {
+        "comments": "",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partNumber": "DEX05120087",
+        "partName": "B18 - Tower - Belt Tensioner - Large Threaded Rod",
+        "piecesPerBlank": 1,
+        "perRobotCycle": 24,
+        "perRobotCycle10Sec": 24,
+        "rev": "4",
+        "material": "400 Series Stainless Steel",
+        "stockSize": "",
+        "updatedAt": 1793308379109,
+        "form": "Blank",
+        "createdAt": 1793308379109
+      },
+      "DEX05120088": {
+        "partNumber": "DEX05120088",
+        "piecesPerBlank": 1,
+        "perRobotCycle": 12,
+        "form": "Blank",
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "material": "Aluminium 6000 Series T6",
+        "rev": "2",
+        "perRobotCycle10Sec": 12,
+        "comments": "",
+        "stockSize": "",
+        "createdAt": 1793308382795,
+        "partName": "B18 - Tower - Belt Tensioner - Large Carriage",
+        "updatedAt": 1793308382795
+      },
+      "DEX05120089": {
+        "partName": "B18 - Tower - 50mm Belt Clamp B - Gates",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "comments": "",
+        "partNumber": "DEX05120089",
+        "perRobotCycle10Sec": 24,
+        "piecesPerBlank": 1,
+        "rev": "2",
+        "material": "400 Series Stainless Steel",
+        "stockSize": "",
+        "updatedAt": 1793308379215,
+        "form": "Blank",
+        "perRobotCycle": 24,
+        "createdAt": 1793308379215
+      },
+      "DEX05120184": {
+        "form": "Blank",
+        "partName": "B18 - Tower - 25mm Pulley Block",
+        "updatedAt": 1793308382873,
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "createdAt": 1793308382873,
+        "comments": "",
+        "stockSize": "165 x 100 x 30mm",
+        "perRobotCycle10Sec": 7,
+        "rev": "1",
+        "partNumber": "DEX05120184",
+        "material": "Aluminium 6000 Series T6",
+        "piecesPerBlank": 1,
+        "perRobotCycle": 6
+      },
+      "DEX05120186": {
+        "partNumber": "DEX05120186",
+        "form": "Blank",
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "piecesPerBlank": 1,
+        "material": "Aluminium 6000 Series T6",
+        "comments": "",
+        "perRobotCycle10Sec": 6,
+        "rev": "1",
+        "partName": "B18 - Tower - 25mm Belt Clamp A - Gates - Tensioner",
+        "stockSize": "",
+        "createdAt": 1793308382951,
+        "perRobotCycle": 3,
+        "updatedAt": 1793308382951
+      },
+      "DEX05120187": {
+        "rev": "2",
+        "partName": "B18 - Tower - 25mm Belt Clamp B - Gates",
+        "form": "Blank",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "stockSize": "",
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partNumber": "DEX05120187",
+        "updatedAt": 1793308383014,
+        "material": "Aluminium 6000 Series T6",
+        "createdAt": 1793308383014,
+        "perRobotCycle": 6,
+        "perRobotCycle10Sec": 12
+      },
+      "DEX05120188": {
+        "rev": "1",
+        "perRobotCycle10Sec": 6,
+        "perRobotCycle": 6,
+        "material": "Aluminium 6000 Series T6",
+        "piecesPerBlank": 1,
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "comments": "",
+        "form": "Blank",
+        "partNumber": "DEX05120188",
+        "partName": "B18 - Tower - 50mm Pulley Block",
+        "stockSize": "165 x 125 x 30mm",
+        "createdAt": 1793308383109,
+        "updatedAt": 1793308383109
+      },
+      "DEX05120193": {
+        "partNumber": "DEX05120193",
+        "material": "Aluminium 6000 Series T6",
+        "piecesPerBlank": 1,
+        "form": "Blank",
+        "comments": "",
+        "stockSize": "165 x 70 x 30mm",
+        "perRobotCycle10Sec": 6,
+        "createdAt": 1793308383187,
+        "rev": "1",
+        "updatedAt": 1793308383187,
+        "perRobotCycle": 6,
+        "partName": "B18 - Tower - Belt Mounting Block - 25mm Belt",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        }
+      },
+      "DEX05120194": {
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "rev": "1",
+        "partName": "B18 - Tower - Belt Mounting Block - 16mm Belt",
+        "updatedAt": 1793308383281,
+        "createdAt": 1793308383281,
+        "comments": "",
+        "stockSize": "165 x 60 x 30mm",
+        "perRobotCycle": 1,
+        "partNumber": "DEX05120194",
+        "material": "Aluminium 6000 Series T6",
+        "form": "Blank",
+        "perRobotCycle10Sec": 2,
+        "piecesPerBlank": 1
+      },
+      "DEX05120195": {
+        "perRobotCycle": 2,
+        "form": "Blank",
+        "partNumber": "DEX05120195",
+        "material": "Aluminium 6000 Series T6",
+        "createdAt": 1793308383353,
+        "rev": "0",
+        "updatedAt": 1793308383353,
+        "piecesPerBlank": 1,
+        "stockSize": "165 x 125 x 30mm",
+        "comments": "",
+        "perRobotCycle10Sec": 2,
+        "areas": {
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partName": "B18 - Tower - Belt Mounting Block - 75mm Belt"
+      },
+      "DEX05120196": {
+        "createdAt": 1793308383424,
+        "piecesPerBlank": 1,
+        "comments": "",
+        "updatedAt": 1793308383424,
+        "stockSize": "165 x 100 x 30mm",
+        "partName": "B18 - Tower - Belt Mounting Block - 50mm Belt",
+        "perRobotCycle": 6,
+        "rev": "1",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "form": "Blank",
+        "perRobotCycle10Sec": 6,
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120196"
+      },
+      "DEX05120197": {
+        "comments": "",
+        "partName": "B18 - Tower - Belt Pulley - 50mm Belt",
+        "createdAt": 1793308383502,
+        "partNumber": "DEX05120197",
+        "updatedAt": 1793308383502,
+        "stockSize": "2\"x997mm 6082 round bar",
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle10Sec": 11,
+        "piecesPerBlank": 15,
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "rev": "1",
+        "perRobotCycle": 11
+      },
+      "DEX05120202": {
+        "comments": "",
+        "stockSize": "",
+        "rev": "2",
+        "partNumber": "DEX05120202",
+        "form": "Blank",
+        "createdAt": 1793308383574,
+        "updatedAt": 1793308383574,
+        "partName": "B18 - Tower - Belt Tensioner - Carriage",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "material": "Aluminium 6000 Series T6",
+        "perRobotCycle": 3,
+        "perRobotCycle10Sec": 8,
+        "piecesPerBlank": 1
+      },
+      "DEX05120203": {
+        "comments": "",
+        "partName": "B18 - Tower - Belt Pulley - 25mm Belt",
+        "rev": "1",
+        "areas": {
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle10Sec": 6,
+        "perRobotCycle": 3,
+        "partNumber": "DEX05120203",
+        "stockSize": "2\"x997mm 6082 round bar",
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "createdAt": 1793308383642,
+        "piecesPerBlank": 21,
+        "updatedAt": 1793308383642
+      },
+      "DEX05120206": {
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120206",
+        "partName": "B18 - Tower - Belt Tensioner - Spring Plate",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "piecesPerBlank": 1,
+        "perRobotCycle": 3,
+        "createdAt": 1793308383720,
+        "comments": "",
+        "rev": "1",
+        "updatedAt": 1793308383720,
+        "perRobotCycle10Sec": 8,
+        "stockSize": ""
+      },
+      "DEX05120211": {
+        "stockSize": "165 x 100 x 30mm",
+        "piecesPerBlank": 1,
+        "rev": "1",
+        "updatedAt": 1793308383796,
+        "createdAt": 1793308383796,
+        "material": "Aluminium 6000 Series T6",
+        "perRobotCycle": 12,
+        "perRobotCycle10Sec": 12,
+        "form": "Blank",
+        "comments": "",
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partName": "B18 - Tower - Belt Tensioner - Section 3-6 Bracket",
+        "partNumber": "DEX05120211"
+      },
+      "DEX05120212": {
+        "partName": "B18 - Tower - Belt Tensioner - Section 7-9 Bracket",
+        "updatedAt": 1793308383873,
+        "form": "Blank",
+        "createdAt": 1793308383873,
+        "stockSize": "165 x 80 x 25mm",
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "comments": "",
+        "perRobotCycle10Sec": 7,
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120212",
+        "piecesPerBlank": 1,
+        "rev": "1",
+        "perRobotCycle": 3
+      },
+      "DEX05120231": {
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "perRobotCycle": 1,
+        "material": "5000 or 6000 Series Aluminium",
+        "form": "Blank",
+        "perRobotCycle10Sec": 1,
+        "stockSize": "870 x 210 x 16mm",
+        "rev": "4",
+        "createdAt": 1790888432177,
+        "comments": "",
+        "updatedAt": 1793308381115,
+        "partNumber": "DEX05120231",
+        "piecesPerBlank": 1,
+        "partName": "B18 - Tower - Section 1 - Top Cross Brace - Scanning Face"
+      },
+      "DEX05120232": {
+        "material": "5000 or 6000 Series Aluminium",
+        "perRobotCycle": 1,
+        "stockSize": "680 x 180 x 15mm",
+        "createdAt": 1793308381178,
+        "partNumber": "DEX05120232",
+        "updatedAt": 1793308381178,
+        "piecesPerBlank": 1,
+        "perRobotCycle10Sec": 1,
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partName": "B18 - Tower - Section 2 - Bottom Cross Brace - CNC",
+        "form": "Blank",
+        "comments": "",
+        "rev": "3"
+      },
+      "DEX05120233": {
+        "perRobotCycle10Sec": 1,
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "form": "Blank",
+        "rev": "2",
+        "perRobotCycle": 1,
+        "material": "5000 or 6000 Series Aluminium",
+        "comments": "",
+        "piecesPerBlank": 1,
+        "partNumber": "DEX05120233",
+        "partName": "B18 - Tower - Section 2 - Top Cross Brace - CNC",
+        "stockSize": "680 x 180 x 15mm",
+        "createdAt": 1793308381255,
+        "updatedAt": 1793308381255
+      },
+      "DEX05120234": {
+        "form": "Waterjet profile",
+        "location": "A-1",
+        "material": "AL 5083",
+        "piecesPerBlank": 1,
+        "stockNumber": "",
+        "approxWeight": "40 ",
+        "currentQty": 5,
+        "perRobotCycle10Sec": 1,
+        "comments": "9 waterjet+ 35 blank",
+        "areas": {
+          "farm": {
+            "qty": 4,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "A-1",
+            "qty": 39
+          }
+        },
+        "partNumber": "DEX05120234",
+        "stockSize": "1250mm x 930mm x 20mm",
+        "partName": "B18 - Tower - Baseplate",
+        "createdAt": 1790452051857,
+        "stockType": "Production",
+        "perRobotCycle": 1,
+        "updatedAt": 1793661240307,
+        "rev": ""
+      },
+      "DEX05120261": {
+        "stockSize": "",
+        "updatedAt": 1793308383950,
+        "createdAt": 1793308383950,
+        "material": "Aluminium 6000 Series T6",
+        "rev": "2",
+        "form": "Blank",
+        "partNumber": "DEX05120261",
+        "partName": "B18 - Tower - 25mm Belt Clamp A - Gates",
+        "perRobotCycle10Sec": 6,
+        "perRobotCycle": 3,
+        "piecesPerBlank": 1,
+        "areas": {
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "comments": ""
+      },
+      "DEX05120281": {
+        "updatedAt": 1793308384013,
+        "piecesPerBlank": 1,
+        "createdAt": 1793308384013,
+        "rev": "3",
+        "stockSize": "160 x 160 x 60mm",
+        "form": "Blank",
+        "comments": "",
+        "perRobotCycle10Sec": 2,
+        "partName": "B18 - Tower - Belt Drive - Drive Bearing Block B",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "perRobotCycle": 2,
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120281"
+      },
+      "DEX05120283": {
+        "createdAt": 1793308384092,
+        "updatedAt": 1793308384092,
+        "stockSize": "120 x 110 x 60mm",
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120283",
+        "perRobotCycle10Sec": 4,
+        "comments": "",
+        "piecesPerBlank": 1,
+        "partName": "B18 - Tower - Belt Drive - Idler Bearing Block",
+        "rev": "2",
+        "areas": {
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle": 4
+      },
+      "DEX05120284": {
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "comments": "",
+        "perRobotCycle10Sec": 2,
+        "perRobotCycle": 2,
+        "partName": "B18 - Tower - Belt Drive - Idler Top Plate",
+        "rev": "2",
+        "stockSize": "315 x 125 x 30mm",
+        "createdAt": 1790888433572,
+        "form": "Blank",
+        "updatedAt": 1793308381334,
+        "piecesPerBlank": 1,
+        "partNumber": "DEX05120284",
+        "material": "5000 or 6000 Series Aluminium"
+      },
+      "DEX05120286": {
+        "partName": "B18 - Tower - Belt Drive - Motor Baseplate",
+        "piecesPerBlank": 1,
+        "updatedAt": 1793308381412,
+        "perRobotCycle": 2,
+        "createdAt": 1790888433722,
+        "perRobotCycle10Sec": 2,
+        "stockSize": "330 x 220 x 25mm",
+        "comments": "",
+        "rev": "2",
+        "form": "Blank",
+        "material": "5000 or 6000 Series Aluminium",
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partNumber": "DEX05120286"
+      },
+      "DEX05120291": {
+        "createdAt": 1793308384154,
+        "updatedAt": 1793308384154,
+        "partName": "B18 - Tower - Belt Drive - Drive Bearing Block A",
+        "stockSize": "160mm x 160mm x 3\"",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "form": "Blank",
+        "rev": "1",
+        "perRobotCycle": 2,
+        "material": "Aluminium 6000 Series T6",
+        "perRobotCycle10Sec": 2,
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partNumber": "DEX05120291"
+      },
+      "DEX05120301": {
+        "partName": "B18 - Tower - Belt Tensioner - AT10 W100 - Threaded Rod Tensioning",
+        "rev": "2",
+        "perRobotCycle10Sec": 4,
+        "perRobotCycle": 4,
+        "piecesPerBlank": 1,
+        "comments": "",
+        "partNumber": "DEX05120301",
+        "updatedAt": 1793308379329,
+        "material": "400 Series Stainless Steel",
+        "createdAt": 1793308379329,
+        "stockSize": "",
+        "form": "Blank",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        }
+      },
+      "DEX05120303": {
+        "comments": "",
+        "perRobotCycle": 2,
+        "rev": "1",
+        "partName": "B18 - Tower - Belt Drive - Idler Side Plate",
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle10Sec": 2,
+        "piecesPerBlank": 1,
+        "updatedAt": 1793308381474,
+        "form": "Blank",
+        "createdAt": 1790888431739,
+        "partNumber": "DEX05120303",
+        "stockSize": "235 x 70 x 30mm",
+        "material": "5000 or 6000 Series Aluminium"
+      },
+      "DEX05120309": {
+        "rev": "2",
+        "perRobotCycle10Sec": 4,
+        "perRobotCycle": 4,
+        "partName": "B18 - Tower - Section 1 - Cross Brace Mount",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "createdAt": 1793308384217,
+        "updatedAt": 1793308384217,
+        "stockSize": "1 3/4\"sq x 160mm",
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120309",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "form": "Blank"
+      },
+      "DEX05120311": {
+        "createdAt": 1790888432344,
+        "updatedAt": 1793308381537,
+        "partName": "B18 - Tower - Section 1 - Top Cross Brace",
+        "perRobotCycle10Sec": 2,
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "stockSize": "700 x 180 x 16mm",
+        "comments": "",
+        "partNumber": "DEX05120311",
+        "material": "5000 or 6000 Series Aluminium",
+        "piecesPerBlank": 1,
+        "form": "Blank",
+        "rev": "3",
+        "perRobotCycle": 2
+      },
+      "DEX05120314": {
+        "comments": "",
+        "stockSize": "450 x 100 x 16mm",
+        "updatedAt": 1793308381613,
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partName": "B18 - Tower - Section 1 - Mid Support Brace",
+        "createdAt": 1790888432493,
+        "perRobotCycle": 4,
+        "form": "Blank",
+        "perRobotCycle10Sec": 4,
+        "piecesPerBlank": 1,
+        "rev": "4",
+        "material": "5000 or 6000 Series Aluminium",
+        "partNumber": "DEX05120314"
+      },
+      "DEX05120320": {
+        "comments": "",
+        "piecesPerBlank": 1,
+        "partName": "B18 - Tower - Section 1 - Scanning Face Backplate Spacer Block",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "stockSize": "1\"sq x 100mm",
+        "rev": "1",
+        "createdAt": 1793308384279,
+        "updatedAt": 1793308384279,
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "perRobotCycle10Sec": 7,
+        "partNumber": "DEX05120320",
+        "perRobotCycle": 7
+      },
+      "DEX05120356": {
+        "comments": "",
+        "partNumber": "DEX05120356",
+        "form": "Blank",
+        "stockSize": "420 x 310 x 20mm",
+        "createdAt": 1790888432642,
+        "updatedAt": 1793308384357,
+        "partName": "B18 - Tower - Substructure - Spine Electonics Passthrough",
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle": 1,
+        "perRobotCycle10Sec": 1,
+        "material": "Aluminium 6000 Series T6",
+        "piecesPerBlank": 1,
+        "rev": "5"
+      },
+      "DEX05120357": {
+        "comments": "",
+        "perRobotCycle": 1,
+        "createdAt": 1793308384420,
+        "updatedAt": 1793308384420,
+        "rev": "2",
+        "partName": "B18 - Tower - Substructure - Column CNC Mid Support Rear",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "stockSize": "65 x 90 x 120mm",
+        "piecesPerBlank": 1,
+        "partNumber": "DEX05120357",
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "perRobotCycle10Sec": 1
+      },
+      "DEX05120358": {
+        "form": "Blank",
+        "stockSize": "360 x 110 x 25mm",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle": 2,
+        "updatedAt": 1793308384530,
+        "createdAt": 1790888432796,
+        "partNumber": "DEX05120358",
+        "piecesPerBlank": 1,
+        "rev": "4",
+        "material": "Aluminium 6000 Series T6",
+        "perRobotCycle10Sec": 2,
+        "comments": "",
+        "partName": "B18 - Tower - Substructure - Spine Mid Mount"
+      },
+      "DEX05120359": {
+        "material": "Aluminium 6000 Series T6",
+        "piecesPerBlank": 1,
+        "partName": "B18 - Tower - Substructure - Spine Lower Mount",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "rev": "3",
+        "partNumber": "DEX05120359",
+        "comments": "",
+        "createdAt": 1790888432943,
+        "perRobotCycle": 1,
+        "updatedAt": 1793308384608,
+        "perRobotCycle10Sec": 1,
+        "stockSize": "540 x 400 x 20mm",
+        "form": "Blank"
+      },
+      "DEX05120361": {
+        "perRobotCycle10Sec": 8,
+        "form": "Blank",
+        "partName": "B18 - Tower - Substructure - Strut Mount",
+        "updatedAt": 1793308384688,
+        "rev": "2",
+        "createdAt": 1793308384688,
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partNumber": "DEX05120361",
+        "stockSize": "155 x 70 x 20mm",
+        "comments": "",
+        "piecesPerBlank": 1,
+        "perRobotCycle": 8,
+        "material": "Aluminium 6000 Series T6"
+      },
+      "DEX05120362": {
+        "partNumber": "DEX05120362",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partName": "B18 - Tower - Substructure - ScanF Column Mount",
+        "rev": "0",
+        "perRobotCycle": 4,
+        "comments": "",
+        "piecesPerBlank": 1,
+        "material": "Aluminium 6000 Series T6",
+        "stockSize": "175 x 70 x 30mm",
+        "form": "Blank",
+        "updatedAt": 1793308384756,
+        "createdAt": 1793308384756,
+        "perRobotCycle10Sec": 4
+      },
+      "DEX05120365": {
+        "comments": "",
+        "partNumber": "DEX05120365",
+        "form": "Blank",
+        "partName": "B18 - Tower - Substructure - Column CNC Mid Support Front",
+        "perRobotCycle": 1,
+        "stockSize": "65 x 90 x 120mm",
+        "updatedAt": 1793308384848,
+        "areas": {
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "createdAt": 1793308384848,
+        "rev": "2",
+        "perRobotCycle10Sec": 1,
+        "material": "Aluminium 6000 Series T6",
+        "piecesPerBlank": 1
+      },
+      "DEX05120367": {
+        "perRobotCycle": 2,
+        "createdAt": 1793308381674,
+        "material": "5000 or 6000 Series Aluminium",
+        "updatedAt": 1793308381674,
+        "perRobotCycle10Sec": 2,
+        "stockSize": "60 x 60 x 45mm",
+        "partName": "B18 - Tower - Substructure - Top Hat Blue Projector Light Mount",
+        "rev": "2",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "form": "Blank",
+        "partNumber": "DEX05120367"
+      },
+      "DEX05120403": {
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "material": "ACCU - SEBF-M10-100-DX / WESTFIELD FASTENERS - WF58970",
+        "perRobotCycle10Sec": 12,
+        "perRobotCycle": 12,
+        "piecesPerBlank": 1,
+        "form": "Blank",
+        "partName": "B18 - Tower - Belt Tensioner - Custom M10x100 Hex Bolt",
+        "rev": "0",
+        "stockSize": "OTS",
+        "partNumber": "DEX05120403",
+        "updatedAt": 1793308382562,
+        "comments": "",
+        "createdAt": 1793308382562
+      },
+      "DEX05120418": {
+        "rev": "0",
+        "perRobotCycle10Sec": 12,
+        "perRobotCycle": 12,
+        "partName": "B18 - Tower - 50mm Belt Clamp A_Stainless - Gates",
+        "updatedAt": 1793308379417,
+        "createdAt": 1793308379417,
+        "partNumber": "DEX05120418",
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "stockSize": "",
+        "comments": "",
+        "piecesPerBlank": 1,
+        "material": "400 Series Stainless Steel",
+        "form": "Blank"
+      },
+      "DEX05120419": {
+        "stockSize": "680 x 300 x 15mm",
+        "partNumber": "DEX05120419",
+        "updatedAt": 1793308381746,
+        "createdAt": 1790888430471,
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle": 2,
+        "material": "5000 or 6000 Series Aluminium",
+        "form": "Blank",
+        "perRobotCycle10Sec": 2,
+        "comments": "",
+        "partName": "B18 - Tower - Section 2 - Tensioner Cross Brace - W75 Belt",
+        "rev": "5",
+        "piecesPerBlank": 1
+      },
+      "DEX05120420": {
+        "rev": "0",
+        "form": "Blank",
+        "comments": "",
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partName": "B18 - Tower - 50mm Belt Clamp A_Stainless - Gates - Tensioner",
+        "perRobotCycle10Sec": 12,
+        "partNumber": "DEX05120420",
+        "piecesPerBlank": 1,
+        "perRobotCycle": 12,
+        "stockSize": "",
+        "updatedAt": 1793308379511,
+        "material": "400 Series Stainless Steel",
+        "createdAt": 1793308379511
+      },
+      "DEX05120421": {
+        "comments": "",
+        "stockSize": "210 x 110 x 50mm",
+        "createdAt": 1793308384924,
+        "piecesPerBlank": 1,
+        "updatedAt": 1793308384924,
+        "partName": "B18 - Tower - Belt Tensioner - AT10 W75 - Upper Mounting Block",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "rev": "4",
+        "perRobotCycle": 2,
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "perRobotCycle10Sec": 2,
+        "partNumber": "DEX05120421"
+      },
+      "DEX05120422": {
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "comments": "",
+        "partName": "B18 - Tower - Belt Tensioner - AT10 W75 - Belt Carriage Front",
+        "piecesPerBlank": 1,
+        "updatedAt": 1793308384992,
+        "createdAt": 1793308384992,
+        "perRobotCycle10Sec": 2,
+        "rev": "1",
+        "perRobotCycle": 2,
+        "stockSize": "195 x 60 x 60mm",
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120422"
+      },
+      "DEX05120424": {
+        "updatedAt": 1793308385050,
+        "rev": "0",
+        "createdAt": 1793308385050,
+        "stockSize": "115 x 60 x 25mm",
+        "perRobotCycle10Sec": 2,
+        "material": "Aluminium 6000 Series T6",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partName": "B18 - Tower - Belt Tensioner - AT10 W75 - Belt Clamp Front",
+        "perRobotCycle": 2,
+        "form": "Blank",
+        "partNumber": "DEX05120424"
+      },
+      "DEX05120425": {
+        "perRobotCycle10Sec": 2,
+        "comments": "",
+        "rev": "0",
+        "piecesPerBlank": 1,
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "updatedAt": 1793308385144,
+        "createdAt": 1793308385144,
+        "partNumber": "DEX05120425",
+        "partName": "B18 - Tower - Belt Tensioner - AT10 W75 - Belt Carriage Rear",
+        "stockSize": "195 x 60 x 50mm",
+        "perRobotCycle": 2,
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6"
+      },
+      "DEX05120426": {
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle10Sec": 2,
+        "perRobotCycle": 2,
+        "material": "Aluminium 6000 Series T6",
+        "rev": "0",
+        "comments": "",
+        "form": "Blank",
+        "updatedAt": 1793308385206,
+        "createdAt": 1793308385206,
+        "partNumber": "DEX05120426",
+        "stockSize": "115 x 60 x 15mm",
+        "piecesPerBlank": 1,
+        "partName": "B18 - Tower - Belt Tensioner - AT10 W75 - Belt Clamp Rear"
+      },
+      "DEX05120427": {
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle10Sec": 2,
+        "perRobotCycle": 2,
+        "material": "Aluminium 6000 Series T6",
+        "piecesPerBlank": 1,
+        "rev": "4",
+        "partNumber": "DEX05120427",
+        "stockSize": "210 x 110 x 50mm",
+        "comments": "",
+        "createdAt": 1793308385276,
+        "form": "Blank",
+        "updatedAt": 1793308385276,
+        "partName": "B18 - Tower - Belt Tensioner - AT10 W75 - Lower Mounting Block"
+      },
+      "DEX05120428": {
+        "form": "Blank",
+        "createdAt": 1793308381809,
+        "updatedAt": 1793308381809,
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partName": "B18 - Tower - W75 Bottom Mech Limit Switch Trigger",
+        "stockSize": "2\" sq x 25mm",
+        "comments": "",
+        "piecesPerBlank": 1,
+        "partNumber": "DEX05120428",
+        "material": "5000 or 6000 Series Aluminium",
+        "perRobotCycle10Sec": 2,
+        "perRobotCycle": 2,
+        "rev": "1"
+      },
+      "DEX05120429": {
+        "perRobotCycle": 2,
+        "partName": "B18 - Tower - Belt Drive - Motor AT10 W75 Shaft",
+        "rev": "1",
+        "comments": "",
+        "piecesPerBlank": 1,
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120429",
+        "createdAt": 1793308385346,
+        "updatedAt": 1793308385346,
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle10Sec": 2,
+        "stockSize": "1200MM Hard anodized extruded bars (AT10 Pulley, 25 Tooth, 6000 Series T6 Aluminium)"
+      },
+      "DEX05120430": {
+        "updatedAt": 1793308385426,
+        "piecesPerBlank": 1,
+        "form": "Blank",
+        "createdAt": 1793308385426,
+        "perRobotCycle": 4,
+        "comments": "",
+        "stockSize": "",
+        "partNumber": "DEX05120430",
+        "partName": "B18 - Tower - Belt Drive - W75 Belt Capping Plate",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "perRobotCycle10Sec": 4,
+        "material": "Aluminium 6000 Series T6",
+        "rev": "0"
+      },
+      "DEX05120431": {
+        "comments": "",
+        "form": "Blank",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partName": "B18 - Tower - Belt Drive - W75 Belt Capping Plate Idler",
+        "piecesPerBlank": 1,
+        "rev": "0",
+        "perRobotCycle10Sec": 4,
+        "stockSize": "",
+        "createdAt": 1793308385503,
+        "updatedAt": 1793308385503,
+        "perRobotCycle": 4,
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120431"
+      },
+      "DEX05120432": {
+        "updatedAt": 1793308385581,
+        "createdAt": 1793308385581,
+        "perRobotCycle10Sec": 2,
+        "stockSize": "1200MM Hard anodized extruded bars (AT10 Pulley, 25 Tooth, 6000 Series T6 Aluminium)",
+        "partName": "B18 - Tower - Belt Drive - Idler AT10 W75 Shaft",
+        "form": "Blank",
+        "comments": "",
+        "rev": "1",
+        "partNumber": "DEX05120432",
+        "perRobotCycle": 2,
+        "material": "Aluminium 6000 Series T6",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "piecesPerBlank": 1
+      },
+      "DEX05120433": {
+        "material": "5000 or 6000 Series Aluminium",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "createdAt": 1793308381895,
+        "updatedAt": 1793308381895,
+        "perRobotCycle10Sec": 2,
+        "perRobotCycle": 2,
+        "stockSize": "1 1/2\" sq x 65mm",
+        "piecesPerBlank": 1,
+        "rev": "0",
+        "partName": "B18 - Tower - Belt Drive - Bottom Limit Switch Mounting Block",
+        "comments": "",
+        "partNumber": "DEX05120433",
+        "form": "Blank"
+      },
+      "DEX05120434": {
+        "stockSize": "175 x 60 x 45mm",
+        "partNumber": "DEX05120434",
+        "updatedAt": 1793308385658,
+        "rev": "0",
+        "perRobotCycle10Sec": 1,
+        "createdAt": 1793308385658,
+        "perRobotCycle": 1,
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "material": "Aluminium 6000 Series T6",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "partName": "B18 - Tower - Section 1 - Scanning Face Bracket Lower",
+        "form": "Blank"
+      },
+      "DEX05120442": {
+        "partNumber": "DEX05120442",
+        "piecesPerBlank": 1,
+        "material": "5000 or 6000 Series Aluminium",
+        "perRobotCycle": 2,
+        "form": "Blank",
+        "stockSize": "75 x 60 x 30mm",
+        "perRobotCycle10Sec": 2,
+        "partName": "B18 - Tower - Belt Drive - Top Limit Switch M5 Mounting Block",
+        "rev": "2",
+        "updatedAt": 1793308381988,
+        "createdAt": 1793308381988,
+        "comments": "",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        }
+      },
+      "DEX05120444": {
+        "rev": "0",
+        "perRobotCycle10Sec": 2,
+        "partName": "B18 - Tower - W75 Belt Tensioner - Top Mech Limit Switch Trigger",
+        "partNumber": "DEX05120444",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "areas": {
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "updatedAt": 1793308382057,
+        "createdAt": 1793308382057,
+        "perRobotCycle": 2,
+        "stockSize": "100 x 85 x 15mm",
+        "form": "Blank",
+        "material": "5000 or 6000 Series Aluminium"
+      },
+      "DEX05120446": {
+        "perRobotCycle10Sec": 5,
+        "updatedAt": 1793308385730,
+        "rev": "0",
+        "createdAt": 1793308385730,
+        "comments": "",
+        "stockSize": "165 x 150 x 30mm",
+        "partName": "B18 - Tower - 50mm Pulley Block S2",
+        "perRobotCycle": 5,
+        "partNumber": "DEX05120446",
+        "piecesPerBlank": 1,
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "material": "Aluminium 6000 Series T6",
+        "form": "Blank"
+      },
+      "DEX05120447": {
+        "perRobotCycle10Sec": 1,
+        "updatedAt": 1793308385814,
+        "createdAt": 1793308385814,
+        "material": "Aluminium 6000 Series T6",
+        "rev": "0",
+        "stockSize": "2\"x997mm 6082 round bar",
+        "form": "Blank",
+        "piecesPerBlank": 15,
+        "perRobotCycle": 1,
+        "partName": "B18 - Tower - Belt Pulley - 50mm Belt 32mm",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "comments": "",
+        "partNumber": "DEX05120447"
+      },
+      "DEX05120452": {
+        "piecesPerBlank": 1,
+        "partNumber": "DEX05120452",
+        "perRobotCycle10Sec": 21,
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "rev": "0",
+        "updatedAt": 1793308385891,
+        "perRobotCycle": 21,
+        "createdAt": 1793308385891,
+        "stockSize": "1\" sq x 40mm",
+        "comments": "",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partName": "B18 - Tower - Substructure - M6 Nut Block 20x15 - THRU"
+      },
+      "DEX05120469": {
+        "piecesPerBlank": 1,
+        "material": "5000 or 6000 Series Aluminium",
+        "perRobotCycle": 4,
+        "form": "Blank",
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partNumber": "DEX05120469",
+        "partName": "B18 - Substructure - ScanF Panel Bracket",
+        "createdAt": 1790888433095,
+        "rev": "0",
+        "updatedAt": 1793308382128,
+        "perRobotCycle10Sec": 4,
+        "comments": "",
+        "stockSize": "80 x 55 x 35mm"
+      },
+      "DEX05120470": {
+        "comments": "",
+        "rev": "1",
+        "partName": "B18 - Tower - Substructure - Spine to Section 1 Brace",
+        "stockSize": "105 x 70 x 30mm",
+        "piecesPerBlank": 1,
+        "createdAt": 1793308385970,
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "updatedAt": 1793308385970,
+        "perRobotCycle10Sec": 10,
+        "perRobotCycle": 10,
+        "form": "Blank",
+        "material": "Aluminium 6000 Series T6",
+        "partNumber": "DEX05120470"
+      },
+      "DEX05120478": {
+        "updatedAt": 1793308386065,
+        "createdAt": 1793308386065,
+        "comments": "",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "stockSize": "1\" sq x 40mm",
+        "partName": "B18 - Tower - Substructure - M6 Nut Block 20x15 - TAPPED",
+        "perRobotCycle": 44,
+        "rev": "0",
+        "piecesPerBlank": 1,
+        "form": "Blank",
+        "partNumber": "DEX05120478",
+        "material": "Aluminium 6000 Series T6",
+        "perRobotCycle10Sec": 44
+      },
+      "DEX05120586": {
+        "rev": "1",
+        "updatedAt": 1793308382189,
+        "createdAt": 1793308382189,
+        "perRobotCycle10Sec": 1,
+        "stockSize": "",
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "material": "5000 or 6000 Series Aluminium",
+        "form": "Blank",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "partNumber": "DEX05120586",
+        "perRobotCycle": 1,
+        "partName": "B18 - Tower - Gen 3 Inrush Heatsink"
+      },
+      "DEX05120607": {
+        "createdAt": 1790888433851,
+        "updatedAt": 1793308382266,
+        "perRobotCycle": 2,
+        "stockSize": "315 x 160 x 40mm",
+        "material": "5000 or 6000 Series Aluminium",
+        "perRobotCycle10Sec": 2,
+        "areas": {
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "comments": "",
+        "partName": "B18 - Tower - Belt Drive - Motor Top Plate - W75 Belt Pretension",
+        "piecesPerBlank": 1,
+        "form": "Blank",
+        "partNumber": "DEX05120607",
+        "rev": "0"
+      },
+      "DEX05120647": {
+        "partName": "B18 - Tower - Belt Tensioner - AT10 W75 - Positioning Rod",
+        "rev": "0",
+        "partNumber": "DEX05120647",
+        "perRobotCycle10Sec": 4,
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "comments": "",
+        "updatedAt": 1793308379604,
+        "material": "400 Series Stainless Steel",
+        "createdAt": 1793308379604,
+        "piecesPerBlank": 1,
+        "form": "Blank",
+        "perRobotCycle": 4,
+        "stockSize": ""
+      },
+      "DEX05120674": {
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "stockSize": "900 x 200 x 20mm",
+        "rev": "0",
+        "form": "Blank",
+        "comments": "",
+        "updatedAt": 1793308382329,
+        "perRobotCycle10Sec": 1,
+        "createdAt": 1790888433286,
+        "partNumber": "DEX05120674",
+        "partName": "B18 - Tower - Section 1 - CNC Top Triangle - Modular assembly - Left",
+        "perRobotCycle": 1,
+        "piecesPerBlank": 1,
+        "material": "5000 or 6000 Series Aluminium"
+      },
+      "DEX05120675": {
+        "form": "Blank",
+        "partNumber": "DEX05120675",
+        "material": "5000 or 6000 Series Aluminium",
+        "areas": {
+          "prototype": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "stockSize": "900 x 200 x 20mm",
+        "perRobotCycle": 1,
+        "perRobotCycle10Sec": 1,
+        "partName": "B18 - Tower - Section 1 - CNC Top Triangle - Modular assembly - Right",
+        "updatedAt": 1793308382399,
+        "createdAt": 1790888433420,
+        "piecesPerBlank": 1,
+        "rev": "0",
+        "comments": ""
+      },
+      "DEX05130049": {
+        "perRobotCycle": 1,
+        "perRobotCycle10Sec": 1,
+        "comments": "",
+        "piecesPerBlank": 1,
+        "partName": "B-18 - Dock - LED Window Retainer",
+        "partNumber": "DEX05130049",
+        "form": "Blank",
+        "createdAt": 1793308382485,
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "rev": "0",
+        "updatedAt": 1793308382485,
+        "material": "5000 or 6000 Series Aluminium",
+        "stockSize": "410 x 60 x 15mm"
+      },
+      "no part number": {
+        "comments": "",
+        "areas": {
+          "prototype": {
+            "qty": 4,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          },
+          "farm": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "rev": "",
+        "perRobotCycle": 1,
+        "piecesPerBlank": 1,
+        "partName": "8 mm sheet",
+        "partNumber": "no part number",
+        "form": "Blank",
+        "material": "Aluminium 5083",
+        "stockSize": "800x1000x8mm",
+        "updatedAt": 1793400092361,
+        "createdAt": 1793400092184,
+        "perRobotCycle10Sec": 1
+      },
+      "no part number 1": {
+        "rev": "",
+        "createdAt": 1793400198128,
+        "material": "Aluminium 5083",
+        "perRobotCycle": 1,
+        "updatedAt": 1793400198274,
+        "form": "Blank",
+        "piecesPerBlank": 1,
+        "stockSize": "120x60x1200",
+        "comments": "",
+        "perRobotCycle10Sec": 1,
+        "partNumber": "no part number 1",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 18
+          },
+          "production": {
+            "location": "",
+            "qty": 0
+          }
+        },
+        "partName": "long blocks"
+      },
+      "no part number 2": {
+        "stockSize": "10 mmX 6 MTR",
+        "partNumber": "no part number 2",
+        "rev": "",
+        "updatedAt": 1793400424915,
+        "perRobotCycle10Sec": 1,
+        "createdAt": 1793400424763,
+        "material": "Ground bar",
+        "piecesPerBlank": 1,
+        "comments": "",
+        "perRobotCycle": 1,
+        "form": "Blank",
+        "areas": {
+          "farm": {
+            "qty": 0,
+            "location": ""
+          },
+          "prototype": {
+            "qty": 1,
+            "location": ""
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partName": "Round bar"
+      },
+      "round bar": {
+        "perRobotCycle10Sec": 1,
+        "piecesPerBlank": 1,
+        "material": "nylon bar",
+        "form": "Blank",
+        "partNumber": "round bar",
+        "rev": "",
+        "areas": {
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "location": "",
+            "qty": 35
+          },
+          "production": {
+            "qty": 0,
+            "location": ""
+          }
+        },
+        "partName": "Round bar",
+        "stockSize": "1 1/2\"",
+        "perRobotCycle": 1,
+        "updatedAt": 1793400292165,
+        "comments": "",
+        "createdAt": 1793400292059
+      },
+      "steel plates": {
+        "createdAt": 1793400351052,
+        "updatedAt": 1793400351137,
+        "stockSize": "mix sizes",
+        "perRobotCycle": 1,
+        "material": "structural steel",
+        "areas": {
+          "production": {
+            "location": "",
+            "qty": 0
+          },
+          "farm": {
+            "location": "",
+            "qty": 0
+          },
+          "prototype": {
+            "qty": 4,
+            "location": ""
+          }
+        },
+        "partNumber": "steel plates",
+        "perRobotCycle10Sec": 1,
+        "comments": "",
+        "piecesPerBlank": 1,
+        "rev": "",
+        "partName": "steel plates",
+        "form": "Blank"
+      }
+    },
+    "transactions": {
+      "3sifIOdYK7a8zVeWOgfa": {
+        "type": "book-in",
+        "area": "prototype",
+        "workOrderNumber": "",
+        "timestamp": 1793400198274,
+        "balanceAfter": 18,
+        "stockNumber": "no part number 1",
+        "user": "DS",
+        "note": "New Prototype stock",
+        "qty": 18,
+        "stockItemId": "no part number 1"
+      },
+      "4ZKSknmTD0lsdU1xwmeD": {
+        "stockNumber": "DEX05110163",
+        "type": "book-in",
+        "area": "production",
+        "user": "DS",
+        "timestamp": 1790761049699,
+        "workOrderNumber": "",
+        "stockItemId": "DEX05110163",
+        "balanceAfter": 20,
+        "qty": 10,
+        "note": ""
+      },
+      "5mFQsyorYvdghI9NRQ8E": {
+        "timestamp": 1790884060640,
+        "qty": 3,
+        "user": "DS",
+        "area": "production",
+        "stockNumber": "DEX05110165",
+        "type": "take",
+        "note": "Work order DEX-WO-0001",
+        "stockItemId": "DEX05110165",
+        "workOrderNumber": "DEX-WO-0001",
+        "balanceAfter": 5
+      },
+      "6T6KgOe5S3cpF2WHGJG5": {
+        "qty": 20,
+        "note": "",
+        "stockItemId": "DEX05110081",
+        "workOrderNumber": "",
+        "user": "DS",
+        "area": "production",
+        "stockNumber": "DEX05110081",
+        "timestamp": 1793562018385,
+        "type": "take",
+        "balanceAfter": 0
+      },
+      "AqNLx5LwORXri73eriQ3": {
+        "balanceAfter": 10,
+        "stockItemId": "DEX05110165",
+        "timestamp": 1790599625831,
+        "note": "",
+        "qty": 10,
+        "type": "book-in",
+        "stockNumber": "DEX05110165",
+        "workOrderNumber": "",
+        "user": "DANI"
+      },
+      "BF0thLrfED8NM776ofhf": {
+        "timestamp": 1793562343833,
+        "qty": 15,
+        "note": "",
+        "stockNumber": "DEX05110099",
+        "user": "DS",
+        "balanceAfter": 15,
+        "workOrderNumber": "",
+        "area": "production",
+        "stockItemId": "DEX05110099",
+        "type": "book-in"
+      },
+      "BqxKxOaLMNIO4TGHF8qv": {
+        "area": "production",
+        "stockNumber": "DEX05110165",
+        "balanceAfter": 3,
+        "timestamp": 1793452284096,
+        "type": "take",
+        "workOrderNumber": "DEX-WO-0007-1",
+        "user": "DS",
+        "stockItemId": "DEX05110165",
+        "qty": 2,
+        "note": "Work order DEX-WO-0007-1"
+      },
+      "Fos8ROpec7rsKc8srOEO": {
+        "qty": 2,
+        "balanceAfter": 0,
+        "note": "Work order DEX-WO-0007-4",
+        "timestamp": 1793452313544,
+        "workOrderNumber": "DEX-WO-0007-4",
+        "stockNumber": "DEX05110165",
+        "user": "DS",
+        "area": "production",
+        "stockItemId": "DEX05110165",
+        "type": "take"
+      },
+      "Hn9jIJTUXf7jFXhfN9tG": {
+        "balanceAfter": 15,
+        "type": "book-in",
+        "timestamp": 1790884033054,
+        "area": "production",
+        "workOrderNumber": "DEX-WO-0002",
+        "stockNumber": "DEX05110162",
+        "user": "DS",
+        "note": "Work order DEX-WO-0002 deleted",
+        "stockItemId": "DEX05110162",
+        "qty": 5
+      },
+      "IRj0UK1p61YNa1oNp04N": {
+        "area": "production",
+        "workOrderNumber": "",
+        "type": "take",
+        "balanceAfter": 41,
+        "stockNumber": "DEX05110162",
+        "user": "DS",
+        "qty": 5,
+        "timestamp": 1793620405927,
+        "note": "",
+        "stockItemId": "DEX05110162"
+      },
+      "ISHakhn5lQx1MvBbvOWt": {
+        "stockItemId": "DEX05110167",
+        "workOrderNumber": "",
+        "note": "",
+        "timestamp": 1793562526537,
+        "balanceAfter": 70,
+        "area": "production",
+        "qty": 70,
+        "type": "book-in",
+        "stockNumber": "DEX05110167",
+        "user": "DS"
+      },
+      "IeyGmdMFBxQ9bLcv8R1p": {
+        "note": "Work order DEX-WO-0007-2 deleted",
+        "stockItemId": "DEX05110165",
+        "timestamp": 1793659480045,
+        "qty": 2,
+        "user": "DS",
+        "balanceAfter": -1,
+        "workOrderNumber": "DEX-WO-0007-2",
+        "type": "book-in",
+        "stockNumber": "DEX05110165",
+        "area": "production"
+      },
+      "JQujZwKd5vwqJSVMwma7": {
+        "qty": 4,
+        "timestamp": 1790865256635,
+        "workOrderNumber": "",
+        "stockNumber": "DEX05110165",
+        "user": "DS",
+        "area": "production",
+        "type": "take",
+        "balanceAfter": 6,
+        "note": "",
+        "stockItemId": "DEX05110165"
+      },
+      "KAEQuNW70EWmq60bBFuO": {
+        "qty": 10,
+        "note": "",
+        "timestamp": 1792010756443,
+        "workOrderNumber": "",
+        "stockNumber": "DEX05110081",
+        "user": "DS",
+        "balanceAfter": 20,
+        "area": "production",
+        "stockItemId": "DEX05110081",
+        "type": "book-in"
+      },
+      "KKutqyegH7DDKhx615LR": {
+        "area": "production",
+        "type": "book-in",
+        "workOrderNumber": "",
+        "stockItemId": "DEX05110163",
+        "timestamp": 1793561767497,
+        "user": "DS",
+        "qty": 18,
+        "stockNumber": "DEX05110163",
+        "note": "",
+        "balanceAfter": 28
+      },
+      "KwkskhF7zcyY1HcLTaVL": {
+        "note": "New Prototype stock",
+        "stockItemId": "50 mm plates",
+        "area": "prototype",
+        "qty": 4,
+        "timestamp": 1793400773805,
+        "type": "book-in",
+        "balanceAfter": 4,
+        "user": "DS",
+        "workOrderNumber": "",
+        "stockNumber": "50 mm plates"
+      },
+      "LwBOvOONVDCNv566iSni": {
+        "note": "Work order DEX-WO-0008-1",
+        "stockItemId": "DEX05110163",
+        "qty": 10,
+        "balanceAfter": 18,
+        "user": "DS",
+        "stockNumber": "DEX05110163",
+        "timestamp": 1794521186384,
+        "type": "take",
+        "area": "production",
+        "workOrderNumber": "DEX-WO-0008-1"
+      },
+      "NWNkeVbwYjuZMzto2zc2": {
+        "note": "New Prototype stock",
+        "stockItemId": "no part number 2",
+        "qty": 1,
+        "balanceAfter": 1,
+        "workOrderNumber": "",
+        "timestamp": 1793400424914,
+        "user": "DS",
+        "stockNumber": "no part number 2",
+        "type": "book-in",
+        "area": "prototype"
+      },
+      "OKZQcCltmQcjo2XwByjb": {
+        "type": "book-in",
+        "timestamp": 1790685670525,
+        "stockItemId": "DEX05110162",
+        "user": "Dev",
+        "balanceAfter": 45,
+        "workOrderNumber": "",
+        "note": "",
+        "qty": 40,
+        "stockNumber": "DEX05110162"
+      },
+      "OKdMsWkEdvG1cTTRVPaS": {
+        "note": "Work order DEX-WO-0007-5 deleted",
+        "stockNumber": "DEX05110165",
+        "area": "production",
+        "qty": 2,
+        "timestamp": 1793659480045,
+        "type": "book-in",
+        "workOrderNumber": "DEX-WO-0007-5",
+        "balanceAfter": 5,
+        "stockItemId": "DEX05110165",
+        "user": "DS"
+      },
+      "OlycBfimvF4t3yvRoTj6": {
+        "stockItemId": "DEX05110165",
+        "note": "Work order DEX05110165-R3-2609-001",
+        "type": "take",
+        "balanceAfter": 0,
+        "qty": 10,
+        "user": "Dev",
+        "stockNumber": "DEX05110165",
+        "timestamp": 1790599593242,
+        "workOrderNumber": "DEX05110165-R3-2609-001"
+      },
+      "S0da1otAkou4poaBbtED": {
+        "area": "farm",
+        "type": "book-in",
+        "stockNumber": "DEX05120234",
+        "user": "DS",
+        "balanceAfter": 4,
+        "qty": 4,
+        "timestamp": 1793561701580,
+        "stockItemId": "DEX05120234",
+        "workOrderNumber": "",
+        "note": "blank"
+      },
+      "T5xuoSpVfoc9ztiWsJzz": {
+        "workOrderNumber": "",
+        "user": "DS",
+        "balanceAfter": 17,
+        "qty": 17,
+        "stockNumber": "DEX05110160",
+        "type": "book-in",
+        "area": "production",
+        "timestamp": 1793562437409,
+        "note": "",
+        "stockItemId": "DEX05110160"
+      },
+      "TbxuTF61AekNKJ2cOJ2K": {
+        "qty": 30,
+        "note": "",
+        "stockItemId": "DEX05110160",
+        "timestamp": 1793618338392,
+        "user": "DS",
+        "balanceAfter": 47,
+        "stockNumber": "DEX05110160",
+        "area": "production",
+        "type": "book-in",
+        "workOrderNumber": ""
+      },
+      "UKyOfN2XGGq8RBptIUxP": {
+        "user": "DS",
+        "balanceAfter": -3,
+        "timestamp": 1793659480045,
+        "stockItemId": "DEX05110165",
+        "type": "book-in",
+        "area": "production",
+        "qty": 2,
+        "note": "Work order DEX-WO-0007-1 deleted",
+        "workOrderNumber": "DEX-WO-0007-1",
+        "stockNumber": "DEX05110165"
+      },
+      "UR4WXmDYyU6nB4qgqoTF": {
+        "type": "book-in",
+        "workOrderNumber": "DEX-WO-0008-1",
+        "stockNumber": "DEX05110163",
+        "area": "production",
+        "user": "DS",
+        "timestamp": 1794522495679,
+        "stockItemId": "DEX05110163",
+        "balanceAfter": 18,
+        "note": "Work order DEX-WO-0008-1 deleted",
+        "qty": 10
+      },
+      "UUP7pJ6mOAhIQ9lcVlI3": {
+        "qty": 10,
+        "note": "Work order DEX-WO-0008-1",
+        "timestamp": 1794521449411,
+        "workOrderNumber": "DEX-WO-0008-1",
+        "stockItemId": "DEX05110163",
+        "user": "DS",
+        "area": "production",
+        "stockNumber": "DEX05110163",
+        "balanceAfter": 8,
+        "type": "take"
+      },
+      "UmBkTRdYFIo1T131ebAZ": {
+        "type": "take",
+        "workOrderNumber": "",
+        "timestamp": 1790685705646,
+        "balanceAfter": 9,
+        "stockNumber": "DEX05110162",
+        "user": "Dev",
+        "note": "",
+        "qty": 36,
+        "stockItemId": "DEX05110162"
+      },
+      "UrojlZ1JjBc1Dw3VKhVk": {
+        "area": "production",
+        "type": "take",
+        "stockNumber": "DEX05110165",
+        "user": "DS",
+        "qty": 2,
+        "timestamp": 1793453077781,
+        "workOrderNumber": "DEX-WO-0007-5",
+        "stockItemId": "DEX05110165",
+        "balanceAfter": -5,
+        "note": "Work order DEX-WO-0007-5"
+      },
+      "VLuBrrun3jLjxI2xnBjR": {
+        "balanceAfter": 5,
+        "type": "book-in",
+        "stockNumber": "DEX05120234",
+        "stockItemId": "DEX05120234",
+        "timestamp": 1790452086504,
+        "user": "Dev",
+        "note": "",
+        "qty": 1
+      },
+      "WK6EAT9T3ACqSJx7MygG": {
+        "balanceAfter": 0,
+        "type": "take",
+        "user": "DS",
+        "stockNumber": "DEX05110162",
+        "workOrderNumber": "DEX-WO-0002",
+        "timestamp": 1790712814810,
+        "note": "Work order DEX-WO-0002",
+        "stockItemId": "DEX05110162",
+        "qty": 5
+      },
+      "XLhXWbH3bNEeT0O2JMcx": {
+        "type": "book-in",
+        "timestamp": 1794522363382,
+        "area": "production",
+        "user": "DS",
+        "workOrderNumber": "DEX-WO-0008-1",
+        "stockItemId": "DEX05110163",
+        "note": "Work order DEX-WO-0008-1 deleted",
+        "balanceAfter": 18,
+        "qty": 10,
+        "stockNumber": "DEX05110163"
+      },
+      "bGDEZUs7z6Zgd0d3WfwN": {
+        "timestamp": 1794731829118,
+        "qty": 10,
+        "note": "Work order DEX-WO-0008-2",
+        "stockNumber": "DEX05110163",
+        "workOrderNumber": "DEX-WO-0008-2",
+        "balanceAfter": -2,
+        "user": "DS",
+        "area": "production",
+        "stockItemId": "DEX05110163",
+        "type": "take"
+      },
+      "bZS1t08ljj68L71yj0l0": {
+        "balanceAfter": 4,
+        "type": "take",
+        "timestamp": 1790452078247,
+        "note": "",
+        "user": "Dev",
+        "qty": 1,
+        "stockItemId": "DEX05120234",
+        "stockNumber": "DEX05120234"
+      },
+      "c8BeCkCTZXhhPWuv9YSW": {
+        "type": "take",
+        "stockNumber": "DEX05110165",
+        "workOrderNumber": "DEX-WO-0007-3",
+        "area": "production",
+        "user": "DS",
+        "timestamp": 1793452299496,
+        "stockItemId": "DEX05110165",
+        "balanceAfter": 0,
+        "note": "Work order DEX-WO-0007-3",
+        "qty": 2
+      },
+      "cPbn1cFJvzeOCgguUtL7": {
+        "type": "book-in",
+        "stockNumber": "DEX05120234",
+        "user": "Dev",
+        "workOrderNumber": "",
+        "timestamp": 1790599237993,
+        "note": "Batch 0234-2609-01",
+        "qty": 5,
+        "stockItemId": "DEX05120234",
+        "balanceAfter": 10
+      },
+      "dwSTonTmxaBb6jJjo5dN": {
+        "area": "production",
+        "stockItemId": "DEX05120234",
+        "workOrderNumber": "DEX-WO-0001",
+        "type": "book-in",
+        "timestamp": 1790884037021,
+        "user": "DS",
+        "qty": 5,
+        "stockNumber": "DEX05120234",
+        "balanceAfter": 10,
+        "note": "Work order DEX-WO-0001 deleted"
+      },
+      "elDu5V1Z4iP5fP9aBGg3": {
+        "timestamp": 1793698509649,
+        "qty": 12,
+        "note": "",
+        "stockNumber": "DEX05110165",
+        "workOrderNumber": "",
+        "balanceAfter": 11,
+        "user": "DS",
+        "stockItemId": "DEX05110165",
+        "area": "production",
+        "type": "book-in"
+      },
+      "eqo3zOLSJxOGWmB2ffgC": {
+        "timestamp": 1795037409120,
+        "stockNumber": "DEX05110162",
+        "balanceAfter": 42,
+        "note": "Work order DEX-WO-0009-1",
+        "workOrderNumber": "DEX-WO-0009-1",
+        "type": "take",
+        "area": "production",
+        "stockItemId": "DEX05110162",
+        "user": "DS",
+        "qty": 4
+      },
+      "fGCRdstFKVxKdIBkyeM7": {
+        "note": "Work order DEX-WO-0006 edited",
+        "stockItemId": "DEX05120234",
+        "qty": 5,
+        "workOrderNumber": "DEX-WO-0006",
+        "user": "DS",
+        "timestamp": 1793661240307,
+        "stockNumber": "DEX05120234",
+        "balanceAfter": 39,
+        "type": "take",
+        "area": "production"
+      },
+      "fZmFMoiOrxitl14VInaD": {
+        "qty": 10,
+        "note": "Work order DEX-WO-0008-1",
+        "stockNumber": "DEX05110163",
+        "workOrderNumber": "DEX-WO-0008-1",
+        "balanceAfter": 8,
+        "stockItemId": "DEX05110163",
+        "user": "DS",
+        "area": "production",
+        "type": "take",
+        "timestamp": 1794522629453
+      },
+      "g2MRl6s71DDcLUCu8JD4": {
+        "workOrderNumber": "",
+        "type": "book-in",
+        "area": "prototype",
+        "stockNumber": "30mm plate stock",
+        "user": "DS",
+        "timestamp": 1793400712809,
+        "balanceAfter": 30,
+        "stockItemId": "30mm plate stock",
+        "qty": 30,
+        "note": "New Prototype stock"
+      },
+      "h4w0TUzZuh4sVzO23eYR": {
+        "workOrderNumber": "DEX-WO-0007",
+        "type": "take",
+        "area": "production",
+        "user": "DANI",
+        "stockItemId": "DEX05110165",
+        "timestamp": 1793698350484,
+        "note": "Work order DEX-WO-0007",
+        "stockNumber": "DEX05110165",
+        "qty": 7,
+        "balanceAfter": 8
+      },
+      "hCAH7Cwziey47KaMUysD": {
+        "workOrderNumber": "",
+        "note": "Moved to Farm",
+        "timestamp": 1790761069338,
+        "stockNumber": "DEX05110163",
+        "type": "take",
+        "area": "production",
+        "qty": 10,
+        "stockItemId": "DEX05110163",
+        "user": "DS",
+        "balanceAfter": 10
+      },
+      "iLeHN5kyAMJR5lpKLx2j": {
+        "area": "production",
+        "type": "book-in",
+        "workOrderNumber": "",
+        "stockNumber": "DEX05110162",
+        "user": "DS",
+        "qty": 32,
+        "balanceAfter": 46,
+        "timestamp": 1793561887069,
+        "stockItemId": "DEX05110162",
+        "note": ""
+      },
+      "kpmj7Lu0K4x7XwcLUD6U": {
+        "stockItemId": "round bar",
+        "timestamp": 1793400292165,
+        "note": "New Prototype stock",
+        "qty": 35,
+        "workOrderNumber": "",
+        "balanceAfter": 35,
+        "stockNumber": "round bar",
+        "user": "DS",
+        "area": "prototype",
+        "type": "book-in"
+      },
+      "lm1E98hOvqirT5EXvvJI": {
+        "timestamp": 1790865276370,
+        "workOrderNumber": "",
+        "balanceAfter": 8,
+        "note": "",
+        "stockItemId": "DEX05110165",
+        "area": "production",
+        "type": "book-in",
+        "qty": 2,
+        "user": "DS",
+        "stockNumber": "DEX05110165"
+      },
+      "lnFFF0SJh7eQGf3RtK88": {
+        "workOrderNumber": "DEX-WO-0007",
+        "user": "DANI",
+        "stockNumber": "DEX05110165",
+        "timestamp": 1793698399689,
+        "balanceAfter": 7,
+        "type": "take",
+        "area": "production",
+        "qty": 1,
+        "note": "Work order DEX-WO-0007 edited",
+        "stockItemId": "DEX05110165"
+      },
+      "lsyvASUkYkqHAUQeQOt6": {
+        "stockNumber": "DEX05110162",
+        "balanceAfter": 14,
+        "note": "",
+        "timestamp": 1793561957913,
+        "stockItemId": "DEX05110162",
+        "type": "book-in",
+        "workOrderNumber": "",
+        "area": "farm",
+        "qty": 14,
+        "user": "DS"
+      },
+      "mMbrcjtf11ipy3P8C2xW": {
+        "stockNumber": "DEX05110165",
+        "balanceAfter": 1,
+        "workOrderNumber": "DEX-WO-0007-3",
+        "note": "Work order DEX-WO-0007-3 deleted",
+        "stockItemId": "DEX05110165",
+        "area": "production",
+        "qty": 2,
+        "type": "book-in",
+        "timestamp": 1793659480045,
+        "user": "DS"
+      },
+      "o3YwnBPD9aPEQ59IHsuY": {
+        "workOrderNumber": "DEX-WO-0002",
+        "user": "DS",
+        "stockNumber": "DEX05110162",
+        "timestamp": 1791010377037,
+        "balanceAfter": 14,
+        "type": "take",
+        "area": "production",
+        "qty": 1,
+        "note": "Work order DEX-WO-0002",
+        "stockItemId": "DEX05110162"
+      },
+      "p49da3muXC8NWjpw9da7": {
+        "qty": 14,
+        "note": "",
+        "stockItemId": "DEX05110165",
+        "balanceAfter": 25,
+        "timestamp": 1793796246086,
+        "workOrderNumber": "",
+        "user": "DS",
+        "area": "production",
+        "stockNumber": "DEX05110165",
+        "type": "book-in"
+      },
+      "pI06DjhqFcfOAnBTbyA5": {
+        "stockItemId": "DEX05110165",
+        "note": "Work order DEX-WO-0007-2",
+        "area": "production",
+        "type": "take",
+        "balanceAfter": 1,
+        "qty": 2,
+        "user": "DS",
+        "workOrderNumber": "DEX-WO-0007-2",
+        "stockNumber": "DEX05110165",
+        "timestamp": 1793452291734
+      },
+      "q4aEqJwR8T7DXBELncXn": {
+        "balanceAfter": 70,
+        "workOrderNumber": "",
+        "timestamp": 1793700920524,
+        "note": "",
+        "stockNumber": "DEX05110164",
+        "area": "production",
+        "qty": 70,
+        "type": "book-in",
+        "stockItemId": "DEX05110164",
+        "user": "DS"
+      },
+      "qOvSfib1yEmxI2ZYfoSk": {
+        "stockItemId": "DEX05110167",
+        "timestamp": 1793708896473,
+        "note": "",
+        "qty": 70,
+        "workOrderNumber": "",
+        "balanceAfter": 0,
+        "stockNumber": "DEX05110167",
+        "user": "DS",
+        "area": "production",
+        "type": "take"
+      },
+      "qcUEYWm2AAmozLuKhfbh": {
+        "qty": 35,
+        "user": "DS",
+        "stockItemId": "DEX05120234",
+        "area": "production",
+        "type": "book-in",
+        "workOrderNumber": "",
+        "note": "",
+        "stockNumber": "DEX05120234",
+        "balanceAfter": 44,
+        "timestamp": 1793561708571
+      },
+      "rb8j0tlcb3gvG0Lrpfmm": {
+        "workOrderNumber": "",
+        "balanceAfter": 46,
+        "type": "book-in",
+        "area": "production",
+        "stockItemId": "DEX05110162",
+        "user": "DS",
+        "timestamp": 1793620522294,
+        "stockNumber": "DEX05110162",
+        "note": "",
+        "qty": 5
+      },
+      "tFIEjsLYFYwaK0BpYQsz": {
+        "user": "DS",
+        "qty": 2,
+        "type": "book-in",
+        "area": "production",
+        "stockNumber": "DEX05110165",
+        "note": "Work order DEX-WO-0007-4 deleted",
+        "timestamp": 1793659480045,
+        "workOrderNumber": "DEX-WO-0007-4",
+        "balanceAfter": 3,
+        "stockItemId": "DEX05110165"
+      },
+      "tTOMPNb5pec4hutsNuan": {
+        "user": "DS",
+        "stockItemId": "steel plates",
+        "qty": 4,
+        "type": "book-in",
+        "workOrderNumber": "",
+        "area": "prototype",
+        "note": "New Prototype stock",
+        "balanceAfter": 4,
+        "stockNumber": "steel plates",
+        "timestamp": 1793400351137
+      },
+      "unoiNE6Ch3uOlaNjxAtM": {
+        "note": "Work order DEX-WO-0001",
+        "qty": 4,
+        "stockItemId": "DEX05120234",
+        "user": "Dev",
+        "timestamp": 1790711568115,
+        "balanceAfter": 6,
+        "stockNumber": "DEX05120234",
+        "type": "take",
+        "workOrderNumber": "DEX-WO-0001"
+      },
+      "v84k8gViq6PPtg36x2wx": {
+        "area": "production",
+        "stockItemId": "DEX05110081",
+        "type": "book-in",
+        "timestamp": 1791145747572,
+        "balanceAfter": 10,
+        "user": "DS",
+        "qty": 10,
+        "workOrderNumber": "",
+        "stockNumber": "DEX05110081",
+        "note": ""
+      },
+      "vou6NIbsIro5VPUdD8bY": {
+        "type": "take",
+        "stockNumber": "DEX05120234",
+        "timestamp": 1790711601115,
+        "user": "Dev",
+        "stockItemId": "DEX05120234",
+        "note": "Work order DEX-WO-0001 edited",
+        "balanceAfter": 5,
+        "qty": 1,
+        "workOrderNumber": "DEX-WO-0001"
+      },
+      "wIbI7dcNzqbA7na70SGj": {
+        "stockNumber": "DEX05110163",
+        "timestamp": 1793561781057,
+        "note": "blank",
+        "workOrderNumber": "",
+        "type": "book-in",
+        "stockItemId": "DEX05110163",
+        "balanceAfter": 33,
+        "area": "farm",
+        "user": "DS",
+        "qty": 23
+      },
+      "waR2d5BnpVy5wGo0VHyU": {
+        "balanceAfter": -1,
+        "note": "Work order DEX-WO-0007",
+        "workOrderNumber": "DEX-WO-0007",
+        "stockNumber": "DEX05110165",
+        "area": "production",
+        "qty": 8,
+        "type": "take",
+        "timestamp": 1793698444961,
+        "user": "DS",
+        "stockItemId": "DEX05110165"
+      },
+      "xRoH7caMxrLuMowRnMrb": {
+        "stockNumber": "DEX05110025",
+        "user": "DS",
+        "qty": 41,
+        "type": "book-in",
+        "area": "production",
+        "workOrderNumber": "",
+        "note": "",
+        "stockItemId": "DEX05110025",
+        "timestamp": 1793562234868,
+        "balanceAfter": 41
+      },
+      "xVExi4U1vSrczdv6OC8l": {
+        "type": "book-in",
+        "stockNumber": "no part number",
+        "area": "prototype",
+        "timestamp": 1793400092360,
+        "user": "DS",
+        "stockItemId": "no part number",
+        "note": "New Prototype stock",
+        "qty": 4,
+        "balanceAfter": 4,
+        "workOrderNumber": ""
+      },
+      "y4tk9g6wj9esAHcoHHBa": {
+        "type": "take",
+        "area": "production",
+        "workOrderNumber": "",
+        "timestamp": 1793561591993,
+        "balanceAfter": 9,
+        "user": "DS",
+        "stockNumber": "DEX05120234",
+        "qty": 1,
+        "note": "",
+        "stockItemId": "DEX05120234"
+      },
+      "y5fFcCjA4LQPiFer7yjC": {
+        "note": "",
+        "timestamp": 1793659516716,
+        "stockNumber": "DEX05110165",
+        "workOrderNumber": "",
+        "qty": 10,
+        "balanceAfter": 15,
+        "user": "DS",
+        "stockItemId": "DEX05110165",
+        "type": "book-in",
+        "area": "production"
+      },
+      "yrshh56h5toe8ABfqUal": {
+        "balanceAfter": 10,
+        "qty": 10,
+        "stockNumber": "DEX05110163",
+        "user": "DS",
+        "area": "farm",
+        "workOrderNumber": "",
+        "type": "book-in",
+        "note": "Moved from Production",
+        "timestamp": 1790761069338,
+        "stockItemId": "DEX05110163"
+      },
+      "zB3vcorWFUu5BVnZPCjy": {
+        "note": "Work order DEX-WO-0008-1",
+        "stockItemId": "DEX05110163",
+        "timestamp": 1794522476517,
+        "qty": 10,
+        "stockNumber": "DEX05110163",
+        "user": "DS",
+        "type": "take",
+        "workOrderNumber": "DEX-WO-0008-1",
+        "area": "production",
+        "balanceAfter": 8
+      },
+      "zyO8BM7ISGRsVePK50BE": {
+        "timestamp": 1790801883469,
+        "note": "",
+        "stockNumber": "DEX05110162",
+        "qty": 10,
+        "workOrderNumber": "",
+        "user": "DS",
+        "stockItemId": "DEX05110162",
+        "type": "book-in",
+        "balanceAfter": 10,
+        "area": "production"
+      }
+    },
+    "workOrders": {
+      "DEX-WO-0001": {
+        "createdAt": 1790884060640,
+        "completedQty": -1,
+        "updatedAt": 1794850912645,
+        "woNo": "DEX-WO-0001",
+        "rejectedQty": 0,
+        "status": "Complete",
+        "firstOff": {
+          "covers": [],
+          "attempts": [
+            {
+              "startedAt": 1794850912645,
+              "n": 1,
+              "ops": [
+                {
+                  "rejectAt": 0,
+                  "file": null,
+                  "disposition": "",
+                  "result": "",
+                  "comment": "",
+                  "checkedBy": "",
+                  "machine": "",
+                  "checkedAt": 0,
+                  "operatedBy": "",
+                  "operatedAt": 0
+                },
+                {
+                  "operatedAt": 0,
+                  "operatedBy": "",
+                  "comment": "",
+                  "machine": "",
+                  "disposition": "",
+                  "checkedAt": 0,
+                  "checkedBy": "",
+                  "file": null,
+                  "rejectAt": 0,
+                  "result": ""
+                },
+                {
+                  "checkedBy": "",
+                  "checkedAt": 0,
+                  "operatedBy": "",
+                  "machine": "",
+                  "operatedAt": 0,
+                  "comment": "",
+                  "file": null,
+                  "result": "",
+                  "rejectAt": 0,
+                  "disposition": ""
+                }
+              ]
+            }
+          ]
+        },
+        "history": [
+          {
+            "type": "completed",
+            "timestamp": 1791552484178,
+            "user": "DS",
+            "idnNo": "IDN-0004",
+            "qty": 2
+          }
+        ],
+        "date": 1790884060640,
+        "qty": 3,
+        "partNo": "DEX05110165",
+        "rev": "3",
+        "partName": "BULK HEAD",
+        "assignee": "DS",
+        "batchNo": "",
+        "linkedStockNumber": "DEX05110165",
+        "comment": "OP1 completed. Handover to Daniel for the rest operations."
+      },
+      "DEX-WO-0002": {
+        "history": [
+          {
+            "user": "DS",
+            "idnNo": "IDN-0003",
+            "qty": 1,
+            "type": "completed",
+            "timestamp": 1791232792937
+          }
+        ],
+        "linkedStockNumber": "DEX05110162",
+        "firstOff": {
+          "attempts": [
+            {
+              "n": 1,
+              "startedAt": 1794936182497,
+              "ops": [
+                {
+                  "checkedBy": "",
+                  "checkedAt": 0,
+                  "comment": "",
+                  "machine": "",
+                  "file": null,
+                  "disposition": "",
+                  "rejectAt": 0,
+                  "result": "",
+                  "operatedBy": "",
+                  "operatedAt": 0
+                },
+                {
+                  "result": "",
+                  "operatedAt": 0,
+                  "checkedAt": 0,
+                  "operatedBy": "",
+                  "file": null,
+                  "checkedBy": "",
+                  "machine": "",
+                  "comment": "",
+                  "disposition": "",
+                  "rejectAt": 0
+                },
+                {
+                  "file": null,
+                  "result": "",
+                  "rejectAt": 0,
+                  "operatedAt": 0,
+                  "comment": "",
+                  "checkedBy": "",
+                  "operatedBy": "",
+                  "disposition": "",
+                  "machine": "",
+                  "checkedAt": 0
+                }
+              ]
+            }
+          ],
+          "covers": []
+        },
+        "qty": 1,
+        "rev": "3",
+        "updatedAt": 1794936182496,
+        "partNo": "DEX05110162",
+        "date": 1791010377037,
+        "createdAt": 1791010377037,
+        "comment": "",
+        "batchNo": "",
+        "assignee": "DS",
+        "partName": "BASE: BASE PLATE",
+        "status": "Complete",
+        "woNo": "DEX-WO-0002"
+      },
+      "DEX-WO-0004": {
+        "woNo": "DEX-WO-0004",
+        "partNo": "DEX05120234",
+        "firstOff": {
+          "attempts": [
+            {
+              "n": 1,
+              "startedAt": 1794936207737,
+              "ops": [
+                {
+                  "comment": "FIII[PO",
+                  "rejectAt": 0,
+                  "checkedBy": "DANI",
+                  "machine": "DNM 750 L",
+                  "disposition": "",
+                  "checkedAt": 1794936244059,
+                  "result": "",
+                  "file": null,
+                  "operatedBy": "DS",
+                  "operatedAt": 1794936242170
+                },
+                {
+                  "operatedAt": 0,
+                  "operatedBy": "",
+                  "machine": "",
+                  "comment": "",
+                  "disposition": "",
+                  "checkedAt": 0,
+                  "result": "",
+                  "rejectAt": 0,
+                  "file": null,
+                  "checkedBy": ""
+                },
+                {
+                  "checkedBy": "",
+                  "checkedAt": 0,
+                  "result": "",
+                  "comment": "",
+                  "rejectAt": 0,
+                  "machine": "",
+                  "file": null,
+                  "operatedBy": "",
+                  "operatedAt": 0,
+                  "disposition": ""
+                }
+              ]
+            }
+          ],
+          "covers": []
+        },
+        "qty": 2,
+        "rev": "10",
+        "comment": "",
+        "batchNo": "",
+        "assignee": "DS",
+        "partName": "TOWER BASE PLATE",
+        "status": "Complete",
+        "date": 1791013139176,
+        "linkedStockNumber": "",
+        "createdAt": 1791013139176,
+        "updatedAt": 1794936265609,
+        "history": [
+          {
+            "user": "DS",
+            "timestamp": 1791232732825,
+            "qty": 1,
+            "type": "completed",
+            "idnNo": "IDN-0002"
+          }
+        ]
+      },
+      "DEX-WO-0005": {
+        "qty": 5,
+        "partNo": "DEX05120234",
+        "rev": "10",
+        "history": [
+          {
+            "timestamp": 1793390312637,
+            "user": "DS",
+            "field": "completed",
+            "reason": "",
+            "type": "adjusted",
+            "delta": -4
+          },
+          {
+            "qty": 4,
+            "type": "completed",
+            "idnNo": "IDN-0006",
+            "timestamp": 1793390383690,
+            "user": "DS"
+          },
+          {
+            "timestamp": 1793390430182,
+            "field": "completed",
+            "user": "DS",
+            "delta": 1,
+            "reason": "",
+            "type": "adjusted"
+          }
+        ],
+        "woNo": "DEX-WO-0005",
+        "reworkOf": "",
+        "date": 1793290728053,
+        "linkedStockNumber": "",
+        "status": "Complete",
+        "comment": "",
+        "batchNo": "",
+        "assignee": "DS",
+        "partName": "TOWER BASE PLATE",
+        "updatedAt": 1793390451406,
+        "cocDraws": [],
+        "createdAt": 1793290728053
+      },
+      "DEX-WO-0006": {
+        "status": "Complete",
+        "linkedStockNumber": "DEX05120234",
+        "assignee": "DS",
+        "history": [
+          {
+            "type": "completed",
+            "timestamp": 1793796333027,
+            "user": "DS",
+            "idnNo": "IDN-0007",
+            "qty": 5
+          }
+        ],
+        "partName": "TOWER BASE PLATE",
+        "cocDraws": [],
+        "qty": 5,
+        "date": 1793659610067,
+        "rev": "10",
+        "partNo": "DEX05120234",
+        "updatedAt": 1793796333027,
+        "dueDate": 1793750400000,
+        "createdAt": 1793659610067,
+        "comment": "WATERJET CUT PROFILE",
+        "batchNo": "",
+        "woNo": "DEX-WO-0006",
+        "reworkOf": ""
+      },
+      "DEX-WO-0007": {
+        "date": 1793698350484,
+        "qty": 8,
+        "cocDraws": [],
+        "partName": "BULK HEAD",
+        "assignee": "DS",
+        "history": [
+          {
+            "user": "DS",
+            "timestamp": 1794435629312,
+            "field": "completed",
+            "type": "adjusted",
+            "reason": "",
+            "delta": 7
+          },
+          {
+            "user": "DS",
+            "field": "completed",
+            "reason": "",
+            "type": "adjusted",
+            "timestamp": 1794435635190,
+            "delta": 1
+          }
+        ],
+        "rev": "3",
+        "createdAt": 1793698350484,
+        "partNo": "DEX05110165",
+        "updatedAt": 1794435635190,
+        "woNo": "DEX-WO-0007",
+        "reworkOf": "",
+        "batchNo": "",
+        "comment": "",
+        "dueDate": 1793923200000,
+        "status": "Complete",
+        "linkedStockNumber": "DEX05110165"
+      },
+      "DEX-WO-0008": {
+        "history": [],
+        "creator": "DS",
+        "date": 1794522607117,
+        "mrpOrderNo": "",
+        "status": "Scheduled",
+        "weekCount": 2,
+        "createdAt": 1794522607117,
+        "assignee": "",
+        "updatedAt": 1794522607117,
+        "partName": "bridging plate",
+        "woNo": "DEX-WO-0008",
+        "comment": "",
+        "batchNo": "",
+        "linkedStockNumber": "DEX05110163",
+        "reworkOf": "",
+        "partNo": "DEX05110163",
+        "qty": 20,
+        "isParent": true,
+        "rev": "1"
+      },
+      "DEX-WO-0008-1": {
+        "partNo": "DEX05110163",
+        "mrpOrderNo": "",
+        "assignee": "DS",
+        "qty": 10,
+        "partName": "bridging plate",
+        "woNo": "DEX-WO-0008-1",
+        "cocDraws": [],
+        "parentWoNo": "DEX-WO-0008",
+        "linkedStockNumber": "DEX05110163",
+        "rev": "1",
+        "comment": "",
+        "batchNo": "",
+        "status": "Issued",
+        "createdAt": 1794522607117,
+        "reworkOf": "",
+        "updatedAt": 1794731756372,
+        "date": 1794522607117,
+        "history": [],
+        "weekOf": 1794528000000,
+        "firstOff": {
+          "covers": [],
+          "attempts": [
+            {
+              "ops": [
+                {
+                  "machine": "",
+                  "operatedAt": 1794731750415,
+                  "operatedBy": "DS",
+                  "comment": "",
+                  "checkedAt": 1794731756372,
+                  "result": "",
+                  "file": null,
+                  "checkedBy": "DANI"
+                },
+                {
+                  "checkedAt": 0,
+                  "operatedAt": 0,
+                  "result": "",
+                  "operatedBy": "",
+                  "machine": "",
+                  "file": null,
+                  "comment": "",
+                  "checkedBy": ""
+                },
+                {
+                  "operatedAt": 0,
+                  "machine": "",
+                  "comment": "",
+                  "operatedBy": "",
+                  "checkedAt": 0,
+                  "checkedBy": "",
+                  "result": "",
+                  "file": null
+                }
+              ],
+              "n": 1,
+              "startedAt": 1794731734476
+            }
+          ]
+        },
+        "creator": "DS"
+      },
+      "DEX-WO-0008-2": {
+        "rev": "1",
+        "batchNo": "",
+        "comment": "",
+        "qty": 10,
+        "date": 1794522607117,
+        "linkedStockNumber": "DEX05110163",
+        "partNo": "DEX05110163",
+        "cocDraws": [],
+        "partName": "bridging plate",
+        "assignee": "DS",
+        "weekOf": 1794787200000,
+        "creator": "DS",
+        "history": [],
+        "mrpOrderNo": "",
+        "reworkOf": "",
+        "firstOff": {
+          "covers": [],
+          "attempts": [
+            {
+              "n": 1,
+              "ops": [
+                {
+                  "result": "",
+                  "comment": "",
+                  "machine": "",
+                  "file": null,
+                  "checkedAt": 0,
+                  "operatedAt": 0,
+                  "checkedBy": "",
+                  "operatedBy": ""
+                },
+                {
+                  "result": "",
+                  "checkedAt": 0,
+                  "checkedBy": "",
+                  "operatedAt": 0,
+                  "machine": "",
+                  "file": null,
+                  "operatedBy": "",
+                  "comment": ""
+                },
+                {
+                  "file": null,
+                  "comment": "",
+                  "operatedAt": 0,
+                  "machine": "",
+                  "checkedAt": 0,
+                  "operatedBy": "",
+                  "result": "",
+                  "checkedBy": ""
+                },
+                {
+                  "operatedBy": "",
+                  "result": "",
+                  "operatedAt": 0,
+                  "checkedAt": 0,
+                  "checkedBy": "",
+                  "machine": "",
+                  "file": null,
+                  "comment": ""
+                }
+              ],
+              "startedAt": 1794731866666
+            }
+          ]
+        },
+        "parentWoNo": "DEX-WO-0008",
+        "updatedAt": 1794767737118,
+        "status": "Open",
+        "createdAt": 1794522607117,
+        "woNo": "DEX-WO-0008-2"
+      },
+      "DEX-WO-0009": {
+        "qty": 4,
+        "date": 1795037385418,
+        "partName": "BASE: BASE PLATE",
+        "linkedStockNumber": "DEX05110162",
+        "assignee": "",
+        "rev": "3",
+        "batchNo": "",
+        "comment": "",
+        "status": "Scheduled",
+        "mrpOrderNo": "P000246",
+        "isParent": true,
+        "woNo": "DEX-WO-0009",
+        "createdAt": 1795037385418,
+        "weekCount": 1,
+        "creator": "DS",
+        "updatedAt": 1795037385418,
+        "reworkOf": "",
+        "history": [],
+        "partNo": "DEX05110162"
+      },
+      "DEX-WO-0009-1": {
+        "woNo": "DEX-WO-0009-1",
+        "partNo": "DEX05110162",
+        "firstOff": {
+          "attempts": [
+            {
+              "n": 1,
+              "startedAt": 1795037416890,
+              "ops": [
+                {
+                  "operatedBy": "DS",
+                  "disposition": "",
+                  "operatedAt": 1795037423926,
+                  "file": null,
+                  "result": "",
+                  "checkedBy": "Leandro",
+                  "comment": "All good. ",
+                  "machine": "DNM 750 L",
+                  "rejectAt": 0,
+                  "checkedAt": 1795037435197
+                },
+                {
+                  "machine": "DNM 750 L",
+                  "result": "",
+                  "comment": "all good",
+                  "operatedAt": 1795037475842,
+                  "rejectAt": 0,
+                  "disposition": "",
+                  "operatedBy": "DS",
+                  "file": null,
+                  "checkedBy": "Leandro",
+                  "checkedAt": 1795037481549
+                },
+                {
+                  "comment": "",
+                  "disposition": "",
+                  "machine": "",
+                  "rejectAt": 0,
+                  "operatedAt": 0,
+                  "operatedBy": "",
+                  "result": "",
+                  "checkedAt": 0,
+                  "checkedBy": "",
+                  "file": null
+                }
+              ]
+            }
+          ],
+          "covers": []
+        },
+        "parentWoNo": "DEX-WO-0009",
+        "mrpOrderNo": "P000246",
+        "qty": 4,
+        "reworkOf": "",
+        "comment": "",
+        "rev": "3",
+        "batchNo": "",
+        "assignee": "DS",
+        "partName": "BASE: BASE PLATE",
+        "cocDraws": [],
+        "status": "Complete",
+        "date": 1795037385418,
+        "linkedStockNumber": "DEX05110162",
+        "createdAt": 1795037385418,
+        "updatedAt": 1795037624355,
+        "history": [
+          {
+            "qty": 4,
+            "user": "DS",
+            "timestamp": 1795037624355,
+            "idnNo": "IDN-0008",
+            "type": "completed"
+          }
+        ],
+        "creator": "DS",
+        "weekOf": 1795046400000
+      }
+    },
+    "partMaster": {
+      "DEX05110162__R3": {
+        "defaultComment": "",
+        "createdAt": 1790712814810,
+        "updatedAt": 1790712814810,
+        "unitPerRobot": 1,
+        "partName": "BASE: BASE PLATE",
+        "partNo": "DEX05110162",
+        "linkedStockNumber": "DEX05110162",
+        "rev": "3"
+      },
+      "DEX05110163__R1": {
+        "partNo": "DEX05110163",
+        "updatedAt": 1794522438469,
+        "createdAt": 1794521066376,
+        "rev": "1",
+        "partName": "bridging plate",
+        "unitPerRobot": 1,
+        "linkedStockNumber": "DEX05110163",
+        "defaultComment": "test"
+      },
+      "DEX05110165__R3": {
+        "partName": "BULK HEAD",
+        "rev": "3",
+        "createdAt": 1790599593242,
+        "linkedStockNumber": "DEX05110165",
+        "defaultComment": "",
+        "updatedAt": 1790599593242,
+        "unitPerRobot": 2,
+        "partNo": "DEX05110165"
+      },
+      "DEX05120234__R10": {
+        "defaultComment": "",
+        "updatedAt": 1790599064250,
+        "linkedStockNumber": "",
+        "partNo": "DEX05120234",
+        "createdAt": 1790599064250,
+        "rev": "10",
+        "unitPerRobot": 1,
+        "partName": "TOWER BASE PLATE"
+      },
+      "DEX05120234__R4": {
+        "updatedAt": 1790711568115,
+        "partNo": "DEX05120234",
+        "unitPerRobot": 1,
+        "partName": "TOWER BASE PLATE",
+        "defaultComment": "",
+        "createdAt": 1790711568115,
+        "linkedStockNumber": "DEX05120234",
+        "rev": "4"
+      }
+    },
+    "batches": {
+      "0234-2609-01": {
+        "createdAt": 1790599237993,
+        "partNo": "DEX05120234",
+        "stockNumber": "DEX05120234",
+        "bookInDate": 1790599237993,
+        "batchNo": "0234-2609-01",
+        "qtyAdded": 5
+      },
+      "0234-2609-02": {
+        "createdAt": 1790625026890,
+        "stockNumber": "",
+        "bookInDate": 1790625026890,
+        "batchNo": "0234-2609-02",
+        "qtyAdded": 10,
+        "partNo": "DEX05120234"
+      }
+    },
+    "config": {
+      "knownUsers": {
+        "names": [
+          "DS",
+          "DANI",
+          "Leandro"
+        ],
+        "updatedAt": 1795037435148
+      },
+      "machines": {
+        "updatedAt": 1794936238241,
+        "list": [
+          {
+            "number": "",
+            "name": "DNM 750 L"
+          }
+        ]
+      }
+    },
+    "idns": {
+      "IDN-0001": {
+        "date": 1791232564010,
+        "comment": "",
+        "voidedAt": 1791232667992,
+        "createdAt": 1791232564010,
+        "vms": "1627",
+        "partName": "TOWER BASE PLATE",
+        "rev": "10",
+        "po": "PO00246",
+        "woNo": "DEX-WO-0004",
+        "qty": 1,
+        "initials": "",
+        "refNo": "MS 831",
+        "partNo": "DEX05120234",
+        "idnNo": "IDN-0001",
+        "voided": true
+      },
+      "IDN-0002": {
+        "initials": "",
+        "date": 1791232732825,
+        "partName": "TOWER BASE PLATE",
+        "createdAt": 1791232732825,
+        "refNo": "MS 831",
+        "po": "PO00255",
+        "vms": "1636",
+        "rev": "10",
+        "idnNo": "IDN-0002",
+        "qty": 1,
+        "woNo": "DEX-WO-0004",
+        "comment": "",
+        "partNo": "DEX05120234"
+      },
+      "IDN-0003": {
+        "partName": "BASE: BASE PLATE",
+        "date": 1791232792937,
+        "initials": "",
+        "comment": "",
+        "vms": "1627",
+        "rev": "3",
+        "po": "PO00246",
+        "woNo": "DEX-WO-0002",
+        "qty": 1,
+        "refNo": "MS 832",
+        "createdAt": 1791232792937,
+        "partNo": "DEX05110162",
+        "idnNo": "IDN-0003"
+      },
+      "IDN-0004": {
+        "partName": "BULK HEAD",
+        "initials": "",
+        "woNo": "DEX-WO-0001",
+        "qty": 2,
+        "partNo": "DEX05110165",
+        "rev": "3",
+        "createdAt": 1791552484178,
+        "vms": "1627",
+        "date": 1791552484178,
+        "po": "PO00255",
+        "refNo": "MS 833",
+        "comment": "OP1 completed. Handover to Daniel for the rest operations.",
+        "idnNo": "IDN-0004"
+      },
+      "IDN-0005": {
+        "createdAt": 1793290885444,
+        "woNo": "DEX-WO-0005",
+        "comment": "",
+        "idnNo": "IDN-0005",
+        "refNo": "MS 834",
+        "voidedAt": 1793390398355,
+        "po": "",
+        "partNo": "DEX05120234",
+        "voided": true,
+        "partName": "TOWER BASE PLATE",
+        "date": 1793290885444,
+        "vms": "",
+        "rev": "10",
+        "qty": 5,
+        "initials": ""
+      },
+      "IDN-0006": {
+        "woNo": "DEX-WO-0005",
+        "idnNo": "IDN-0006",
+        "refNo": "MS 835",
+        "comment": "",
+        "po": "",
+        "partNo": "DEX05120234",
+        "createdAt": 1793390383690,
+        "partName": "TOWER BASE PLATE",
+        "date": 1793390383690,
+        "initials": "",
+        "qty": 4,
+        "vms": "",
+        "rev": "10"
+      },
+      "IDN-0007": {
+        "po": "",
+        "initials": "DS",
+        "createdAt": 1793796333027,
+        "woNo": "DEX-WO-0006",
+        "partNo": "DEX05120234",
+        "partName": "TOWER BASE PLATE",
+        "vms": "1636",
+        "comment": "WATERJET CUT PROFILE",
+        "rev": "10",
+        "date": 1793796333027,
+        "qty": 5,
+        "refNo": "MS 836",
+        "idnNo": "IDN-0007"
+      },
+      "IDN-0008": {
+        "qty": 4,
+        "woNo": "DEX-WO-0009-1",
+        "rev": "3",
+        "vms": "",
+        "partNo": "DEX05110162",
+        "createdAt": 1795037624355,
+        "refNo": "MS 837",
+        "date": 1795037624355,
+        "idnNo": "IDN-0008",
+        "comment": "",
+        "initials": "DS",
+        "partName": "BASE: BASE PLATE",
+        "po": "P000246"
+      }
+    },
+    "cocs": {
+      "_error": "permission-denied"
+    }
+  }
+}
