@@ -238,6 +238,10 @@ export function downloadRouteCardPdf(wo, orders) {
   } else {
     note("Not yet reviewed by quality. This PDF is a draft.");
   }
+  // Mid-way checks by quality before the final sign-off.
+  (firstOff.crossChecks || []).forEach((c) => {
+    note(`Cross-check by ${c.by} on ${fmt(c.at)}, after ${c.afterOps} operation${c.afterOps === 1 ? "" : "s"}.${c.note ? " Note: " + c.note : ""}`);
+  });
 
   const pages = doc.getNumberOfPages();
   for (let p = 1; p <= pages; p += 1) {

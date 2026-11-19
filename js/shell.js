@@ -8,6 +8,7 @@
 import { esc, toast } from "./render.js";
 import { dxNavHTML, wireSectionNav, navEntry, navKeyForHash } from "./section-nav.js";
 import { listStockItems } from "./db.js";
+import { startQualityNotify, refreshQualityBadges } from "./quality-notify.js";
 import { navigate } from "../app.js";
 
 function topBarHTML(key) {
@@ -47,6 +48,8 @@ export function applyShell() {
   }
 
   wireSectionNav(app);
+  startQualityNotify();
+  refreshQualityBadges();
   const search = app.querySelector("#dx-search");
   if (search) search.onkeydown = (e) => e.key === "Enter" && runSearch(search);
 }

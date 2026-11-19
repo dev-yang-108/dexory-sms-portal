@@ -101,7 +101,11 @@ export function dxNavHTML(activeKey) {
           ${g.label ? `<div class="dx-grp">${esc(g.label)}</div>` : ""}
           ${g.items
             .map(
-              (i) => `<button class="dx-link ${i.key === activeKey ? "is-active" : ""}" data-hash="${esc(i.hash)}">${esc(i.label)}</button>`
+              (i) =>
+                `<button class="dx-link ${i.key === activeKey ? "is-active" : ""}" data-hash="${esc(i.hash)}">${esc(i.label)}${
+                  // Cards waiting for quality; filled in by quality-notify.js.
+                  i.key === "route-cards" ? ` <span class="dx-badge" data-rc-badge hidden>0</span>` : ""
+                }</button>`
             )
             .join("")}
         `

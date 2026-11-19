@@ -5,6 +5,8 @@
 import { esc, mount, setViewCleanup, formatDate, toast } from "../render.js";
 import { subscribeIdn, voidIdn } from "../db.js";
 import { navigate } from "../../app.js";
+import { downloadIdnPdf } from "../idn-pdf.js";
+import { IDN_FOLDER_URL } from "../../drive-config.js";
 
 let idnUnsub = null;
 
@@ -15,6 +17,7 @@ export function renderIdnDetailView(idnNo) {
     <header class="topbar">
       <button class="icon-btn" id="btn-back" aria-label="Back">&larr;</button>
       <div class="topbar-spacer"></div>
+      <button class="pill-link" id="btn-drive">Save to Drive</button>
       <button class="pill-link" id="btn-print">Send to printer</button>
     </header>
     <div id="idn-body"><div class="empty-state">Loading…</div></div>
@@ -81,6 +84,16 @@ function renderBody(idn) {
   `;
 
   document.getElementById("btn-print").onclick = () => window.print();
+  document.getElementById("btn-drive").onclick = () => {
+    // Open the folder first: a new tab is only allowed straight from the click.
+    const tab = window.open(IDN_FOLDER_URL, "_blank", "noopener");
+    if (!downloadIdnPdf(idn)) {
+      if (tab) tab.close();
+      toast("The PDF tool is still loading. Try again in a moment.");
+      return;
+    }
+    toast("PDF downloaded. Drag it into the Drive folder that just opened.");
+  };
   const voidBtn = document.getElementById("btn-void-idn");
   if (voidBtn) {
     voidBtn.onclick = () => {

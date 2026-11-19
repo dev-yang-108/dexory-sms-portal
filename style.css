@@ -480,6 +480,19 @@ section{padding:0 16px 8px;}
 /* Part already booked on this CoC: it is skipped unless ticked "add again". */
 .coc-dup{background:#FDE7E7;border:2px solid #D64545;border-radius:10px;padding:10px 12px;color:#5A1212;font-size:14px;line-height:1.4;margin-top:8px;}
 .coc-dup:empty{display:none;}
+
+/* Quality notification: red count on Route cards in the sidebar, and the banner
+   that appears when a card is sent to quality while the app is open. */
+.dx-badge{display:inline-block;background:#E5484D;color:#fff;border-radius:10px;font-size:11px;font-weight:600;padding:1px 7px;margin-left:6px;line-height:1.4;}
+.dx-badge[hidden]{display:none;}
+.dx-notice{position:fixed;right:16px;bottom:16px;z-index:60;display:flex;align-items:stretch;background:#0B2A4A;color:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.28);max-width:min(420px,calc(100vw - 32px));overflow:hidden;}
+.dx-notice-main{flex:1;text-align:left;background:none;border:0;color:inherit;font:inherit;font-size:14px;line-height:1.4;padding:12px 14px;cursor:pointer;}
+.dx-notice-main:hover{background:rgba(255,255,255,.08);}
+.dx-notice-x{background:none;border:0;border-left:1px solid rgba(255,255,255,.18);color:inherit;font-size:20px;padding:0 14px;cursor:pointer;}
+/* Route cards date search */
+.rc-dates{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:4px 16px 0;}
+.rc-dates input[type=date]{min-height:34px;padding:4px 8px;}
+.rc-dates .rc-dates-label{font-size:13px;color:var(--sub,#5A6B82);}
 .coc-dup input[type=checkbox]{width:auto;}
 .coc-batches{margin-top:10px;}
 .coc-batch-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}

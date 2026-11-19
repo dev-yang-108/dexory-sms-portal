@@ -24,7 +24,7 @@ import {
   newFirstOffAttempt
 } from "./db.js";
 import { downloadRouteCardPdf } from "./route-card-pdf.js";
-import { DRIVE_UPLOAD_URL, DRIVE_UPLOAD_SECRET } from "../drive-config.js";
+import { DRIVE_UPLOAD_URL, DRIVE_UPLOAD_SECRET, ROUTE_CARD_FOLDER_URL } from "../drive-config.js";
 
 const ADD_NEW = "__add_new__";
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
@@ -59,26 +59,40 @@ export function firstOffStatus(wo) {
   return attemptOutcome(lastAttempt(wo)) || "progress";
 }
 
+// Where a card stands with quality:
+//   signed     - quality signed it off (nobody else needs to review it)
+//   sent-back  - quality sent it back to the machine shop
+//   waiting    - the machine shop sent it to quality (at any stage) and it is
+//                waiting for them; this is what the sidebar badge counts
+//   ready      - every operation passed but it hasn't been sent yet
+//   progress   - still being filled in
+export function qualityState(wo) {
+  const f = wo.firstOff;
+  if (!f || !f.attempts || f.attempts.length === 0) return "progress";
+  const q = f.quality;
+  if (q && q.status === "signed") return "signed";
+  if (q && q.status === "sent-back") return "sent-back";
+  if (f.sentToQuality) return "waiting";
+  return attemptOutcome(lastAttempt(wo)) === "pass" ? "ready" : "progress";
+}
+
 // What the Route cards list shows for a work order that holds (or is covered
-// by) a first-off. Quality signs off a card once every operation has passed.
+// by) a first-off.
 export function routeCardInfo(wo) {
-  if (!wo.firstOff) return { result: "covered", attempt: 0, quality: `Follows ${wo.firstOffRef}`, tone: "" };
+  if (!wo.firstOff) return { result: "covered", attempt: 0, quality: `Follows ${wo.firstOffRef}`, tone: "", state: "covered" };
   const attempt = lastAttempt(wo);
   const outcome = attemptOutcome(attempt);
   const q = wo.firstOff.quality;
-  let quality = "Not ready";
-  let tone = "";
-  if (q && q.status === "signed") {
-    quality = `Signed off, ${q.by}`;
-    tone = "ok";
-  } else if (q && q.status === "sent-back") {
-    quality = "Sent back";
-    tone = "bad";
-  } else if (outcome === "pass") {
-    quality = "Awaiting quality";
-    tone = "blue";
-  }
-  return { result: outcome || "progress", attempt: attempt.n, quality, tone };
+  const state = qualityState(wo);
+  const text = {
+    signed: `Signed off, ${q && q.by}`,
+    "sent-back": "Sent back",
+    waiting: "Waiting for quality",
+    ready: "Ready to send",
+    progress: "Not ready"
+  }[state];
+  const tone = { signed: "ok", "sent-back": "bad", waiting: "blue", ready: "", progress: "" }[state];
+  return { result: outcome || "progress", attempt: attempt.n, quality: text, tone, state };
 }
 
 export function initials(name) {
@@ -198,16 +212,44 @@ export async function renderFirstOff(wo, root) {
   const sentBack = !!quality && quality.status === "sent-back";
   const canRetry = outcome === "rework" || outcome === "fail" || sentBack;
 
+  const sent = wo.firstOff.sentToQuality;
+  const crossChecks = wo.firstOff.crossChecks || [];
+  const opsWithResult = current.ops.filter((o) => o.result).length;
+  const crossList = crossChecks.length
+    ? `<div class="hint" style="padding:0 16px 8px;">Quality cross-checks: ${crossChecks
+        .map((c) => `${esc(c.by)} (after ${esc(c.afterOps)} op${c.afterOps === 1 ? "" : "s"}, ${esc(formatDate(c.at))}${c.note ? ": " + esc(c.note) : ""})`)
+        .join(" · ")}</div>`
+    : "";
+
   const qualityBlock = signed
-    ? `<div class="ok-box">Signed off by ${esc(quality.by)} · ${esc(formatDate(quality.at))}${quality.note ? " · " + esc(quality.note) : ""}</div>
+    ? `<div class="ok-box">Signed off by ${esc(quality.by)} · ${esc(formatDate(quality.at))}${quality.note ? " · " + esc(quality.note) : ""}.
+         Nobody else in quality needs to review this card.</div>
+       ${crossList}
        <div class="btn-row"><button class="btn" id="fo-q-withdraw">Withdraw sign-off</button></div>`
     : sentBack
-      ? `<div class="warn-box">Sent back by ${esc(quality.by)} · ${esc(formatDate(quality.at))}: ${esc(quality.note)}</div>`
-      : outcome === "pass"
-        ? `<div class="form-group"><label>Reviewed by</label><select id="fo-q-by">${personOptions("")}</select></div>
-           <div class="form-group"><label>Note (needed to send back)</label><input id="fo-q-note" placeholder="Optional for sign-off" /></div>
-           <div class="btn-row"><button class="btn danger" id="fo-q-back">Send back</button><button class="btn primary-lime" id="fo-q-sign">Sign off</button></div>`
-        : `<div class="hint" style="padding:0 16px;">Quality can review once every operation has passed.</div>`;
+      ? `<div class="warn-box">Sent back by ${esc(quality.by)} · ${esc(formatDate(quality.at))}: ${esc(quality.note)}</div>${crossList}`
+      : `
+        <div class="hint" style="padding:0 16px 6px;"><b>Machine shop</b></div>
+        ${
+          sent
+            ? `<div class="info-banner">Sent to quality by ${esc(sent.by)} · ${esc(formatDate(sent.at))}, after ${esc(sent.afterOps)} operation${sent.afterOps === 1 ? "" : "s"}${sent.partial ? " (partial check)" : ""}. Quality has been notified.</div>
+               <div class="btn-row"><button class="btn" id="fo-q-recall">Take back from quality</button></div>`
+            : opsWithResult >= 1
+              ? `<div class="hint" style="padding:0 16px 6px;">Send it to quality whenever you want a check, after any operation. ${outcome === "pass" ? "Every operation has passed." : "Not every operation is done yet, so this is a partial check."}</div>
+                 <div class="form-group"><label>Sent by</label><select id="fo-q-sendby">${personOptions("")}</select></div>
+                 <div class="btn-row"><button class="btn primary-lime" id="fo-q-send">Send to quality${outcome === "pass" ? "" : " (partial check)"}</button></div>`
+              : `<div class="hint" style="padding:0 16px 6px;">Record a result on at least one operation, then you can send it to quality.</div>`
+        }
+        <div class="hint" style="padding:10px 16px 6px;"><b>Quality</b></div>
+        ${crossList}
+        <div class="form-group"><label>Reviewed by</label><select id="fo-q-by">${personOptions("")}</select></div>
+        <div class="form-group"><label>Note (needed to send back)</label><input id="fo-q-note" placeholder="Optional for a cross-check or sign-off" /></div>
+        <div class="btn-row">
+          <button class="btn" id="fo-q-cross">Add cross-check</button>
+          <button class="btn danger" id="fo-q-back">Send back</button>
+          ${outcome === "pass" ? `<button class="btn primary-lime" id="fo-q-sign">Final sign-off</button>` : ""}
+        </div>
+        ${outcome === "pass" ? "" : `<div class="hint" style="padding:0 16px;">Final sign-off unlocks once every operation has passed.</div>`}`;
 
   const banners = {
     pass: `<div class="ok-box">First-off passed. It covers the work orders and batches below.</div>`,
@@ -303,7 +345,11 @@ export async function renderFirstOff(wo, root) {
 
     <div class="section-title">Report</div>
     <div class="hint" style="padding:0 16px 8px;">The PDF has the covered orders, every operation with initials, spot checks and the quality review. ${signed ? "It is signed off." : "It stays a draft until quality signs off."}</div>
-    <div class="btn-row"><button class="btn ${signed ? "primary-lime" : ""}" id="fo-pdf">${signed ? "Download signed PDF" : "Download draft PDF"}</button></div>
+    <div class="btn-row">
+      <button class="btn ${signed ? "primary-lime" : ""}" id="fo-pdf">${signed ? "Download signed PDF" : "Download draft PDF"}</button>
+      <button class="btn" id="fo-pdf-drive">Save to Drive</button>
+    </div>
+    <div class="hint" style="padding:0 16px;">Save to Drive downloads the PDF and opens the Route card files folder - drag the PDF in.</div>
 
     <div class="section-title">Saved machines</div>
     <div class="hint" style="padding:0 16px 8px;">Pick one from any operation, or type a new one there. A machine needs a name or a number.</div>
@@ -324,19 +370,58 @@ export async function renderFirstOff(wo, root) {
       if (!downloadRouteCardPdf(wo, allOrders)) toast("The PDF tool is still loading. Try again in a moment.");
       return;
     }
-    if (t.id === "fo-q-sign" || t.id === "fo-q-back") {
-      let by = root.querySelector("#fo-q-by").value;
-      if (by === ADD_NEW) {
-        by = (window.prompt("New name") || "").trim();
-        if (by) await ensureKnownUser(by);
+    if (t.id === "fo-pdf-drive") {
+      // Open the folder first: a new tab is only allowed straight from the click.
+      const tab = window.open(ROUTE_CARD_FOLDER_URL, "_blank", "noopener");
+      if (!downloadRouteCardPdf(wo, allOrders)) {
+        if (tab) tab.close();
+        toast("The PDF tool is still loading. Try again in a moment.");
+        return;
       }
+      toast("PDF downloaded. Drag it into the Drive folder that just opened.");
+      return;
+    }
+    if (t.id === "fo-q-send") {
+      const by = await pickName(root.querySelector("#fo-q-sendby"));
+      if (!by) return void toast("Pick who is sending it.");
+      const saved = await saveFirstOff(wo, (f) => {
+        const cur = f.attempts[f.attempts.length - 1];
+        const done = cur.ops.filter((o) => o.result).length;
+        f.sentToQuality = { by, at: Date.now(), afterOps: done, partial: attemptOutcome(cur) !== "pass", attempt: f.attempts.length };
+      });
+      if (saved) toast("Sent to quality. They'll see it on Route cards.");
+      return;
+    }
+    if (t.id === "fo-q-recall") return void (await saveFirstOff(wo, (f) => void delete f.sentToQuality));
+    if (t.id === "fo-q-cross") {
+      const by = await pickName(root.querySelector("#fo-q-by"));
+      if (!by) return void toast("Pick who is cross-checking.");
+      const note = root.querySelector("#fo-q-note").value.trim();
+      const saved = await saveFirstOff(wo, (f) => {
+        const cur = f.attempts[f.attempts.length - 1];
+        f.crossChecks = [
+          ...(f.crossChecks || []),
+          { by, at: Date.now(), note, afterOps: cur.ops.filter((o) => o.result).length, attempt: f.attempts.length }
+        ];
+        // A mid-way check goes back to the machine shop to carry on with the
+        // later operations; a finished card stays with quality for sign-off.
+        if (attemptOutcome(cur) !== "pass") delete f.sentToQuality;
+      });
+      if (saved) toast("Cross-check recorded.");
+      return;
+    }
+    if (t.id === "fo-q-sign" || t.id === "fo-q-back") {
+      const by = await pickName(root.querySelector("#fo-q-by"));
       const note = root.querySelector("#fo-q-note").value.trim();
       const sign = t.id === "fo-q-sign";
       if (!by) return void toast("Pick who is reviewing.");
       if (!sign && !note) return void toast("Add a note so the machine shop knows what to fix.");
       await saveFirstOff(
         wo,
-        (f) => void (f.quality = { status: sign ? "signed" : "sent-back", by, at: Date.now(), note, attempt: f.attempts.length }),
+        (f) => {
+          f.quality = { status: sign ? "signed" : "sent-back", by, at: Date.now(), note, attempt: f.attempts.length };
+          delete f.sentToQuality;
+        },
         true
       );
       return;
@@ -487,6 +572,17 @@ export async function renderFirstOff(wo, root) {
   };
 }
 
+// The name picked in a person dropdown; "+ Add new name" asks for it and saves
+// it to the shared list. Empty when nothing is picked.
+async function pickName(select) {
+  let name = select ? select.value : "";
+  if (name === ADD_NEW) {
+    name = (window.prompt("New name") || "").trim();
+    if (name) await ensureKnownUser(name);
+  }
+  return name;
+}
+
 // A scrapped first-off piece is a reject like any other: it lands on the
 // work order (so the Rejects report and the counts include it). Nothing goes
 // back to stock - the piece is gone.
@@ -502,6 +598,7 @@ async function startAttempt(wo) {
   const firstOff = wo.firstOff ? JSON.parse(JSON.stringify(wo.firstOff)) : { attempts: [], covers: [] };
   firstOff.attempts.push(newFirstOffAttempt(firstOff.attempts.length + 1));
   // A new attempt needs a fresh review; the earlier decision stays on record.
+  delete firstOff.sentToQuality;
   if (firstOff.quality) {
     firstOff.qualityHistory = [...(firstOff.qualityHistory || []), firstOff.quality];
     delete firstOff.quality;

@@ -137,7 +137,7 @@ function renderDashboard(orders, idns, bookIns, stock) {
   const rejectedPcs = rejects.reduce((sum, r) => sum + r.qty, 0);
   const rejectedParts = new Set(rejects.map((r) => r.partNo)).size;
 
-  const cardsToReview = orders.filter((wo) => wo.firstOff && routeCardInfo(wo).quality === "Awaiting quality").length;
+  const cardsToReview = orders.filter((wo) => wo.firstOff && routeCardInfo(wo).state === "waiting").length;
 
   const weekEnd = new Date(nextWeekStart - 86400000);
   const weekLabel = `${new Date(thisWeekStart).toLocaleDateString(undefined, { day: "numeric", month: "short" })} – ${weekEnd.toLocaleDateString(undefined, { day: "numeric", month: "short" })}`;
