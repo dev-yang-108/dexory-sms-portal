@@ -9,8 +9,17 @@ export function esc(v) {
     .replace(/"/g, "&quot;");
 }
 
+// The app registers the portal shell here (app.js) so every view gets the
+// sidebar and top bar without importing it - and without a circular import.
+let afterMount = null;
+
+export function setMountHook(fn) {
+  afterMount = fn;
+}
+
 export function mount(html) {
   document.getElementById("app").innerHTML = html;
+  if (afterMount) afterMount();
 }
 
 /*

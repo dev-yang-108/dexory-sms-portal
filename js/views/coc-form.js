@@ -1,26 +1,31 @@
-/* Add stock via Certificate of Conformity (CoC): manual entry of a
-   supplier's CoC (supplier, CoC number, and one or more part/qty/batch
-   lines), previewed and edited before anything is saved. Confirming books
-   every line's qty into Production in one atomic write - see
-   confirmCoc()/addLinesToCoc() in db.js for what that actually touches
-   (a cocs/{cocKey} record, a batches row per line, and the usual
+/* Add stock via Certificate of Conformity (CoC): supplier, CoC number, and
+   one or more part/qty/batch lines, previewed and edited before anything is
+   saved. Confirming books every line's qty into Production in one atomic
+   write - see confirmCoc()/addLinesToCoc() in db.js for what that actually
+   touches (a cocs/{cocKey} record, a batches row per line, and the usual
    transaction+areas.qty increment for lines whose part is a real stock
    item).
 
-   Photo/PDF upload and AI-assisted extraction aren't wired up yet - this is
-   the manual-entry path, which works standalone with no backend. The upload
-   step can be added later as a shortcut that fills these same fields in,
-   without changing anything below.
+   "Scan with AI" (coc-extract.js) just pre-fills this same form from an
+   uploaded photo/PDF - it never saves anything itself, so a bad read is
+   just more fixing by hand, not bad data silently booked into stock. It
+   needs a real Firebase project (not the ?mock=1 dev preview) and a
+   one-time console setup - see README.md - so it's hidden/disabled there.
 */
 
 import { esc, mount, toast } from "../render.js";
-import { buildCocKey, getCoc, confirmCoc, addLinesToCoc, listKnownSuppliers, ensureKnownSupplier, getStockItem } from "../db.js";
+import { buildCocKey, getCoc, confirmCoc, addLinesToCoc, listKnownSuppliers, ensureKnownSupplier, getStockItem, listStockItems } from "../db.js";
 import { populateUserSelect, wireUserSelect, resolveUser } from "../users.js";
+import { isExtractionAvailable, extractCocFromFiles } from "../coc-extract.js";
 import { navigate } from "../../app.js";
 
 let lineSeq = 0;
 let lines = []; // [{ id, partNo, qty, batches: [{id, batchNo, qty}], stockItemChecked, stockItemFound }]
 let knownSuppliers = [];
+// Pages staged for the next scan - built up from either/both the file
+// picker and "Take photo" (camera) inputs, so a multi-page CoC can be
+// assembled one snap at a time and then scanned together in one call.
+let stagedFiles = [];
 // Set once the typed supplier+CoC number matches a CoC that already exists -
 // switches the form into "add these lines to it" mode instead of creating a
 // new one.
@@ -34,6 +39,7 @@ function blankLine() {
 export async function renderCocFormView() {
   lines = [blankLine()];
   existingCoc = null;
+  stagedFiles = [];
   knownSuppliers = await listKnownSuppliers();
 
   mount(`
@@ -43,6 +49,26 @@ export async function renderCocFormView() {
     </header>
 
     <div class="info-banner">Fill this in from the supplier's Certificate of Conformity. Nothing is saved until you confirm at the bottom.</div>
+
+    ${
+      isExtractionAvailable()
+        ? `<div class="form-group">
+             <label>Scan a photo or PDF (optional)</label>
+             <input type="file" id="coc-scan-input" accept="image/*,application/pdf" multiple style="display:none;" />
+             <input type="file" id="coc-camera-input" accept="image/*" capture="environment" style="display:none;" />
+             <div class="btn-row" style="margin:0;">
+               <button type="button" class="btn" id="btn-choose-files">Choose file(s)</button>
+               <button type="button" class="btn" id="btn-take-photo">📷 Take photo</button>
+             </div>
+             <div class="hint">Add every page of this CoC (several photos, one at a time if you're using the camera, or one PDF) before scanning - it reads the text and fills in the fields below for you to check and correct. Works best with a flat, well-lit, in-focus photo; a PDF is read most accurately.</div>
+             <div id="coc-staged-files"></div>
+             <div class="btn-row" style="margin:10px 0 0;">
+               <button type="button" class="btn" id="btn-scan">Scan certificate</button>
+             </div>
+             <div id="coc-scan-status"></div>
+           </div>`
+        : `<div class="hint" style="margin:0 16px 14px;">AI scanning needs a real Firebase project - not available in this dev preview. Enter the CoC details manually below.</div>`
+    }
 
     <datalist id="coc-supplier-list">
       ${knownSuppliers.map((s) => `<option value="${esc(s.name)}"></option>`).join("")}
@@ -103,7 +129,123 @@ export async function renderCocFormView() {
   };
   document.getElementById("btn-submit-coc").onclick = submit;
 
+  if (isExtractionAvailable()) {
+    const fileInput = document.getElementById("coc-scan-input");
+    const cameraInput = document.getElementById("coc-camera-input");
+    document.getElementById("btn-choose-files").onclick = () => fileInput.click();
+    document.getElementById("btn-take-photo").onclick = () => cameraInput.click();
+    fileInput.onchange = () => addStagedFiles(fileInput.files, fileInput);
+    cameraInput.onchange = () => addStagedFiles(cameraInput.files, cameraInput);
+    document.getElementById("btn-scan").onclick = runScan;
+  }
+
   renderLines();
+}
+
+// Appends newly picked/captured file(s) to the running page list, then
+// resets the input's own value - otherwise choosing or re-capturing a file
+// with the same name a second time wouldn't fire onchange again.
+function addStagedFiles(fileList, inputEl) {
+  stagedFiles = stagedFiles.concat(Array.from(fileList || []));
+  inputEl.value = "";
+  renderStagedFiles();
+}
+
+function renderStagedFiles() {
+  const box = document.getElementById("coc-staged-files");
+  if (!box) return;
+  if (stagedFiles.length === 0) {
+    box.innerHTML = "";
+    return;
+  }
+  box.innerHTML = stagedFiles
+    .map(
+      (f, i) => `
+      <div class="coc-staged-row">
+        <span>${esc(f.name || `Photo ${i + 1}`)}</span>
+        <button type="button" class="coc-batch-remove" data-staged="${i}" aria-label="Remove page">&times;</button>
+      </div>
+    `
+    )
+    .join("");
+  box.querySelectorAll("[data-staged]").forEach((btn) => {
+    btn.onclick = () => {
+      stagedFiles.splice(Number(btn.dataset.staged), 1);
+      renderStagedFiles();
+    };
+  });
+}
+
+async function runScan() {
+  const statusBox = document.getElementById("coc-scan-status");
+  if (stagedFiles.length === 0) {
+    toast("Choose a photo or PDF, or take a photo, first.");
+    return;
+  }
+
+  const btn = document.getElementById("btn-scan");
+  btn.disabled = true;
+  btn.textContent = "Scanning…";
+  statusBox.innerHTML = "";
+
+  try {
+    let knownParts = [];
+    try {
+      knownParts = (await listStockItems()).map((s) => s.partNumber).filter(Boolean);
+    } catch (err) {
+      console.error(err);
+    }
+    const result = await extractCocFromFiles(stagedFiles, {
+      knownSuppliers,
+      knownParts,
+      onProgress: (msg) => {
+        statusBox.innerHTML = `<div class="hint">${esc(msg)}</div>`;
+      }
+    });
+    applyExtractedResult(result);
+    const found = result.lines.length;
+    statusBox.innerHTML = `
+      <div class="${found ? "ok-box" : "warn-box"}">
+        ${found ? `Found ${found} part line${found === 1 ? "" : "s"}.` : "Couldn't find any DEX part numbers."}
+        This is a text read, so check every field below against the certificate before confirming.
+      </div>
+      <details class="hint" style="margin-top:8px;">
+        <summary>Show the text that was read</summary>
+        <pre style="white-space:pre-wrap;font-size:12px;max-height:220px;overflow:auto;margin:6px 0 0;">${esc(result.rawText)}</pre>
+      </details>`;
+  } catch (err) {
+    console.error(err);
+    statusBox.innerHTML = `<div class="warn-box">${esc(err.message || "Couldn't scan that file.")}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Scan certificate";
+  }
+}
+
+// Pre-fills the same editable fields a manual entry would - replaces the
+// current draft's lines outright (scanning is meant to be the starting
+// point, not merged with whatever was half-typed before it).
+function applyExtractedResult(result) {
+  document.getElementById("coc-supplier-name").value = result.supplierName;
+  onSupplierNameInput();
+  if (result.cocNumber) {
+    document.getElementById("coc-number").value = result.cocNumber;
+    refreshKeyPreview();
+    checkForExistingCoc();
+  }
+
+  lines = result.lines.length
+    ? result.lines.map((l) => ({
+        id: ++lineSeq,
+        partNo: l.partNo,
+        qty: l.qty,
+        batches: l.batches.map((b) => ({ id: ++lineSeq, batchNo: b.batchNo, qty: b.qty })),
+        stockItemChecked: false,
+        stockItemFound: false
+      }))
+    : [blankLine()];
+  renderLines();
+  lines.forEach(checkStockItem);
 }
 
 function onSupplierNameInput() {

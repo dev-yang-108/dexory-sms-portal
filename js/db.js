@@ -71,6 +71,17 @@ export function areasWithStock(item) {
   return AREAS.filter((a) => areaQty(item, a) > 0);
 }
 
+// Over-deducting is allowed (nothing here blocks it - see the various
+// "proceed anyway?" confirms before a take), but it should never be silent
+// afterward. Anywhere this item's stock shows up can check this and flag it.
+export function negativeAreas(item) {
+  return AREAS.filter((a) => areaQty(item, a) < 0);
+}
+
+export function hasNegativeStock(item) {
+  return negativeAreas(item).length > 0;
+}
+
 export const STOCK_COLLECTION = "stockItems";
 export const TRANSACTIONS_COLLECTION = "transactions";
 export const WORK_ORDERS_COLLECTION = "workOrders";
@@ -84,17 +95,50 @@ export const COCS_COLLECTION = "cocs";
 // entry - never a real name, so it can't collide with one.
 export const ADD_NAME_VALUE = "__add_name__";
 
-export const WORK_ORDER_STATUSES = ["Open", "Issued", "Complete", "Cancelled"];
+// "Scheduled" only ever applies to a weekly child work order generated from
+// a Production Request (see createProductionRequest) - it means stock
+// hasn't been deducted yet, deliberately deferred until someone actually
+// picks the job up (setWorkOrderAssignee flips Scheduled -> Open and
+// deducts at that point). A normal, single work order never passes through
+// Scheduled at all - it's created directly at Open, same as always.
+export const WORK_ORDER_STATUSES = ["Scheduled", "Open", "Issued", "Complete", "Cancelled"];
 
 // Flag an item red when fewer than this many robot cycles remain.
 export const LOW_STOCK_CYCLES = 5;
 
-// Robot cycles are a Production-line concept, so this only ever looks at
-// the Production qty - Farm/Prototype stock doesn't feed the robot.
+// Robot cycles are a Production-line concept, but Farm stock counts towards
+// it too - Farm is just the overflow/raw-material shelf for the same stock,
+// one moveStockBetweenAreas() away from Production, so it's real coverage
+// against running out, not separate from it. Prototype stock is excluded
+// deliberately (one-off/odd-size material, not production-line stock).
+// Judged against whichever of the part's two robots (7 sec / 10 sec) would
+// run out first - see worstCyclesRemaining(). This is the one definition of
+// "cycles left" used by the dashboard, the item page and Stock availability.
 export function cyclesRemaining(item) {
-  const perCycle = Number(item.perRobotCycle) || 0;
-  if (perCycle <= 0) return 0;
-  return Math.floor(areaQty(item, DEDUCTION_AREA) / perCycle);
+  return worstCyclesRemaining(item);
+}
+
+// Stock is counted in blanks (a plate or bar), and each blank is cut into
+// piecesPerBlank finished parts - so what the robots can actually consume is
+// blanks x that yield, not the raw blank count.
+export function blankYield(item) {
+  return Math.max(1, Number(item.piecesPerBlank) || 1);
+}
+
+export function coveringBlanks(item) {
+  return areaQty(item, DEDUCTION_AREA) + areaQty(item, "farm");
+}
+
+export function makeablePieces(item) {
+  return coveringBlanks(item) * blankYield(item);
+}
+
+// Robot cycles the item's stock lasts the more demanding of its two robots -
+// Infinity when neither robot uses the part (a missing rate isn't a shortage).
+export function worstCyclesRemaining(item) {
+  const pieces = makeablePieces(item);
+  const cyclesAt = (rate) => (rate > 0 ? Math.floor(pieces / rate) : Infinity);
+  return Math.min(cyclesAt(Number(item.perRobotCycle) || 0), cyclesAt(Number(item.perRobotCycle10Sec) || 0));
 }
 
 export function isLowStock(item) {
@@ -139,15 +183,59 @@ export function remainingQty(wo) {
   return Math.max(0, (wo.qty || 0) - completedQtyOf(wo) - rejectedQtyOf(wo));
 }
 
+// How many days' grace before a due date counts as "coming up soon" (amber)
+// rather than comfortably on track (green).
+export const DUE_SOON_DAYS = 7;
+
+function startOfDay(ts) {
+  const d = new Date(ts);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+// The date this work order's own traffic-light colour counts down to. A
+// Production Request's weekly child is due the week it's scheduled for
+// (weekOf); a plain standalone order uses its own optional dueDate field.
+// The parent row itself has no date of its own to show - it's an aggregate
+// of its weeks, each coloured individually once you open it.
+export function dueDateOf(wo) {
+  if (wo.parentWoNo) return wo.weekOf || null;
+  if (wo.isParent) return null;
+  return wo.dueDate || null;
+}
+
+// "red" | "orange" | "green" | null - same three colours/names as the Stock
+// Availability page's own status pill, for one consistent vocabulary across
+// the app. null means nothing to show - either finished (Complete/Cancelled,
+// so the countdown no longer matters) or no due date has been set yet, never
+// an error state.
+export function dueDateStatus(wo) {
+  if (wo.status === "Complete" || wo.status === "Cancelled") return null;
+  const due = dueDateOf(wo);
+  if (!due) return null;
+  const daysLeft = Math.round((startOfDay(due) - startOfDay(Date.now())) / 86400000);
+  if (daysLeft < 0) return "red";
+  if (daysLeft <= DUE_SOON_DAYS) return "orange";
+  return "green";
+}
+
 export function blankStockItem() {
   return {
     partNumber: "",
     partName: "",
+    rev: "",
     material: "",
     stockSize: "",
     form: FORMS[0],
     piecesPerBlank: 1,
+    // Two separate robot types run at different cycle times and consume
+    // parts at different rates - perRobotCycle is the 7-second robot's rate
+    // (also what Low Stock/cyclesRemaining() below is keyed to, since that
+    // calc only ever assumed one robot); perRobotCycle10Sec is the second
+    // robot's own rate, tracked alongside it but not yet feeding into Low
+    // Stock - see isLowStock()'s comment.
     perRobotCycle: 1,
+    perRobotCycle10Sec: 1,
     areas: { farm: blankArea(), production: blankArea(), prototype: blankArea() },
     comments: ""
   };
@@ -241,6 +329,104 @@ export async function ensureKnownUser(name) {
   const names = snap.exists() ? snap.data().names || [] : [];
   if (names.includes(trimmed)) return;
   await setDoc(knownUsersRef(), { names: [...names, trimmed], updatedAt: Date.now() });
+}
+
+// Machines are saved once as {name, number} so the first-off card can pick
+// from a list instead of typing - same "one config doc holding a list"
+// shape as knownUsers/knownSuppliers.
+function machinesRef() {
+  return doc(db, CONFIG_COLLECTION, "machines");
+}
+
+export async function listMachines() {
+  const snap = await getDoc(machinesRef());
+  return snap.exists() ? snap.data().list || [] : [];
+}
+
+// How a machine reads everywhere: "WJ-01 · Waterjet", or just whichever of
+// the two was entered.
+export const machineLabel = (m) => [m.number, m.name].filter(Boolean).join(" · ");
+
+// A machine needs a name or a number, not both - whatever the shop calls it.
+export async function addMachine({ name, number }) {
+  const list = await listMachines();
+  const clean = { name: String(name || "").trim(), number: String(number || "").trim() };
+  if (!clean.name && !clean.number) return list;
+  const label = machineLabel(clean).toLowerCase();
+  if (list.some((m) => machineLabel(m).toLowerCase() === label)) return list;
+  const next = [...list, clean];
+  await setDoc(machinesRef(), { list: next, updatedAt: Date.now() });
+  return next;
+}
+
+export const blankFirstOffOp = () => ({
+  machine: "",
+  operatedBy: "",
+  operatedAt: 0,
+  checkedBy: "",
+  checkedAt: 0,
+  result: "",
+  // What happened to a failed or reworked piece: "scrap" | "rework" | "accept".
+  disposition: "",
+  // When a scrapped piece was logged as a reject on the work order (so it is
+  // only ever logged once).
+  rejectAt: 0,
+  comment: "",
+  file: null
+});
+
+export const newFirstOffAttempt = (n) => ({
+  n,
+  startedAt: Date.now(),
+  ops: Array.from({ length: 3 }, blankFirstOffOp)
+});
+
+// A route card is a first-off started for one or more work orders of the same
+// part: the first one holds the inspection, the rest point back at it.
+export async function createRouteCard(primaryWoNo, coveredWoNos) {
+  const now = Date.now();
+  const batch = writeBatch(db);
+  batch.update(workOrderRef(primaryWoNo), {
+    firstOff: { attempts: [newFirstOffAttempt(1)], covers: coveredWoNos },
+    updatedAt: now
+  });
+  coveredWoNos.forEach((woNo) => batch.update(workOrderRef(woNo), { firstOffRef: primaryWoNo, updatedAt: now }));
+  await batch.commit();
+}
+
+// One first-off can cover several work orders/batches run together: the
+// covered order just points back at the one that holds the inspection, and
+// the holder lists who it covers.
+export async function addFirstOffCovers(primaryWo, coveredWoNos) {
+  const now = Date.now();
+  const have = primaryWo.firstOff.covers || [];
+  const added = coveredWoNos.filter((n) => !have.includes(n));
+  const firstOff = { ...primaryWo.firstOff, covers: [...have, ...added] };
+  const batch = writeBatch(db);
+  batch.update(workOrderRef(primaryWo.woNo), { firstOff, updatedAt: now });
+  added.forEach((woNo) => batch.update(workOrderRef(woNo), { firstOffRef: primaryWo.woNo, updatedAt: now }));
+  await batch.commit();
+}
+
+// Removes a route card and lets every order it covered be put on another one.
+// Rejects already logged on the work order from this card stay where they are.
+export async function deleteRouteCard(wo) {
+  const now = Date.now();
+  const batch = writeBatch(db);
+  batch.update(workOrderRef(wo.woNo), { firstOff: null, updatedAt: now });
+  (wo.firstOff.covers || []).forEach((woNo) => batch.update(workOrderRef(woNo), { firstOffRef: "", updatedAt: now }));
+  await batch.commit();
+}
+
+// Takes an order back off the card. The empty firstOffRef reads as "not on a
+// card", so it can be pulled onto another one.
+export async function removeFirstOffCover(primaryWo, coveredWoNo) {
+  const now = Date.now();
+  const firstOff = { ...primaryWo.firstOff, covers: (primaryWo.firstOff.covers || []).filter((n) => n !== coveredWoNo) };
+  const batch = writeBatch(db);
+  batch.update(workOrderRef(primaryWo.woNo), { firstOff, updatedAt: now });
+  batch.update(workOrderRef(coveredWoNo), { firstOffRef: "", updatedAt: now });
+  await batch.commit();
 }
 
 /*
@@ -606,7 +792,9 @@ export async function addLinesToCoc(cocKey, newLines, user) {
 export async function moveStockBetweenAreas(item, { fromArea, toArea, qty, user }) {
   const now = Date.now();
   const amount = Math.abs(qty);
-  const fromBalance = Math.max(0, areaQty(item, fromArea) - amount);
+  // No floor at 0 - if this takes fromArea negative, the log should say so
+  // honestly rather than quietly reporting 0 (see hasNegativeStock()).
+  const fromBalance = areaQty(item, fromArea) - amount;
   const toBalance = areaQty(item, toArea) + amount;
 
   const batch = writeBatch(db);
@@ -672,31 +860,26 @@ export async function suggestReworkWoNumber(originalWoNo) {
 }
 
 /*
-  Creating a work order is one atomic batch covering everything it can
-  touch: the new PartMaster row (only if this part+rev was never seen
-  before), the WorkOrders row itself, and - if this part has a linked raw
-  stock item - the same transaction-log-plus-areas.qty-decrement pattern
-  every other stock deduction in this app uses (see recordTransaction's own
-  comment for why a batch + increment() instead of a runTransaction()).
-  Always deducts from Production (DEDUCTION_AREA) specifically, never Farm
-  or Prototype - see moveStockBetweenAreas().
-  One commit, all-or-nothing: a work order is never left recorded without
-  its stock actually being deducted, or vice versa.
+  Procurement creates a work order; the machine shop picks it up later. So
+  creating one only records it - status Scheduled, no assignee, no batch and
+  no stock taken. All of that happens in setWorkOrderAssignee, once someone
+  in the machine shop assigns it and picks the batch. One atomic batch
+  covers the new PartMaster row (only if this part+rev was never seen
+  before) and the WorkOrders row itself.
 */
-export async function createWorkOrderWithDeduction({
+export async function createWorkOrder({
   woNo,
   partNo,
   rev,
   partName,
   qty,
-  batchNo,
-  cocDraws,
   comment,
   user,
   newPartMaster,
   updatePartMasterLinkedStock,
   linkedStockItem,
-  reworkOf
+  reworkOf,
+  dueDate
 }) {
   const now = Date.now();
   const batch = writeBatch(db);
@@ -715,21 +898,23 @@ export async function createWorkOrderWithDeduction({
     rev,
     partName,
     date: now,
+    // Optional - only a plain standalone order has one of its own (a
+    // Production Request's weekly children use their own weekOf instead,
+    // see dueDateOf()). Blank means "no due-date colour shown yet".
+    dueDate: dueDate || null,
     qty: Math.abs(qty),
-    batchNo: batchNo || "",
-    // Set only when this order's material was split across two CoC-sourced
-    // batches (point 2 of the CoC feature) - [{batchNo, label: "A"|"B",
-    // qtyDrawn}]. batchNo above stays the single combined display string
-    // ("<batch A> (A) + <batch B> (B)") so every existing place that just
-    // shows wo.batchNo as plain text keeps working unchanged.
-    cocDraws: cocDraws && cocDraws.length ? cocDraws : [],
+    // Filled in by the machine shop in setWorkOrderAssignee. cocDraws is set
+    // only when the material is split across two CoC-sourced batches -
+    // [{batchNo, label: "A"|"B", qtyDrawn}] - while batchNo stays the single
+    // combined display string ("<batch A> (A) + <batch B> (B)") so every
+    // place that just shows wo.batchNo as plain text keeps working.
+    batchNo: "",
+    cocDraws: [],
     comment: comment || "",
     linkedStockNumber: linkedStockItem ? linkedStockItem.partNumber : "",
-    status: WORK_ORDER_STATUSES[0],
-    // Whoever picked "User name" creating this order - shown as Assignee on
-    // the work orders list. Not re-derived from history/transactions since
-    // this is a plain "who owns this ticket" label, not an audit log entry.
-    assignee: user || "",
+    status: "Scheduled",
+    assignee: "",
+    creator: user || "",
     // Set only when this order was created via "Duplicate" on a Complete
     // order - a plain cross-reference back to the original job, shown as a
     // clickable link on this order's own page.
@@ -739,24 +924,154 @@ export async function createWorkOrderWithDeduction({
     updatedAt: now
   });
 
+  await batch.commit();
+}
+
+/*
+  A Production Request is a parent work order for a multi-week delivery
+  schedule (MRP Easy order no. + a free-form list of {weekOf, qty} entries),
+  one step up from a normal single work order. It never deducts stock
+  itself - it's a planning record - and carries no qty of its own beyond the
+  schedule's total for display. Each week in the schedule becomes its own
+  real child work order (<parentWoNo>-1, -2, -3...), inheriting Part/Rev/MRP
+  order no./creator, starting at status "Scheduled" with no assignee and no
+  stock taken yet - see setWorkOrderAssignee for when that actually happens.
+  All created in one atomic batch: the schedule either fully exists or none
+  of it does, never half-created.
+*/
+export async function createProductionRequest({
+  woNo,
+  partNo,
+  rev,
+  partName,
+  mrpOrderNo,
+  creator,
+  schedule,
+  newPartMaster,
+  updatePartMasterLinkedStock,
+  linkedStockItem
+}) {
+  const now = Date.now();
+  const batch = writeBatch(db);
+
+  if (newPartMaster) {
+    batch.set(partMasterDocRef(partNo, rev), { ...newPartMaster, createdAt: now, updatedAt: now });
+  } else if (updatePartMasterLinkedStock !== undefined) {
+    batch.update(partMasterDocRef(partNo, rev), { linkedStockNumber: updatePartMasterLinkedStock, updatedAt: now });
+  }
+
+  const totalQty = schedule.reduce((sum, w) => sum + Math.abs(w.qty), 0);
+  const linkedStockNumber = linkedStockItem ? linkedStockItem.partNumber : "";
+
+  batch.set(workOrderRef(woNo), {
+    woNo,
+    partNo,
+    rev,
+    partName,
+    date: now,
+    qty: totalQty,
+    batchNo: "",
+    comment: "",
+    linkedStockNumber,
+    status: "Scheduled",
+    assignee: "",
+    creator: creator || "",
+    mrpOrderNo: mrpOrderNo || "",
+    isParent: true,
+    weekCount: schedule.length,
+    reworkOf: "",
+    history: [],
+    createdAt: now,
+    updatedAt: now
+  });
+
+  schedule.forEach((week, i) => {
+    const childWoNo = `${woNo}-${i + 1}`;
+    batch.set(workOrderRef(childWoNo), {
+      woNo: childWoNo,
+      parentWoNo: woNo,
+      partNo,
+      rev,
+      partName,
+      date: now,
+      weekOf: week.weekOf,
+      qty: Math.abs(week.qty),
+      batchNo: "",
+      comment: "",
+      linkedStockNumber,
+      status: "Scheduled",
+      assignee: "",
+      creator: creator || "",
+      mrpOrderNo: mrpOrderNo || "",
+      reworkOf: "",
+      history: [],
+      createdAt: now,
+      updatedAt: now
+    });
+  });
+
+  await batch.commit();
+}
+
+export async function listChildWorkOrders(parentWoNo) {
+  const q = query(workOrdersRef(), where("parentWoNo", "==", parentWoNo), limit(500));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => d.data()).sort((a, b) => (a.weekOf || 0) - (b.weekOf || 0));
+}
+
+export function subscribeChildWorkOrders(parentWoNo, onChange) {
+  const q = query(workOrdersRef(), where("parentWoNo", "==", parentWoNo), limit(500));
+  return onSnapshot(q, (snap) => {
+    onChange(snap.docs.map((d) => d.data()).sort((a, b) => (a.weekOf || 0) - (b.weekOf || 0)));
+  });
+}
+
+/*
+  Picking up a Scheduled work order (a plain one from procurement or a
+  Production Request's weekly child): sets its assignee and the batch(es)
+  the machine shop chose, flips it to Open, and - only now - actually
+  deducts its qty from the linked stock item's Production qty. Reads the stock item first
+  (before the batch is built) so balanceAfter reflects its current qty,
+  same reasoning as every other read-then-batch-write function in this file.
+*/
+export async function setWorkOrderAssignee(wo, assignee, user, { batchNo = "", cocDraws = [] } = {}) {
+  const now = Date.now();
+  // A work order saved without a stock link still matches a stock item that
+  // shares its part number, so fall back to that rather than silently taking
+  // nothing.
+  const stockKey = wo.linkedStockNumber || wo.partNo;
+  const linkedStockItem = stockKey ? await getStockItem(stockKey) : null;
+
+  const batch = writeBatch(db);
+  batch.update(workOrderRef(wo.woNo), {
+    assignee,
+    status: "Open",
+    batchNo,
+    cocDraws,
+    ...(linkedStockItem ? { linkedStockNumber: linkedStockItem.partNumber } : {}),
+    updatedAt: now
+  });
+
   let balanceAfter = null;
   if (linkedStockItem) {
-    balanceAfter = Math.max(0, areaQty(linkedStockItem, DEDUCTION_AREA) - Math.abs(qty));
+    // No floor at 0 - an honest (possibly negative) balance, not a number
+    // that quietly hides an over-deduction.
+    balanceAfter = areaQty(linkedStockItem, DEDUCTION_AREA) - Math.abs(wo.qty);
     const txRef = doc(transactionsRef());
     batch.set(txRef, {
       stockItemId: linkedStockItem.partNumber,
       stockNumber: linkedStockItem.partNumber,
       type: "take",
       area: DEDUCTION_AREA,
-      qty: Math.abs(qty),
+      qty: Math.abs(wo.qty),
       balanceAfter,
       user,
-      note: `Work order ${woNo}`,
-      workOrderNumber: woNo,
+      note: `Work order ${wo.woNo}`,
+      workOrderNumber: wo.woNo,
       timestamp: now
     });
     batch.update(stockItemRef(linkedStockItem.partNumber), {
-      [`areas.${DEDUCTION_AREA}.qty`]: increment(-Math.abs(qty)),
+      [`areas.${DEDUCTION_AREA}.qty`]: increment(-Math.abs(wo.qty)),
       updatedAt: now
     });
   }
@@ -780,7 +1095,7 @@ export async function createWorkOrderWithDeduction({
   All of it - the WO field update plus whichever adjustment transactions
   are needed - commits as one atomic batch.
 */
-export async function updateWorkOrderReconciled(wo, { qty, comment, batchNo, linkedStockNumber, user }) {
+export async function updateWorkOrderReconciled(wo, { qty, comment, batchNo, linkedStockNumber, user, dueDate }) {
   const now = Date.now();
   const oldQty = wo.qty || 0;
   const oldLinked = wo.linkedStockNumber || "";
@@ -793,11 +1108,19 @@ export async function updateWorkOrderReconciled(wo, { qty, comment, batchNo, lin
     comment: comment || "",
     batchNo: batchNo || "",
     linkedStockNumber: newLinked,
+    dueDate: dueDate || null,
     updatedAt: now
   });
 
+  // A Scheduled order hasn't taken any stock yet (see setWorkOrderAssignee),
+  // so changing its qty or link has nothing to reconcile.
+  if (wo.status === "Scheduled") {
+    await batch.commit();
+    return;
+  }
+
   function writeAdjustment(item, signedDelta) {
-    const balanceAfter = Math.max(0, areaQty(item, DEDUCTION_AREA) + signedDelta);
+    const balanceAfter = areaQty(item, DEDUCTION_AREA) + signedDelta;
     const txRef = doc(transactionsRef());
     batch.set(txRef, {
       stockItemId: item.partNumber,
@@ -854,38 +1177,83 @@ export async function updateWorkOrderReconciled(wo, { qty, comment, batchNo, lin
 */
 export async function cancelWorkOrder(wo, user) {
   const now = Date.now();
+  const batch = writeBatch(db);
+  await queueStockReturn(batch, wo, user, "cancelled", now, new Map());
+  batch.update(workOrderRef(wo.woNo), { status: "Cancelled", updatedAt: now });
+  await batch.commit();
+}
+
+// `running` carries each part's pending balance across several orders in one
+// batch (a parent's children often share a part), so every logged
+// balanceAfter reflects the orders returned before it, not just the stored qty.
+async function queueStockReturn(batch, wo, user, verb, now, running) {
   const alreadyReturned = (wo.history || [])
     .filter((h) => h.type === "rejected")
     .reduce((sum, h) => sum + (h.returnedQty || 0), 0);
   const netToReturn = (wo.qty || 0) - alreadyReturned;
 
-  const batch = writeBatch(db);
+  // A Scheduled work order (an un-picked-up weekly child of a Production
+  // Request) never had its qty deducted in the first place - see
+  // setWorkOrderAssignee, which is what actually takes the stock. Cancelling
+  // it before that point has nothing to give back.
+  if (wo.status === "Scheduled" || !wo.linkedStockNumber || netToReturn <= 0) return;
+  const item = await getStockItem(wo.linkedStockNumber);
+  if (!item) return;
 
-  if (wo.linkedStockNumber && netToReturn > 0) {
-    const item = await getStockItem(wo.linkedStockNumber);
-    if (item) {
-      const balanceAfter = areaQty(item, DEDUCTION_AREA) + netToReturn;
-      const txRef = doc(transactionsRef());
-      batch.set(txRef, {
-        stockItemId: item.partNumber,
-        stockNumber: item.partNumber,
-        type: "book-in",
-        area: DEDUCTION_AREA,
-        qty: netToReturn,
-        balanceAfter,
-        user,
-        note: `Work order ${wo.woNo} cancelled`,
-        workOrderNumber: wo.woNo,
-        timestamp: now
-      });
-      batch.update(stockItemRef(item.partNumber), {
-        [`areas.${DEDUCTION_AREA}.qty`]: increment(netToReturn),
-        updatedAt: now
-      });
+  const base = running.has(item.partNumber) ? running.get(item.partNumber) : areaQty(item, DEDUCTION_AREA);
+  const balanceAfter = base + netToReturn;
+  running.set(item.partNumber, balanceAfter);
+  batch.set(doc(transactionsRef()), {
+    stockItemId: item.partNumber,
+    stockNumber: item.partNumber,
+    type: "book-in",
+    area: DEDUCTION_AREA,
+    qty: netToReturn,
+    balanceAfter,
+    user,
+    note: `Work order ${wo.woNo} ${verb}`,
+    workOrderNumber: wo.woNo,
+    timestamp: now
+  });
+  batch.update(stockItemRef(item.partNumber), {
+    [`areas.${DEDUCTION_AREA}.qty`]: increment(netToReturn),
+    updatedAt: now
+  });
+}
+
+/*
+  Permanently removes a work order (and, for a Production Request, all its
+  weekly children), returning whatever stock they still hold first. Already
+  Cancelled orders had theirs returned at cancel time, so they're skipped
+  here rather than returned twice. IDNs and old stock-log entries that
+  mention the number are left alone and simply point at nothing afterwards.
+*/
+export async function deleteWorkOrder(wo, user) {
+  const now = Date.now();
+  const orders = wo.isParent ? [...(await listChildWorkOrders(wo.woNo)), wo] : [wo];
+  const batch = writeBatch(db);
+  const running = new Map();
+  const deleting = new Set(orders.map((o) => o.woNo));
+  for (const o of orders) {
+    if (!o.isParent && o.status !== "Cancelled") await queueStockReturn(batch, o, user, "deleted", now, running);
+    batch.delete(workOrderRef(o.woNo));
+
+    // Don't leave a route card pointing at an order that no longer exists:
+    // an order that held a card releases the ones it covered, and an order
+    // that was covered comes off its card.
+    if (o.firstOff) {
+      (o.firstOff.covers || [])
+        .filter((n) => !deleting.has(n))
+        .forEach((n) => batch.update(workOrderRef(n), { firstOffRef: "", updatedAt: now }));
+    }
+    if (o.firstOffRef && !deleting.has(o.firstOffRef)) {
+      const primary = await getWorkOrder(o.firstOffRef);
+      if (primary && primary.firstOff) {
+        const firstOff = { ...primary.firstOff, covers: (primary.firstOff.covers || []).filter((n) => n !== o.woNo) };
+        batch.update(workOrderRef(primary.woNo), { firstOff, updatedAt: now });
+      }
     }
   }
-
-  batch.update(workOrderRef(wo.woNo), { status: "Cancelled", updatedAt: now });
   await batch.commit();
 }
 
@@ -1078,7 +1446,7 @@ export async function deleteReject(wo, entry) {
   if (entry.returnedQty && wo.linkedStockNumber) {
     const item = await getStockItem(wo.linkedStockNumber);
     if (item) {
-      const balanceAfter = Math.max(0, areaQty(item, DEDUCTION_AREA) - Math.abs(entry.returnedQty));
+      const balanceAfter = areaQty(item, DEDUCTION_AREA) - Math.abs(entry.returnedQty);
       const txRef = doc(transactionsRef());
       batch.set(txRef, {
         stockItemId: item.partNumber,
@@ -1204,7 +1572,7 @@ export async function voidIdn(idn) {
 */
 export async function recordTransaction(item, { type, qty, user, note, workOrderNumber, area }) {
   const signedDelta = type === "take" ? -Math.abs(qty) : Math.abs(qty);
-  const balanceAfter = Math.max(0, areaQty(item, area) + signedDelta);
+  const balanceAfter = areaQty(item, area) + signedDelta;
 
   const batch = writeBatch(db);
   const txRef = doc(transactionsRef());
@@ -1274,12 +1642,20 @@ export async function listTransactionsForWorkOrder(workOrderNumber) {
   filter down to book-ins client-side. Bounded by `limit` rather than a
   date range in the query itself, same reasoning as allTransactionsForItem.
 */
+// New stock arriving, as opposed to the other book-in legs that just shuffle
+// or give back existing stock: the "Moved from" half of an area move, and
+// anything tied to a work order (a cancel/edit/reject return).
+export function isStockAddedTx(tx) {
+  if (tx.type !== "book-in" || tx.workOrderNumber) return false;
+  return !String(tx.note || "").startsWith("Moved from");
+}
+
 export function subscribeRecentBookIns(days, onChange) {
   const cutoff = Date.now() - days * 86400000;
   const q = query(transactionsRef(), orderBy("timestamp", "desc"), limit(3000));
   return onSnapshot(q, (snap) => {
     const all = snap.docs.map((d) => d.data());
-    onChange(all.filter((t) => t.type === "book-in" && t.timestamp >= cutoff));
+    onChange(all.filter((t) => isStockAddedTx(t) && t.timestamp >= cutoff));
   });
 }
 

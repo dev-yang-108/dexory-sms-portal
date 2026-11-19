@@ -1,6 +1,7 @@
 /* Hash router + bootstrap. */
 
-import { runViewCleanup } from "./js/render.js";
+import { runViewCleanup, setMountHook } from "./js/render.js";
+import { applyShell } from "./js/shell.js";
 import { initKeyboardWedge } from "./js/barcode.js";
 import { renderListView } from "./js/views/list.js";
 import { renderDetailView } from "./js/views/detail.js";
@@ -16,8 +17,15 @@ import { renderIdnsListView } from "./js/views/idns-list.js";
 import { renderIdnFormView } from "./js/views/idn-form.js";
 import { renderIdnDetailView } from "./js/views/idn-detail.js";
 import { renderDashboardView } from "./js/views/dashboard.js";
-import { renderLowStockListView } from "./js/views/low-stock-list.js";
+import { renderStockAvailabilityView } from "./js/views/stock-availability.js";
+import { renderOrderCalculatorView } from "./js/views/order-calculator.js";
+import { renderVerdaStockView } from "./js/views/verda-stock.js";
 import { renderRejectReportView } from "./js/views/reject-report.js";
+import { renderStockAddedView } from "./js/views/stock-added.js";
+import { renderFloorHomeView, renderFloorAddView } from "./js/views/floor.js";
+import { renderRouteCardsListView } from "./js/views/route-cards-list.js";
+import { renderRouteCardNewView } from "./js/views/route-card-new.js";
+import { renderRouteCardDetailView } from "./js/views/route-card-detail.js";
 import { USE_MOCK } from "./firebase-config.js";
 
 export function navigate(hash) {
@@ -75,14 +83,37 @@ function route() {
   } else if (path === "#/dashboard") {
     renderDashboardView();
   } else if (path === "#/low-stock") {
-    renderLowStockListView();
+    // The old Low Stock page lives in Stock availability now ("Low stock
+    // only"); keep the address working for bookmarks.
+    location.replace("#/stock-availability?low=1");
+  } else if (path === "#/stock-availability") {
+    renderStockAvailabilityView();
+  } else if (path === "#/order-calculator") {
+    renderOrderCalculatorView();
+  } else if (path === "#/verda-stock") {
+    renderVerdaStockView();
   } else if (path === "#/reject-report") {
     renderRejectReportView();
+  } else if (path === "#/stock-added") {
+    renderStockAddedView();
+  } else if (path === "#/floor") {
+    renderFloorHomeView();
+  } else if (path === "#/floor/add/production") {
+    renderFloorAddView("production");
+  } else if (path === "#/floor/add/prototype") {
+    renderFloorAddView("prototype");
+  } else if (path === "#/route-cards") {
+    renderRouteCardsListView();
+  } else if (path === "#/route-cards/new") {
+    renderRouteCardNewView();
+  } else if (path.startsWith("#/route-cards/")) {
+    renderRouteCardDetailView(decodeURIComponent(path.slice("#/route-cards/".length)));
   } else {
     renderListView();
   }
 }
 
+setMountHook(applyShell);
 window.addEventListener("hashchange", route);
 
 /*

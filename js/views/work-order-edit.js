@@ -7,6 +7,18 @@ import { getWorkOrder, getStockItem, listBatchesForPart, updateWorkOrderReconcil
 import { populateUserSelect, wireUserSelect, resolveUser } from "../users.js";
 import { navigate } from "../../app.js";
 
+// yyyy-mm-dd from local date components, not toISOString() - that converts
+// to UTC first, which quietly shifts the date back a day in timezones ahead
+// of UTC (see the same fix in work-order-form.js's blankWeek()).
+function toDateInputValue(ts) {
+  if (!ts) return "";
+  const d = new Date(ts);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 export async function renderWorkOrderEditView(woNo) {
   const wo = await getWorkOrder(woNo);
   if (!wo) {
@@ -39,6 +51,12 @@ export async function renderWorkOrderEditView(woNo) {
     <div class="form-group">
       <label>Comment</label>
       <input id="edit-comment" value="${esc(wo.comment)}" placeholder="Optional" />
+    </div>
+
+    <div class="form-group">
+      <label>Due date (optional)</label>
+      <input type="date" id="edit-due-date" value="${esc(toDateInputValue(wo.dueDate))}" />
+      <div class="hint">Shows a green/orange/red indicator on the list and this order's page as it approaches - leave blank for none.</div>
     </div>
 
     <div class="form-group">
@@ -91,6 +109,8 @@ async function submit(wo) {
     return;
   }
   const comment = document.getElementById("edit-comment").value.trim();
+  const dueDateVal = document.getElementById("edit-due-date").value;
+  const dueDate = dueDateVal ? new Date(dueDateVal + "T00:00:00").getTime() : null;
   const batchNo = document.getElementById("edit-batch").value;
   const linkedStockNumber = document.getElementById("edit-linked-stock").value.trim();
 
@@ -133,7 +153,7 @@ async function submit(wo) {
   btn.textContent = "Saving…";
 
   try {
-    await updateWorkOrderReconciled(wo, { qty, comment, batchNo, linkedStockNumber, user });
+    await updateWorkOrderReconciled(wo, { qty, comment, batchNo, linkedStockNumber, user, dueDate });
     toast("Work order updated.");
     navigate("#/work-orders/" + encodeURIComponent(wo.woNo));
   } catch (err) {

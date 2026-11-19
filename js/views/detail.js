@@ -13,9 +13,13 @@ import {
   DEDUCTION_AREA,
   areaQty,
   areaLocation,
-  areasWithStock
+  areasWithStock,
+  negativeAreas,
+  blankYield,
+  coveringBlanks,
+  makeablePieces
 } from "../db.js";
-import { renderBarcodeInto } from "../barcode.js";
+import { renderBarcodeInto, downloadBarcodePng } from "../barcode.js";
 import { openQtyModal } from "../qty-modal.js";
 import { openMoveModal } from "../move-modal.js";
 import { navigate } from "../../app.js";
@@ -62,6 +66,7 @@ export function renderDetailView(partNumber) {
 async function renderBody(item) {
   const cycles = cyclesRemaining(item);
   const low = isLowStock(item);
+  const negAreas = negativeAreas(item);
   const stockedAreas = areasWithStock(item);
   // Just the locations themselves, no Farm/Production/Prototype labels -
   // this sits right under the barcode, not another stock breakdown.
@@ -77,11 +82,13 @@ async function renderBody(item) {
     <section>
       <div class="kv">
         <div class="kv-row"><span class="k">Part name</span><span class="v">${esc(item.partName) || "—"}</span></div>
+        <div class="kv-row"><span class="k">Rev</span><span class="v">${esc(item.rev) || "—"}</span></div>
         <div class="kv-row"><span class="k">Material</span><span class="v">${esc(item.material) || "—"}</span></div>
         <div class="kv-row"><span class="k">Stock size</span><span class="v">${esc(item.stockSize) || "—"}</span></div>
         <div class="kv-row"><span class="k">Form</span><span class="v">${esc(item.form) || "—"}</span></div>
         <div class="kv-row"><span class="k">Pieces per blank</span><span class="v">${esc(item.piecesPerBlank || 1)} pcs</span></div>
-        <div class="kv-row"><span class="k">Per robot cycle</span><span class="v">${esc(item.perRobotCycle)} pcs</span></div>
+        <div class="kv-row"><span class="k">Qty / 7 Sec robot</span><span class="v">${esc(item.perRobotCycle)} pcs</span></div>
+        <div class="kv-row"><span class="k">Qty / 10 Sec robot</span><span class="v">${esc(item.perRobotCycle10Sec || 1)} pcs</span></div>
       </div>
     </section>
 
@@ -92,11 +99,25 @@ async function renderBody(item) {
 
     <section>
       <div class="section-title">Stock by area</div>
-      ${low ? `<div class="low-badge-inline" style="margin:0 16px 10px;">LOW STOCK — PRODUCTION</div>` : ""}
+      ${
+        negAreas.length > 0
+          ? `<div class="negative-stock-banner" style="margin:0 16px 10px;">⚠ Negative stock in ${negAreas.map((a) => esc(AREA_LABELS[a])).join(" &amp; ")} — more was taken than was on hand. Book in stock or correct the quantity to clear this.</div>`
+          : ""
+      }
+      ${low ? `<div class="low-badge-inline" style="margin:0 16px 10px;">LOW STOCK — PRODUCTION + FARM</div>` : ""}
       <div class="area-grid">
         ${AREAS.map((a) => renderAreaCard(item, a)).join("")}
       </div>
-      <div class="hint" style="padding:8px 16px 0;">Work orders only ever deduct from Production — ~${cycles} robot cycles remaining there.</div>
+      <div class="kv" style="margin-top:12px;">
+        <div class="kv-row"><span class="k">Production + Farm</span><span class="v">${areaQty(item, DEDUCTION_AREA)} + ${areaQty(item, "farm")} = ${coveringBlanks(item)} ${blankYield(item) > 1 ? "blanks" : "pcs"}</span></div>
+        ${
+          blankYield(item) > 1
+            ? `<div class="kv-row"><span class="k">Pieces per blank</span><span class="v">× ${blankYield(item)}</span></div>`
+            : ""
+        }
+        <div class="kv-row"><span class="k">Parts we can make</span><span class="v"><b>${makeablePieces(item)} pcs</b></span></div>
+      </div>
+      <div class="hint" style="padding:8px 16px 0;">Work orders only ever deduct from Production — ${cycles === Infinity ? "No robot uses this part." : `~${cycles} robot cycles remaining between Production and Farm combined.`}</div>
     </section>
 
     <section>
@@ -105,6 +126,7 @@ async function renderBody(item) {
         <svg id="barcode-svg"></svg>
         <div class="barcode-text mono">${esc(item.partNumber)}</div>
         ${barcodeLocSummary ? `<div class="barcode-loc-line">${barcodeLocSummary}</div>` : ""}
+        <button class="btn primary-lime" id="btn-download">Download barcode (PNG)</button>
         <button class="btn" id="btn-print">Print barcode label</button>
       </div>
     </section>
@@ -140,6 +162,9 @@ async function renderBody(item) {
   });
 
   document.getElementById("btn-print").onclick = () => window.print();
+  document.getElementById("btn-download").onclick = () => {
+    if (!downloadBarcodePng(item.partNumber, stockedLocations.join(" · "))) toast("Barcode isn't ready yet, try again in a moment");
+  };
   document.getElementById("btn-history").onclick = () => toggleHistory(item);
   document.getElementById("btn-delete-item").onclick = () => {
     const proceed = window.confirm(`Delete stock item ${item.partNumber}? This can't be undone.`);
@@ -164,13 +189,14 @@ function renderAreaCard(item, area) {
   const qty = areaQty(item, area);
   const loc = areaLocation(item, area);
   const otherAreasHaveNone = qty === 0;
+  const isNegative = qty < 0;
   return `
-    <div class="area-card ${otherAreasHaveNone ? "area-card--empty" : ""}">
+    <div class="area-card ${otherAreasHaveNone ? "area-card--empty" : ""} ${isNegative ? "area-card--negative" : ""}">
       <div class="area-card-head">
         <span class="area-name">${esc(AREA_LABELS[area])}${area === DEDUCTION_AREA ? " <span class=\"area-tag\">deducts here</span>" : ""}</span>
         <span class="area-loc">${loc ? esc(loc) : "—"}</span>
       </div>
-      <div class="area-qty mono">${qty}</div>
+      <div class="area-qty mono${isNegative ? " area-qty--negative" : ""}">${qty}${isNegative ? " ⚠" : ""}</div>
       <div class="area-qty-label">pcs on hand</div>
       <div class="area-actions">
         <button id="btn-bookin-${area}">+ Book in</button>

@@ -21,6 +21,47 @@ export function renderBarcodeInto(svgEl, partNumber) {
   });
 }
 
+// Saves the label (barcode + part number + locations) as a PNG straight from
+// a canvas, so it works on tablets/phones where window.print() has no "save
+// as" option or does nothing at all.
+export function downloadBarcodePng(partNumber, locations) {
+  if (!window.JsBarcode) return false;
+
+  const bars = document.createElement("canvas");
+  window.JsBarcode(bars, partNumber, { format: "CODE128", displayValue: false, margin: 0, height: 120, width: 4 });
+
+  const pad = 40;
+  const lines = [{ text: partNumber, font: "bold 44px monospace" }];
+  if (locations) lines.push({ text: locations, font: "28px sans-serif" });
+
+  const out = document.createElement("canvas");
+  out.width = bars.width + pad * 2;
+  out.height = pad + bars.height + 20 + lines.length * 52 + pad / 2;
+  const ctx = out.getContext("2d");
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, out.width, out.height);
+  ctx.drawImage(bars, pad, pad);
+  ctx.fillStyle = "#000";
+  ctx.textAlign = "center";
+  lines.forEach((l, i) => {
+    ctx.font = l.font;
+    ctx.fillText(l.text, out.width / 2, pad + bars.height + 20 + 44 + i * 52, out.width - pad);
+  });
+
+  out.toBlob((blob) => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${String(partNumber).replace(/[^\w.-]+/g, "_")}-barcode.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }, "image/png");
+  return true;
+}
+
 // ---- Camera scanning ----
 
 let activeStream = null;

@@ -20,7 +20,7 @@ export function renderIdnsListView() {
         <header class="topbar list-topbar">
           <div class="brand">
             <span class="brand-word">Dexory</span>
-            <span class="brand-tag">Raw stock</span>
+            <span class="brand-tag">SMS</span>
           </div>
         </header>
 

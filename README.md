@@ -42,6 +42,44 @@ firebase deploy --only firestore:rules,hosting
 Firebase Hosting will print a URL like `https://your-project.web.app` - bookmark
 that on the shop floor tablet/laptop.
 
+## 5. (Optional) Set up AI scanning for CoC uploads
+
+The "Scan with AI" button on **Add stock via CoC** reads a photo/PDF of a
+supplier's Certificate of Conformity and fills in the form for you (still
+editable, still nothing saved until you confirm). It's optional - the CoC
+feature works fine without it, just typed in by hand.
+
+This calls Claude (Anthropic), via a small endpoint `server.js` itself
+exposes (`/api/extract-coc`) - not Firebase - so there's no Firebase billing
+plan or Google Cloud setup involved. The Claude API key lives only on
+whichever machine runs `server.js` (e.g. the shop laptop/tablet itself), and
+is never sent to the browser.
+
+1. Get an API key at https://console.anthropic.com/settings/keys (needs an
+   Anthropic account with billing set up - Claude's API is pay-per-use, not
+   a flat plan; a few scans a day costs a trivial amount).
+2. Copy [`.env.example`](.env.example) to `.env` (same folder as
+   `server.js`) and paste your key in:
+   ```
+   ANTHROPIC_API_KEY=sk-ant-...
+   ```
+   `.env` is gitignored - it never gets committed.
+3. Restart `server.js` if it was already running (`node server.js`) so it
+   picks up the new `.env`.
+
+That's it - no Firebase console steps, no billing plan upgrade, no key ever
+touches the browser's own code. If scanning fails, the error toast says
+why (no key configured, Claude couldn't read the file, or the server's
+unreachable) - check that message first.
+
+**Note:** because the Claude call happens in `server.js`, scanning only
+works while that specific machine's server is running - if you deploy this
+app to Firebase Hosting as a static site (step 4 above), the `/api/`
+endpoint won't exist there. For a shop-floor laptop/tablet running its own
+local `server.js`, that's exactly the intended setup; if you need scanning
+to work from a hosted deployment too, that'd need a real backend (a Cloud
+Function or similar) instead of this local-server shortcut.
+
 ## Local development
 
 No build step - it's static files, but ES modules need to be served over
@@ -67,6 +105,10 @@ Camera barcode scanning additionally requires HTTPS or `localhost`.
 - `js/db.js` - all Firestore reads/writes, the `stockItems` /
   `transactions` collection schemas, low-stock math, and the book-in/take
   write.
+- `js/coc-extract.js` - "Scan with AI": posts an uploaded CoC photo/PDF to
+  this same server's own `/api/extract-coc` endpoint and gets structured
+  JSON back to pre-fill the CoC form. See "Set up AI scanning for CoC
+  uploads" above before expecting this to do anything.
 - `js/barcode.js` - barcode generation (JsBarcode, Code128), camera scanning
   (native `BarcodeDetector` API, falling back to `@zxing/library`), and the
   keyboard-wedge (HID handheld scanner) listener.

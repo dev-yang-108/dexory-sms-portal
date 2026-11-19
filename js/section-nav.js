@@ -6,20 +6,74 @@ import { esc } from "./render.js";
 import { navigate } from "../app.js";
 
 export const SECTIONS = [
-  { key: "stock", label: "Stock Management", short: "Stock", hash: "#/" },
+  { key: "stock", label: "Stock Management", short: "Production Stock", hash: "#/" },
   { key: "orders", label: "Work Orders", short: "W. Orders", hash: "#/work-orders" },
   { key: "idn", label: "IDN", short: "IDN", hash: "#/idns" }
 ];
 
-// The extra icon-style rail buttons below the main three sections - each a
-// standalone report/tool rather than a peer section, so they get their own
-// icon + short label instead of living in SECTIONS (which also drives the
-// mobile tab bar - these stay desktop-rail-only for now).
-const EXTRAS = [
-  { key: "dashboard", hash: "#/dashboard", icon: "📊", label: "Dashboard", cls: "" },
-  { key: "low-stock", hash: "#/low-stock", icon: "⚠️", label: "Low Stock", cls: "dx-nav-dash--warn" },
-  { key: "reject-report", hash: "#/reject-report", icon: "🚫", label: "Rejects", cls: "dx-nav-dash--report" }
+// The desktop portal sidebar (hidden below 860px, where the tab bar below
+// takes over). The mobile SECTIONS above stay as they were.
+export const NAV_GROUPS = [
+  // The first group has no heading: Dashboard (everyone's home) and Floor view
+  // (stock in, CoCs, scanning) sit at the top by themselves.
+  {
+    label: "",
+    items: [
+      { key: "dashboard", label: "Dashboard", hash: "#/dashboard" },
+      { key: "floor", label: "Floor view", hash: "#/floor" }
+    ]
+  },
+  {
+    label: "Operations",
+    items: [
+      { key: "orders", label: "Work orders", hash: "#/work-orders" },
+      { key: "route-cards", label: "Route cards", hash: "#/route-cards" },
+      { key: "idn", label: "IDNs", hash: "#/idns" }
+    ]
+  },
+  {
+    label: "Stock",
+    items: [
+      { key: "stock", label: "Production stock", hash: "#/" },
+      { key: "verda-stock", label: "Prototype stock", hash: "#/verda-stock" },
+      { key: "stock-availability", label: "Stock availability", hash: "#/stock-availability" },
+      { key: "stock-added", label: "Stock added", hash: "#/stock-added" }
+    ]
+  },
+  {
+    label: "Planning",
+    items: [
+      { key: "order-calculator", label: "Order calculator", hash: "#/order-calculator" }
+    ]
+  },
+  { label: "Reports", items: [{ key: "reject-report", label: "Rejects", hash: "#/reject-report" }] }
 ];
+
+export function navEntry(key) {
+  for (const group of NAV_GROUPS) {
+    const item = group.items.find((i) => i.key === key);
+    if (item) return { group: group.label, label: item.label };
+  }
+  return { group: "Stock", label: "Production stock" };
+}
+
+// Pages without a sidebar entry of their own (an item, a form, scan...) sit
+// under the section they belong to.
+export function navKeyForHash(hash) {
+  const path = (hash || "#/").split("?")[0];
+  if (path.startsWith("#/work-orders")) return "orders";
+  if (path.startsWith("#/route-cards")) return "route-cards";
+  if (path.startsWith("#/idns")) return "idn";
+  if (path === "#/dashboard") return "dashboard";
+  if (path === "#/stock-availability") return "stock-availability";
+  if (path === "#/order-calculator") return "order-calculator";
+  if (path === "#/verda-stock") return "verda-stock";
+  if (path === "#/reject-report") return "reject-report";
+  if (path === "#/stock-added") return "stock-added";
+  // Add CoC is reached from Floor view now, so it sits under it.
+  if (path.startsWith("#/coc")) return "floor";
+  return "stock";
+}
 
 // Reuses the same visual language as the Production/Prototype tabs
 // (.type-tabs/.type-tab) - a row of text tabs with a lime bottom-border
@@ -36,21 +90,23 @@ export function sectionTabsHTML(activeKey) {
 
 export function dxNavHTML(activeKey) {
   return `
-    <div class="dx-nav">
-      <div class="dx-logo"></div>
-      ${SECTIONS.map(
-        (s) => `<button class="dx-nav-item ${s.key === activeKey ? "is-active" : ""}" data-hash="${esc(s.hash)}">${esc(s.short)}</button>`
+    <nav class="dx-nav" aria-label="Main">
+      <div class="dx-brand">
+        <div class="dx-brand-word">Dexory</div>
+        <div class="dx-brand-name">SMS portal</div>
+        <div class="dx-brand-sub">Stock management system</div>
+      </div>
+      ${NAV_GROUPS.map(
+        (g) => `
+          ${g.label ? `<div class="dx-grp">${esc(g.label)}</div>` : ""}
+          ${g.items
+            .map(
+              (i) => `<button class="dx-link ${i.key === activeKey ? "is-active" : ""}" data-hash="${esc(i.hash)}">${esc(i.label)}</button>`
+            )
+            .join("")}
+        `
       ).join("")}
-      <div class="dx-nav-divider"></div>
-      ${EXTRAS.map(
-        (e) => `
-        <button class="dx-nav-dash ${e.cls} ${e.key === activeKey ? "is-active" : ""}" data-hash="${esc(e.hash)}" title="${esc(e.label)}" aria-label="${esc(e.label)}">
-          <span class="dx-nav-dash-icon">${e.icon}</span>
-          <span class="dx-nav-dash-label">${esc(e.label)}</span>
-        </button>
-      `
-      ).join("")}
-    </div>
+    </nav>
   `;
 }
 

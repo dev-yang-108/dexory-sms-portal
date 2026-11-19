@@ -1,7 +1,7 @@
 /* Shared "Take stock" / "Book in" modal, also reused by the form's "Adjust quantity" action. */
 
 import { esc, toast } from "./render.js";
-import { recordTransaction, listWorkOrders, AREA_LABELS } from "./db.js";
+import { recordTransaction, listWorkOrders, areaQty, AREA_LABELS } from "./db.js";
 import { populateUserSelect, wireUserSelect, resolveUser } from "./users.js";
 
 export function openQtyModal({ item, type, area, fixedNote, hideWorkOrder, onDone }) {
@@ -86,6 +86,15 @@ export function openQtyModal({ item, type, area, fixedNote, hideWorkOrder, onDon
     if (!qty || qty <= 0) {
       toast("Enter a quantity greater than 0.");
       return;
+    }
+    if (isTake) {
+      const available = areaQty(item, area);
+      if (qty > available) {
+        const proceed = window.confirm(
+          `Only ${available} pcs of ${item.partNumber} in ${AREA_LABELS[area]}. Taking ${qty} will leave this at ${available - qty} (negative). Proceed anyway?`
+        );
+        if (!proceed) return;
+      }
     }
     const user = await resolveUser(userSelect, overlay.querySelector("#modal-other-name"));
     if (!user) {

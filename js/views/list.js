@@ -6,18 +6,23 @@
    the dx-* rules in style.css). */
 
 import { esc, mount, setViewCleanup } from "../render.js";
-import { subscribeStockItems, AREAS, AREA_LABELS, areaQty, areaLocation } from "../db.js";
+import { subscribeStockItems, AREA_LABELS, areaQty, areaLocation, makeablePieces, blankYield, worstCyclesRemaining } from "../db.js";
 import { sectionTabsHTML, dxNavHTML, wireSectionNav } from "../section-nav.js";
 import { openQtyModal } from "../qty-modal.js";
 import { openMoveModal } from "../move-modal.js";
 import { openPartPickerModal } from "../part-picker-modal.js";
 import { navigate } from "../../app.js";
 
+// This board is Production Stock specifically - Prototype has its own
+// separate, simplified sidebar page (verda-stock.js) now, so it's
+// deliberately left out of these tabs rather than duplicating it here.
+const BOARD_AREAS = ["production", "farm"];
+
 let listUnsub = null;
 let allItems = [];
 // Kept across remounts (not reset to a default each time) so switching to an
 // item's detail and back leaves you on the tab you were looking at.
-let activeArea = AREAS[0];
+let activeArea = BOARD_AREAS[0];
 let showEmpty = false;
 
 export function renderListView() {
@@ -30,14 +35,14 @@ export function renderListView() {
         <header class="topbar list-topbar">
           <div class="brand">
             <span class="brand-word">Dexory</span>
-            <span class="brand-tag">Raw stock</span>
+            <span class="brand-tag">SMS</span>
           </div>
         </header>
 
         ${sectionTabsHTML("stock")}
 
         <div class="type-tabs" id="type-tabs">
-          ${AREAS.map(
+          ${BOARD_AREAS.map(
             (a) => `<button class="type-tab ${a === activeArea ? "is-active" : ""}" data-area="${esc(a)}">${esc(AREA_LABELS[a])}</button>`
           ).join("")}
         </div>
@@ -62,7 +67,7 @@ export function renderListView() {
 
           <table class="dx-table">
             <thead>
-              <tr><th>Part no.</th><th>Part name</th><th>Location</th><th>Details</th><th style="text-align:right;">Qty</th></tr>
+              <tr><th>Part no.</th><th>Part name</th><th>Location</th><th>Details</th><th style="text-align:right;">Production</th><th style="text-align:right;">Farm</th><th style="text-align:right;">Total</th><th style="text-align:right;">Can make</th></tr>
             </thead>
             <tbody id="item-table-body"></tbody>
           </table>
@@ -139,9 +144,9 @@ export function renderListView() {
 }
 
 // Only items actually holding stock in this area show up in its tab by
-// default - a part with 0 pcs in Prototype just doesn't clutter that tab
-// until some is booked in there. "Show 0 pcs too" opts back in, e.g. right
-// after creating a batch of new parts before any of them are stocked yet.
+// default - a part with 0 pcs in Farm just doesn't clutter that tab until
+// some is booked in there. "Show 0 pcs too" opts back in, e.g. right after
+// creating a batch of new parts before any of them are stocked yet.
 function itemsOfActiveArea() {
   if (showEmpty) return allItems;
   return allItems.filter((item) => areaQty(item, activeArea) > 0);
@@ -165,20 +170,22 @@ function renderFiltered() {
   if (scoped.length === 0) {
     const empty = `<div class="empty-state">No stock in ${esc(AREA_LABELS[activeArea])} yet — scan a barcode or tap + Add to put some in.</div>`;
     listEl.innerHTML = empty;
-    tableBody.innerHTML = `<tr><td colspan="5" style="padding:0;border:none;">${empty}</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="8"style="padding:0;border:none;">${empty}</td></tr>`;
     return;
   }
 
   if (matches.length === 0) {
     const empty = `<div class="empty-state">No stock items match. Try clearing search.</div>`;
     listEl.innerHTML = empty;
-    tableBody.innerHTML = `<tr><td colspan="5" style="padding:0;border:none;">${empty}</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="8"style="padding:0;border:none;">${empty}</td></tr>`;
     return;
   }
 
   listEl.innerHTML = matches
     .map((item) => {
-      const qty = areaQty(item, activeArea);
+      const prod = areaQty(item, "production");
+      const farm = areaQty(item, "farm");
+      const total = prod + farm;
       const loc = areaLocation(item, activeArea);
       return `
         <div class="simple-row" data-part="${esc(item.partNumber)}">
@@ -187,8 +194,10 @@ function renderFiltered() {
             ${item.partName ? `<div class="simple-row-name">${esc(item.partName)}</div>` : ""}
             <div class="simple-row-loc">${esc(loc) || "—"}</div>
             <div class="simple-row-sub">${detailLine(item)}</div>
+            <div class="simple-row-sub">Production ${prod} · Farm ${farm}</div>
+            <div class="simple-row-sub">Can make ${makeablePieces(item)} pcs${blankYield(item) > 1 ? ` (${total} × ${blankYield(item)})` : ""}${cyclesLabel(item) ? " · " + cyclesLabel(item) : ""}</div>
           </div>
-          <div class="simple-row-qty"><div class="num mono">${qty}</div><div class="lbl">pcs</div></div>
+          <div class="simple-row-qty"><div class="num mono qty-total qty-total--${stockTone(item)}">${total}</div><div class="lbl">total</div></div>
         </div>
       `;
     })
@@ -196,7 +205,9 @@ function renderFiltered() {
 
   tableBody.innerHTML = matches
     .map((item) => {
-      const qty = areaQty(item, activeArea);
+      const prod = areaQty(item, "production");
+      const farm = areaQty(item, "farm");
+      const total = prod + farm;
       const loc = areaLocation(item, activeArea);
       return `
         <tr data-part="${esc(item.partNumber)}">
@@ -204,7 +215,10 @@ function renderFiltered() {
           <td>${esc(item.partName) || "—"}</td>
           <td>${esc(loc) || "—"}</td>
           <td>${detailLine(item)}</td>
-          <td class="mono" style="text-align:right;">${qty} pcs</td>
+          <td class="mono" style="text-align:right;">${prod}</td>
+          <td class="mono" style="text-align:right;">${farm}</td>
+          <td style="text-align:right;"><span class="qty-total qty-total--${stockTone(item)} mono" title="${esc(cyclesLabel(item))}">${total}</span></td>
+          <td class="mono" style="text-align:right;">${makeablePieces(item)} pcs${cyclesLabel(item) ? `<div class="avail-area-loc">${esc(cyclesLabel(item))}</div>` : ""}</td>
         </tr>
       `;
     })
@@ -213,6 +227,20 @@ function renderFiltered() {
   document.querySelectorAll(".simple-row[data-part], #item-table-body tr[data-part]").forEach((row) => {
     row.onclick = () => navigate("#/item/" + encodeURIComponent(row.dataset.part));
   });
+}
+
+// Same 5 / 10 robot-cycle bands as the Stock Availability page, judged on the
+// parts the stock can make (blanks x pieces per blank), not the raw blank count.
+function stockTone(item) {
+  const cycles = worstCyclesRemaining(item);
+  if (cycles < 5) return "red";
+  if (cycles < 10) return "amber";
+  return "green";
+}
+
+function cyclesLabel(item) {
+  const cycles = worstCyclesRemaining(item);
+  return cycles === Infinity ? "" : `${cycles} robot cycle${cycles === 1 ? "" : "s"}`;
 }
 
 function detailLine(item) {

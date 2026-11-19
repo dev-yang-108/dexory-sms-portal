@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>DEX05110092 label</title>
+<style>
+  :root{--navy:#0B1A48;--border:#0B1A48;}
+  @page{size:150mm 100mm;margin:0;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:#eee;}
+  .label{
+    width:150mm;height:100mm;margin:10mm auto;padding:6mm 7mm;
+    background:#fff;border:3px solid var(--navy);border-radius:10px;
+    display:grid;grid-template-columns:1fr 38mm;gap:4mm;
+    position:relative;color:var(--navy);
+  }
+  .main{display:flex;flex-direction:column;gap:3mm;min-width:0;}
+  .brand{font-size:22px;font-weight:800;letter-spacing:.02em;}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--navy);text-align:right;}
+  .top-row{display:flex;justify-content:space-between;align-items:flex-start;}
+  .barcode-row{display:flex;align-items:center;gap:4mm;}
+  .barcode-row svg{height:14mm;width:auto;}
+  .partno{font-family:"Consolas","IBM Plex Mono",monospace;font-size:20px;font-weight:800;}
+  .photo-box{
+    flex:1;border:1.5px dashed #9aa5bd;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;color:#9aa5bd;min-height:22mm;
+  }
+  .partname-label{font-size:9px;font-weight:700;letter-spacing:.05em;color:#6b7a90;}
+  .partname{font-size:15px;font-weight:700;line-height:1.2;}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);border:1.5px solid var(--navy);border-radius:6px;overflow:hidden;}
+  .sb{border-right:1.5px solid var(--navy);padding:2mm 1.5mm;text-align:center;}
+  .sb:last-child{border-right:none;}
+  .sb-label{font-size:7px;font-weight:700;letter-spacing:.03em;color:#6b7a90;}
+  .sb-value{font-size:13px;font-weight:800;margin-top:1mm;}
+  .material{font-size:9px;color:#6b7a90;text-align:right;margin-top:1mm;}
+  .infocol{display:flex;flex-direction:column;gap:1.5mm;}
+  .ib{border:1.5px solid var(--navy);border-radius:4px;flex:1;padding:1.5mm;}
+  .ib-label{font-size:7px;font-weight:700;letter-spacing:.03em;}
+  @media print{body{background:#fff;}.label{margin:0;border-width:2px;}}
+</style>
+</head>
+<body>
+  <div class="label">
+    <div class="main">
+      <div class="top-row">
+        <div class="brand">DEXORY</div>
+        <div class="tag">RAW STOCK</div>
+      </div>
+      <div class="barcode-row"><svg width="369px" height="90px" x="0px" y="0px" viewBox="0 0 369 90" xmlns="http://www.w3.org/2000/svg" version="1.1"><rect x="0" y="0" width="369" height="90" style="fill:#ffffff;"></rect><g style="fill:#0B1A48;"><rect x="0" y="0" width="6" height="90"></rect><rect x="9" y="0" width="3" height="90"></rect><rect x="18" y="0" width="3" height="90"></rect><rect x="33" y="0" width="3" height="90"></rect><rect x="39" y="0" width="6" height="90"></rect><rect x="54" y="0" width="3" height="90"></rect><rect x="66" y="0" width="3" height="90"></rect><rect x="78" y="0" width="6" height="90"></rect><rect x="87" y="0" width="3" height="90"></rect><rect x="99" y="0" width="9" height="90"></rect><rect x="117" y="0" width="3" height="90"></rect><rect x="123" y="0" width="6" height="90"></rect><rect x="132" y="0" width="3" height="90"></rect><rect x="138" y="0" width="9" height="90"></rect><rect x="150" y="0" width="12" height="90"></rect><rect x="165" y="0" width="3" height="90"></rect><rect x="177" y="0" width="3" height="90"></rect><rect x="186" y="0" width="6" height="90"></rect><rect x="198" y="0" width="6" height="90"></rect><rect x="213" y="0" width="3" height="90"></rect><rect x="222" y="0" width="3" height="90"></rect><rect x="231" y="0" width="6" height="90"></rect><rect x="240" y="0" width="6" height="90"></rect><rect x="252" y="0" width="6" height="90"></rect><rect x="264" y="0" width="3" height="90"></rect><rect x="270" y="0" width="3" height="90"></rect><rect x="276" y="0" width="12" height="90"></rect><rect x="297" y="0" width="9" height="90"></rect><rect x="309" y="0" width="12" height="90"></rect><rect x="324" y="0" width="3" height="90"></rect><rect x="330" y="0" width="6" height="90"></rect><rect x="345" y="0" width="9" height="90"></rect><rect x="357" y="0" width="3" height="90"></rect><rect x="363" y="0" width="6" height="90"></rect></g></svg></div>
+      <div class="partno">DEX05110092</div>
+      <div class="barcode-row" style="align-items:stretch;">
+        <div class="photo-box">Photo to add</div>
+      </div>
+      <div>
+        <div class="partname-label">PART NAME</div>
+        <div class="partname">B18 - Base - Frame - Front Left Corner Block - Thick Universal</div>
+      </div>
+      <div class="stats">
+        <div class="sb"><div class="sb-label">REV</div><div class="sb-value">1</div></div>
+        <div class="sb"><div class="sb-label">QTY / ROBOT</div><div class="sb-value">1</div></div>
+        <div class="sb"><div class="sb-label">STOCK IN BOX</div><div class="sb-value">5</div></div>
+        <div class="sb"><div class="sb-label">STOCK SIZE (mm)</div><div class="sb-value">230 × 210 × 82.55</div></div>
+        <div class="sb"><div class="sb-label">WEIGHT / PC</div><div class="sb-value">10.76 kg</div></div>
+      </div>
+      
+    </div>
+    <div class="infocol">
+      <div class="ib"><div class="ib-label">DATE</div></div>
+      <div class="ib"><div class="ib-label">REF NO. MS</div></div>
+      <div class="ib"><div class="ib-label">PO</div></div>
+      <div class="ib"><div class="ib-label">VMS</div></div>
+      <div class="ib"><div class="ib-label">MFG QTY</div></div>
+      <div class="ib"><div class="ib-label">ASSIGNEE</div></div>
+    </div>
+  </div>
+</body>
+</html>

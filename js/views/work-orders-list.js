@@ -3,7 +3,7 @@
    is now a peer section, not a sub-page reached only via a link. */
 
 import { esc, mount, setViewCleanup, formatDate } from "../render.js";
-import { subscribeWorkOrders, WORK_ORDER_STATUSES, remainingQty } from "../db.js";
+import { subscribeWorkOrders, WORK_ORDER_STATUSES, remainingQty, dueDateStatus } from "../db.js";
 import { sectionTabsHTML, dxNavHTML, wireSectionNav } from "../section-nav.js";
 import { navigate } from "../../app.js";
 
@@ -20,7 +20,7 @@ export function renderWorkOrdersListView() {
         <header class="topbar list-topbar">
           <div class="brand">
             <span class="brand-word">Dexory</span>
-            <span class="brand-tag">Raw stock</span>
+            <span class="brand-tag">SMS</span>
           </div>
         </header>
 
@@ -108,6 +108,36 @@ function badgeClass(status) {
   return "type-badge--production";
 }
 
+// A Production Request's own weekly children are a different unit - they
+// show up inside the parent's own detail page, not cluttering this flat
+// list one row per week. Only the parent (or a plain standalone order) gets
+// a row here.
+function topLevelOrdersOf(orders) {
+  return orders.filter((wo) => !wo.parentWoNo);
+}
+
+function secondaryLine(wo) {
+  if (wo.isParent) {
+    return `${esc(wo.partName || wo.partNo)} · R${esc(wo.rev)} · ${esc(wo.weekCount || 0)} week${wo.weekCount === 1 ? "" : "s"}${wo.mrpOrderNo ? " · " + esc(wo.mrpOrderNo) : ""}`;
+  }
+  return `${esc(wo.partName || wo.partNo)} · R${esc(wo.rev)} · ${esc(wo.qty)} pcs · ${formatDate(wo.date)}${wo.assignee ? " · " + esc(wo.assignee) : ""}`;
+}
+
+function statusOrParentBadgeHTML(wo) {
+  if (wo.isParent) return `<span class="type-badge type-badge--production">Production request</span>`;
+  return `<span class="type-badge ${badgeClass(wo.status)}">${esc(wo.status || "Open")}</span>`;
+}
+
+// A small coloured dot next to the WO no. - green/orange/red per
+// dueDateStatus(), nothing at all when there's no due date set or the order
+// is already finished (see dueDateStatus()'s own comment).
+function dueDotHTML(wo) {
+  const status = dueDateStatus(wo);
+  if (!status) return "";
+  const titles = { red: "Overdue", orange: "Due soon", green: "On track" };
+  return `<span class="due-dot due-dot--${status}" title="${esc(titles[status])}"></span>`;
+}
+
 function renderStats(orders) {
   const statsEl = document.getElementById("dx-stats");
   if (!statsEl) return;
@@ -125,7 +155,8 @@ function renderFiltered() {
   const tableBody = document.getElementById("wo-table-body");
   if (!listEl || !tableBody) return;
 
-  renderStats(allOrders);
+  const topLevel = topLevelOrdersOf(allOrders);
+  renderStats(topLevel);
 
   const q = (document.getElementById("search-input").value || "").toLowerCase().trim();
   const statusFilter = document.getElementById("filter-status").value;
@@ -135,7 +166,7 @@ function renderFiltered() {
   const from = fromVal ? new Date(fromVal + "T00:00:00").getTime() : null;
   const to = toVal ? new Date(toVal + "T23:59:59").getTime() : null;
 
-  const matches = allOrders
+  const matches = topLevel
     .filter((wo) => {
       if (statusFilter && wo.status !== statusFilter) return false;
       if (revFilter && wo.rev !== revFilter) return false;
@@ -149,7 +180,7 @@ function renderFiltered() {
     })
     .sort((a, b) => (b.date || 0) - (a.date || 0));
 
-  if (allOrders.length === 0) {
+  if (topLevel.length === 0) {
     const empty = `<div class="empty-state">No work orders yet — tap + New to add one.</div>`;
     listEl.innerHTML = empty;
     tableBody.innerHTML = `<tr><td colspan="7" style="padding:0;border:none;">${empty}</td></tr>`;
@@ -168,11 +199,11 @@ function renderFiltered() {
       (wo) => `
         <div class="item-card" data-wo="${esc(wo.woNo)}">
           <div class="item-card-main">
-            <div class="item-stock-number mono">${esc(wo.woNo)}</div>
-            <div class="item-secondary">${esc(wo.partName || wo.partNo)} · R${esc(wo.rev)} · ${esc(wo.qty)} pcs · ${formatDate(wo.date)}${wo.assignee ? " · " + esc(wo.assignee) : ""}</div>
+            <div class="item-stock-number mono">${dueDotHTML(wo)}${esc(wo.woNo)}</div>
+            <div class="item-secondary">${secondaryLine(wo)}</div>
           </div>
           <div class="item-card-qty">
-            <span class="type-badge ${badgeClass(wo.status)}">${esc(wo.status || "Open")}</span>
+            ${statusOrParentBadgeHTML(wo)}
           </div>
         </div>
       `
@@ -183,13 +214,13 @@ function renderFiltered() {
     .map(
       (wo) => `
         <tr data-wo="${esc(wo.woNo)}">
-          <td class="mono">${esc(wo.woNo)}</td>
+          <td class="mono">${dueDotHTML(wo)}${esc(wo.woNo)}</td>
           <td>${esc(wo.partName || wo.partNo)}</td>
           <td class="mono">R${esc(wo.rev)}</td>
           <td class="mono" style="text-align:right;">${esc(wo.qty)} pcs</td>
-          <td class="mono" style="text-align:right;">${remainingQty(wo)}</td>
-          <td><span class="type-badge ${badgeClass(wo.status)}">${esc(wo.status || "Open")}</span></td>
-          <td>${esc(wo.assignee) || "—"}</td>
+          <td class="mono" style="text-align:right;">${wo.isParent ? "—" : remainingQty(wo)}</td>
+          <td>${statusOrParentBadgeHTML(wo)}</td>
+          <td>${esc(wo.assignee || wo.creator) || "—"}</td>
         </tr>
       `
     )

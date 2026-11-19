@@ -60,15 +60,20 @@ export async function renderFormView(existingPartNumber, opts) {
 
       <div class="form-grid2">
         <div class="form-group">
+          <label>Rev</label>
+          <input name="rev" value="${esc(item.rev || "")}" placeholder="e.g. 1" />
+        </div>
+        <div class="form-group">
           <label>Material</label>
           <input name="material" value="${esc(item.material)}" placeholder="e.g. Aluminium 6082" />
         </div>
-        <div class="form-group">
-          <label>Form</label>
-          <select name="form">
-            ${FORMS.map((f) => `<option ${f === item.form ? "selected" : ""}>${esc(f)}</option>`).join("")}
-          </select>
-        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Form</label>
+        <select name="form">
+          ${FORMS.map((f) => `<option ${f === item.form ? "selected" : ""}>${esc(f)}</option>`).join("")}
+        </select>
       </div>
 
       <div class="form-group">
@@ -76,10 +81,17 @@ export async function renderFormView(existingPartNumber, opts) {
         <input name="stockSize" value="${esc(item.stockSize)}" placeholder="e.g. 500 x 300 x 20mm" />
       </div>
 
-      <div class="form-group">
-        <label>Per robot cycle (pcs)</label>
-        <input name="perRobotCycle" type="number" min="1" step="1" value="${esc(item.perRobotCycle)}" required />
+      <div class="form-grid2">
+        <div class="form-group">
+          <label>Qty / 7 Sec robot cycle</label>
+          <input name="perRobotCycle" type="number" min="1" step="1" value="${esc(item.perRobotCycle)}" required />
+        </div>
+        <div class="form-group">
+          <label>Qty / 10 Sec robot cycle</label>
+          <input name="perRobotCycle10Sec" type="number" min="1" step="1" value="${esc(item.perRobotCycle10Sec || 1)}" required />
+        </div>
       </div>
+      <div class="hint" style="margin:-8px 16px 14px;">Low stock alerts use whichever robot (7 Sec or 10 Sec) would run out first.</div>
 
       <div class="form-group">
         <label>Pieces per blank</label>
@@ -190,10 +202,12 @@ async function submitForm(e, originalItem, isEdit) {
     if (isEdit) {
       const fields = {
         partName: fd.get("partName") || "",
+        rev: fd.get("rev") || "",
         material: fd.get("material") || "",
         stockSize: fd.get("stockSize") || "",
         form: fd.get("form") || FORMS[0],
         perRobotCycle: Number(fd.get("perRobotCycle")) || 1,
+        perRobotCycle10Sec: Number(fd.get("perRobotCycle10Sec")) || 1,
         piecesPerBlank: Number(fd.get("piecesPerBlank")) || 1,
         comments: fd.get("comments") || ""
       };
@@ -210,10 +224,12 @@ async function submitForm(e, originalItem, isEdit) {
       await createStockItem({
         partNumber,
         partName: fd.get("partName") || "",
+        rev: fd.get("rev") || "",
         material: fd.get("material") || "",
         stockSize: fd.get("stockSize") || "",
         form: fd.get("form") || FORMS[0],
         perRobotCycle: Number(fd.get("perRobotCycle")) || 1,
+        perRobotCycle10Sec: Number(fd.get("perRobotCycle10Sec")) || 1,
         piecesPerBlank: Number(fd.get("piecesPerBlank")) || 1,
         areas,
         comments: fd.get("comments") || ""
