@@ -250,7 +250,7 @@ function openNewVerdaItemModal() {
     confirmBtn.textContent = "Creating…";
 
     try {
-      const item = { ...blankStockItem(), partNumber, partName, stockSize, material, comments, form: FORMS[0] };
+      const item = { ...blankStockItem(), partNumber, partName, stockSize, material, comments, form: FORMS[0], isPrototype: true };
       await createStockItem(item);
       await recordTransaction(item, { type: "book-in", qty, user, note: "New Prototype stock", area: AREA });
       toast("Prototype item created.");

@@ -213,7 +213,7 @@ export function downloadRouteCardPdf(wo, orders) {
     table(
       [
         { label: "When", w: 34 },
-        { label: "Batch", w: 40 },
+        { label: "Work order / batch", w: 40 },
         { label: "Pcs", w: 14 },
         { label: "Result", w: 20 },
         { label: "By", w: 24 },
@@ -221,7 +221,7 @@ export function downloadRouteCardPdf(wo, orders) {
       ],
       spots.map((s) => [
         fmt(s.at),
-        s.batch || "-",
+        s.woNo ? `${s.woNo}${s.batch ? " " + s.batch : ""}` : s.batch || "-",
         String(s.pieces),
         { text: s.result === "pass" ? "Pass" : "Fail", color: s.result === "pass" ? GREEN : RED, bold: true },
         `${initialsOf(s.by)} ${s.by || ""}`,

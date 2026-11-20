@@ -108,8 +108,10 @@ export function initials(name) {
 let renderSeq = 0;
 // "Pull more work orders" panel: open/closed and what is ticked survive the
 // card re-drawing itself when the data changes.
-let pullOpen = false;
-const pullSel = new Set();
+// "Add work order" box: what is typed survives the card re-drawing itself.
+let woQuery = "";
+// The "+ Add spot check" form: open or closed.
+let spotOpen = false;
 
 export async function renderFirstOff(wo, root) {
   if (!root) return;
@@ -148,9 +150,6 @@ export async function renderFirstOff(wo, root) {
   const candidates = allOrders.filter(
     (o) => o.partNo === wo.partNo && o.woNo !== wo.woNo && !o.isParent && (o.status === "Open" || o.status === "Issued") && !o.firstOff && !o.firstOffRef
   );
-  [...pullSel].forEach((n) => {
-    if (!candidates.some((o) => o.woNo === n)) pullSel.delete(n);
-  });
   const machineLabels = machines.map(machineLabel);
   const spots = wo.firstOff.spots || [];
   const batchChoices = [...new Set([wo, ...coveredOrders].map((o) => o.batchNo).filter(Boolean))];
@@ -216,85 +215,82 @@ export async function renderFirstOff(wo, root) {
   const crossChecks = wo.firstOff.crossChecks || [];
   const opsWithResult = current.ops.filter((o) => o.result).length;
   const crossList = crossChecks.length
-    ? `<div class="hint" style="padding:0 16px 8px;">Quality cross-checks: ${crossChecks
+    ? `<div class="hint" style="margin:0 0 8px;">Quality cross-checks: ${crossChecks
         .map((c) => `${esc(c.by)} (after ${esc(c.afterOps)} op${c.afterOps === 1 ? "" : "s"}, ${esc(formatDate(c.at))}${c.note ? ": " + esc(c.note) : ""})`)
         .join(" · ")}</div>`
     : "";
 
+  // Two plain boxes: what the machine shop does, and what quality does.
+  const machineShopBox = sent
+    ? `<div class="hint" style="margin:0 0 8px;">Sent by ${esc(sent.by)} · ${esc(formatDate(sent.at))}, after ${esc(sent.afterOps)} operation${sent.afterOps === 1 ? "" : "s"}${sent.partial ? " (partial check)" : ""}. Quality has been notified.</div>
+       <button class="btn" id="fo-q-recall">Take back from quality</button>`
+    : opsWithResult >= 1
+      ? `<div class="hint" style="margin:0 0 8px;">${outcome === "pass" ? "Every operation has passed." : "Not every operation is done yet, so this is a partial check."}</div>
+         <div class="form-group" style="padding:0;"><label>Sent by</label><select id="fo-q-sendby">${personOptions("")}</select></div>
+         <button class="btn primary-lime" id="fo-q-send">Send to quality${outcome === "pass" ? "" : " (partial check)"}</button>`
+      : `<div class="hint">Record a result on the operation first, then you can send it to quality.</div>`;
+
+  const qualityBox = `${crossList}
+     <div class="form-group" style="padding:0;"><label>Reviewed by</label><select id="fo-q-by">${personOptions("")}</select></div>
+     <div class="form-group" style="padding:0;"><label>Note (needed to send back)</label><input id="fo-q-note" placeholder="Optional for a cross-check or sign-off" /></div>
+     <div class="fo-btns"><button class="btn" id="fo-q-cross">Cross-check</button><button class="btn danger" id="fo-q-back">Send back</button>${outcome === "pass" ? `<button class="btn primary-lime" id="fo-q-sign">Final sign-off</button>` : ""}</div>
+     ${outcome === "pass" ? "" : `<div class="hint" style="margin-top:6px;">Final sign-off unlocks once every operation has passed.</div>`}`;
+
   const qualityBlock = signed
     ? `<div class="ok-box">Signed off by ${esc(quality.by)} · ${esc(formatDate(quality.at))}${quality.note ? " · " + esc(quality.note) : ""}.
          Nobody else in quality needs to review this card.</div>
-       ${crossList}
+       ${crossChecks.length ? `<div style="padding:0 16px;">${crossList}</div>` : ""}
        <div class="btn-row"><button class="btn" id="fo-q-withdraw">Withdraw sign-off</button></div>`
     : sentBack
-      ? `<div class="warn-box">Sent back by ${esc(quality.by)} · ${esc(formatDate(quality.at))}: ${esc(quality.note)}</div>${crossList}`
-      : `
-        <div class="hint" style="padding:0 16px 6px;"><b>Machine shop</b></div>
-        ${
-          sent
-            ? `<div class="info-banner">Sent to quality by ${esc(sent.by)} · ${esc(formatDate(sent.at))}, after ${esc(sent.afterOps)} operation${sent.afterOps === 1 ? "" : "s"}${sent.partial ? " (partial check)" : ""}. Quality has been notified.</div>
-               <div class="btn-row"><button class="btn" id="fo-q-recall">Take back from quality</button></div>`
-            : opsWithResult >= 1
-              ? `<div class="hint" style="padding:0 16px 6px;">Send it to quality whenever you want a check, after any operation. ${outcome === "pass" ? "Every operation has passed." : "Not every operation is done yet, so this is a partial check."}</div>
-                 <div class="form-group"><label>Sent by</label><select id="fo-q-sendby">${personOptions("")}</select></div>
-                 <div class="btn-row"><button class="btn primary-lime" id="fo-q-send">Send to quality${outcome === "pass" ? "" : " (partial check)"}</button></div>`
-              : `<div class="hint" style="padding:0 16px 6px;">Record a result on at least one operation, then you can send it to quality.</div>`
-        }
-        <div class="hint" style="padding:10px 16px 6px;"><b>Quality</b></div>
-        ${crossList}
-        <div class="form-group"><label>Reviewed by</label><select id="fo-q-by">${personOptions("")}</select></div>
-        <div class="form-group"><label>Note (needed to send back)</label><input id="fo-q-note" placeholder="Optional for a cross-check or sign-off" /></div>
-        <div class="btn-row">
-          <button class="btn" id="fo-q-cross">Add cross-check</button>
-          <button class="btn danger" id="fo-q-back">Send back</button>
-          ${outcome === "pass" ? `<button class="btn primary-lime" id="fo-q-sign">Final sign-off</button>` : ""}
-        </div>
-        ${outcome === "pass" ? "" : `<div class="hint" style="padding:0 16px;">Final sign-off unlocks once every operation has passed.</div>`}`;
+      ? `<div class="warn-box">Sent back by ${esc(quality.by)} · ${esc(formatDate(quality.at))}: ${esc(quality.note)}</div>`
+      : `<div class="fo-two">
+           <div class="fo-box"><div class="fo-box-title">Machine shop</div>${machineShopBox}</div>
+           <div class="fo-box"><div class="fo-box-title">Quality</div>${qualityBox}</div>
+         </div>`;
 
   const banners = {
-    pass: `<div class="ok-box">First-off passed. It covers the work orders and batches below.</div>`,
-    rework: `<div class="warn-box">Rework needed. Hold the covered batches until the piece is reworked and re-checked, then start another attempt.</div>`,
-    fail: `<div class="warn-box">Failed. Hold the covered batches until another attempt passes.</div>`
+    pass: `<div class="ok-box">First-off passed. It covers every work order on this card.</div>`,
+    rework: `<div class="warn-box">Rework needed. Hold the work orders on this card until the piece is reworked and re-checked, then start another attempt.</div>`,
+    fail: `<div class="warn-box">Failed. Hold the work orders on this card until another attempt passes.</div>`
   };
 
   const allCovered = [wo, ...coveredOrders];
   const totalPcs = allCovered.reduce((sum, o) => sum + (o.qty || 0), 0);
-  const coverRows = allCovered
+  const woChips = allCovered
     .map(
-      (o, idx) => `<tr>
-        <td class="mono"><a href="#/work-orders/${encodeURIComponent(o.woNo)}">${esc(o.woNo)}</a></td>
-        <td>${esc(o.batchNo) || "—"}</td>
-        <td class="mono">${esc(o.qty)}</td>
-        <td style="text-align:right;">${idx === 0 ? `<span class="rc-chip">holds the card</span>` : `<button class="pill-link" data-uncover="${esc(o.woNo)}">Remove</button>`}</td>
-      </tr>`
+      (o, idx) => `<div class="fo-wo">
+        <a class="mono" href="#/work-orders/${encodeURIComponent(o.woNo)}"><b>${esc(o.woNo)}</b></a>
+        <span class="hint">${esc(o.batchNo) || "no batch yet"} · ${esc(o.qty)} pcs</span>
+        ${idx === 0 ? `<span class="rc-chip">holds the card</span>` : `<button class="pill-link" data-uncover="${esc(o.woNo)}">Remove</button>`}
+      </div>`
     )
     .join("");
 
-  const groups = [...new Set(candidates.map((o) => o.parentWoNo).filter(Boolean))];
-  const pullPanel = `
-    <div class="fo-panel">
-      <div class="hint" style="margin:0 0 8px;">Same part, already picked up, not on another card.</div>
-      ${candidates
-        .map(
-          (o) => `<label class="rcn-pick ${pullSel.has(o.woNo) ? "is-on" : ""}">
-            <input type="checkbox" data-pull="${esc(o.woNo)}" ${pullSel.has(o.woNo) ? "checked" : ""} />
-            <div><b class="mono">${esc(o.woNo)}</b>
-              <div class="hint">${esc(o.qty)} pcs · batch ${esc(o.batchNo) || "none yet"}${o.assignee ? " · " + esc(o.assignee) : ""}</div></div>
-          </label>`
-        )
-        .join("")}
-      <div class="fo-attach" style="padding:0;">
-        <button class="pill-link" id="fo-pull-all">Select all ${candidates.length}</button>
-        ${groups.map((g) => `<button class="pill-link" data-pull-group="${esc(g)}">Select all of ${esc(g)}</button>`).join("")}
-        <button class="pill-link" id="fo-pull-add">Add selected (${pullSel.size})</button>
-      </div>
-    </div>`;
+  // Other picked-up orders for this part, matched by number, last digits or batch.
+  const matchesFor = (q) => {
+    const n = String(q || "").trim().toLowerCase();
+    return candidates.filter((o) => !n || o.woNo.toLowerCase().includes(n) || String(o.batchNo || "").toLowerCase().includes(n));
+  };
+  const matchRows = (list) =>
+    list.length === 0
+      ? `<div class="hint" style="padding:6px 16px;">No open work order for this part matches.</div>`
+      : list
+          .slice(0, 6)
+          .map(
+            (o) => `<div class="fo-match">
+              <div><b class="mono">${esc(o.woNo)}</b>
+                <div class="hint">${esc(o.qty)} pcs · batch ${esc(o.batchNo) || "none yet"}${o.assignee ? " · " + esc(o.assignee) : ""}</div></div>
+              <button class="btn" data-add-wo="${esc(o.woNo)}">Add</button>
+            </div>`
+          )
+          .join("") +
+        (list.length > 1 ? `<div style="padding:6px 16px;"><button class="pill-link" id="fo-wo-addall">Add all ${list.length}</button></div>` : "");
 
   const spotRows = spots
     .map(
       (s) => `<tr>
         <td>${esc(formatDate(s.at))}</td>
-        <td>${esc(s.batch) || "—"}</td>
+        <td>${s.woNo ? `<span class="mono">${esc(s.woNo)}</span>${s.batch ? ` <span class="hint">${esc(s.batch)}</span>` : ""}` : esc(s.batch) || "—"}</td>
         <td class="mono">${esc(s.pieces)}</td>
         <td><span class="rc-chip ${s.result === "pass" ? "ok" : "bad"}">${s.result === "pass" ? "Pass" : "Fail"}</span></td>
         <td>${esc(initials(s.by))}</td>
@@ -303,63 +299,65 @@ export async function renderFirstOff(wo, root) {
     )
     .join("");
   const spotFails = spots.filter((s) => s.result === "fail").length;
+  const earlier = attempts.length > 1 ? ` · ${attempts.slice(0, -1).map((a) => `Attempt ${a.n}: ${esc(FIRST_OFF_LABELS[attemptOutcome(a) || "progress"])}`).join(" · ")}` : "";
 
   root.innerHTML = `
-    ${title}
-    ${attempts.length > 1 ? `<div class="hint" style="padding:0 16px 8px;">${attempts.slice(0, -1).map((a) => `Attempt ${a.n}: ${esc(FIRST_OFF_LABELS[attemptOutcome(a) || "progress"])} (${esc(formatDate(a.startedAt))})`).join(" · ")}</div>` : ""}
-    <div class="hint" style="padding:0 16px 8px;">Attempt ${current.n} · started ${esc(formatDate(current.startedAt))}</div>
+    <div class="section-title">Work orders on this card <span class="hint" style="font-weight:400;">${allCovered.length} order${allCovered.length === 1 ? "" : "s"}, ${totalPcs} pcs</span></div>
+    <div class="fo-wos">${woChips}</div>
+    ${
+      candidates.length
+        ? `<div class="fo-addwo"><input id="fo-wo-q" value="${esc(woQuery)}" placeholder="Add work order: number or last digits" autocomplete="off" /></div>
+           <div id="fo-wo-matches">${matchRows(matchesFor(woQuery))}</div>`
+        : `<div class="hint" style="padding:0 16px;">No other picked-up orders for this part to add.</div>`
+    }
+
+    <div class="section-title fo-title-row"><span>Machine shop: first-off</span><button class="pill-link" id="fo-add-op">+ Add operation</button></div>
+    <div class="hint" style="padding:0 16px 8px;">Attempt ${current.n} · started ${esc(formatDate(current.startedAt))}${earlier}</div>
     ${current.ops.map(opBlock).join("")}
-    <div class="btn-row"><button class="btn" id="fo-add-op">+ Add operation</button></div>
     ${banners[outcome] || ""}
     ${canRetry ? `<div class="btn-row"><button class="btn primary-lime" id="fo-new-attempt">Start another attempt</button></div>` : ""}
 
-    <div class="section-title">Quality review</div>
-    ${qualityBlock}
-
-    <div class="section-title">Covers</div>
-    <div class="hint" style="padding:0 16px 8px;">One first-off clears all of these work orders and batches. ${allCovered.length} order${allCovered.length === 1 ? "" : "s"}, ${totalPcs} pcs.</div>
-    <table class="reject-table"><thead><tr><th>Work order</th><th>Batch</th><th>Qty</th><th></th></tr></thead><tbody>${coverRows}</tbody></table>
-    ${
-      candidates.length
-        ? `<div class="btn-row"><button class="btn" id="fo-pull">${pullOpen ? "Close" : "Pull more work orders"}</button></div>${pullOpen ? pullPanel : ""}`
-        : `<div class="hint" style="padding:8px 16px 0;">No other picked-up orders for this part to pull in.</div>`
-    }
-
-    <div class="section-title">Spot checks during the run</div>
-    <div class="hint" style="padding:0 16px 8px;">Random pieces checked while the batches run. Each one goes on the report with its batch.</div>
+    <div class="section-title fo-title-row"><span>Spot checks</span><button class="pill-link" id="fo-spot-open">${spotOpen ? "Close" : "+ Add spot check"}</button></div>
     ${
       spots.length
-        ? `<table class="reject-table"><thead><tr><th>When</th><th>Batch</th><th>Pcs</th><th>Result</th><th>By</th><th>Note</th></tr></thead><tbody>${spotRows}</tbody></table>`
+        ? `<table class="reject-table"><thead><tr><th>When</th><th>Work order</th><th>Pcs</th><th>Result</th><th>By</th><th>Note</th></tr></thead><tbody>${spotRows}</tbody></table>`
         : `<div class="hint" style="padding:0 16px;">No spot checks yet.</div>`
     }
     ${spotFails ? `<div class="warn-box">${spotFails} spot check failed. It is recorded with its note and shown in the PDF. Nothing is held automatically.</div>` : ""}
-    <div class="fo-grid" style="margin-top:10px;">
-      <div class="form-group"><label>Batch</label>
-        <select id="fo-spot-batch">${batchChoices.map((b) => `<option>${esc(b)}</option>`).join("")}<option value="">Not listed</option></select></div>
-      <div class="form-group"><label>Pieces checked</label><input id="fo-spot-pcs" type="number" min="1" step="1" value="1" inputmode="numeric" /></div>
-      <div class="form-group"><label>Result</label><select id="fo-spot-result"><option value="pass">Pass</option><option value="fail">Fail</option></select></div>
-      <div class="form-group"><label>Checked by</label><select id="fo-spot-by">${personOptions("")}</select></div>
-    </div>
-    <div class="form-group"><label>Note</label><input id="fo-spot-note" placeholder="What you found" /></div>
-    <div class="btn-row"><button class="btn" id="fo-spot-add">Add spot check</button></div>
+    ${
+      spotOpen
+        ? `<div class="fo-grid" style="margin-top:10px;">
+             <div class="form-group"><label>Work order</label>
+               <select id="fo-spot-wo">${allCovered.map((o) => `<option value="${esc(o.woNo)}">${esc(o.woNo)}${o.batchNo ? " · " + esc(o.batchNo) : ""}</option>`).join("")}</select></div>
+             <div class="form-group"><label>Pieces checked</label><input id="fo-spot-pcs" type="number" min="1" step="1" value="1" inputmode="numeric" /></div>
+             <div class="form-group"><label>Result</label><select id="fo-spot-result"><option value="pass">Pass</option><option value="fail">Fail</option></select></div>
+             <div class="form-group"><label>Checked by</label><select id="fo-spot-by">${personOptions("")}</select></div>
+           </div>
+           <div class="form-group"><label>Note</label><input id="fo-spot-note" placeholder="What you found" /></div>
+           <div class="btn-row"><button class="btn primary-lime" id="fo-spot-add">Save spot check</button></div>`
+        : ""
+    }
+
+    <div class="section-title">Send to quality and sign-off</div>
+    ${qualityBlock}
 
     <div class="section-title">Report</div>
-    <div class="hint" style="padding:0 16px 8px;">The PDF has the covered orders, every operation with initials, spot checks and the quality review. ${signed ? "It is signed off." : "It stays a draft until quality signs off."}</div>
+    <div class="hint" style="padding:0 16px 8px;">The PDF has the work orders, the operation with initials, spot checks and the quality review. ${signed ? "It is signed off." : "It stays a draft until quality signs off."} Save to Drive downloads it and opens the Route card files folder.</div>
     <div class="btn-row">
       <button class="btn ${signed ? "primary-lime" : ""}" id="fo-pdf">${signed ? "Download signed PDF" : "Download draft PDF"}</button>
       <button class="btn" id="fo-pdf-drive">Save to Drive</button>
     </div>
-    <div class="hint" style="padding:0 16px;">Save to Drive downloads the PDF and opens the Route card files folder - drag the PDF in.</div>
-
-    <div class="section-title">Saved machines</div>
-    <div class="hint" style="padding:0 16px 8px;">Pick one from any operation, or type a new one there. A machine needs a name or a number.</div>
-    <div class="fo-grid">
-      <div class="form-group"><label>Machine name</label><input id="fo-machine-name" placeholder="Waterjet" /></div>
-      <div class="form-group"><label>Number</label><input id="fo-machine-number" placeholder="WJ-02" /></div>
-    </div>
-    <div class="btn-row"><button class="btn" id="fo-machine-add">Save machine</button></div>
-    ${machines.length ? `<div class="fo-attach">${machines.map((m) => `<span class="fo-chip">${esc(machineLabel(m))}</span>`).join("")}</div>` : ""}
   `;
+
+  // The matches list updates as you type, without redrawing the card (that
+  // would drop the cursor out of the box).
+  const qInput = root.querySelector("#fo-wo-q");
+  if (qInput) {
+    qInput.oninput = () => {
+      woQuery = qInput.value;
+      root.querySelector("#fo-wo-matches").innerHTML = matchRows(matchesFor(woQuery));
+    };
+  }
 
   root.onclick = async (e) => {
     const t = e.target.closest("button");
@@ -457,31 +455,22 @@ export async function renderFirstOff(wo, root) {
       root.querySelector(`[data-file="${t.dataset.attach}"]`).click();
       return;
     }
-    if (t.id === "fo-pull") {
-      pullOpen = !pullOpen;
-      return void renderFirstOff(wo, root);
-    }
-    if (t.id === "fo-pull-all") {
-      candidates.forEach((o) => pullSel.add(o.woNo));
-      return void renderFirstOff(wo, root);
-    }
-    if (t.dataset.pullGroup) {
-      candidates.filter((o) => o.parentWoNo === t.dataset.pullGroup).forEach((o) => pullSel.add(o.woNo));
-      return void renderFirstOff(wo, root);
-    }
-    if (t.id === "fo-pull-add") {
-      const picks = candidates.filter((o) => pullSel.has(o.woNo)).map((o) => o.woNo);
-      if (picks.length === 0) return void toast("Tick at least one work order.");
+    if (t.dataset.addWo || t.id === "fo-wo-addall") {
+      const picks = t.dataset.addWo ? [t.dataset.addWo] : matchesFor(woQuery).map((o) => o.woNo);
+      if (picks.length === 0) return;
       try {
         await addFirstOffCovers(wo, picks);
-        pullSel.clear();
-        pullOpen = false;
-        toast(`${picks.length} work order${picks.length === 1 ? "" : "s"} added to this first-off.`);
+        woQuery = "";
+        toast(`${picks.length} work order${picks.length === 1 ? "" : "s"} added to this card.`);
       } catch (err) {
         console.error(err);
         toast("Couldn't save — check your connection.");
       }
       return;
+    }
+    if (t.id === "fo-spot-open") {
+      spotOpen = !spotOpen;
+      return void renderFirstOff(wo, root);
     }
     if (t.dataset.uncover) {
       try {
@@ -502,27 +491,25 @@ export async function renderFirstOff(wo, root) {
       const pieces = Math.round(Number(root.querySelector("#fo-spot-pcs").value));
       if (!by) return void toast("Pick who checked it.");
       if (!pieces || pieces < 1) return void toast("Enter how many pieces were checked.");
+      // A spot check is logged against a work order (its batch is kept too,
+      // so the report still shows which batch the piece came from).
+      const spotWo = root.querySelector("#fo-spot-wo").value;
+      const spotOrder = allCovered.find((o) => o.woNo === spotWo) || wo;
       const spot = {
         at: Date.now(),
-        batch: root.querySelector("#fo-spot-batch").value,
+        woNo: spotOrder.woNo,
+        batch: spotOrder.batchNo || "",
         pieces,
         result: root.querySelector("#fo-spot-result").value,
         by,
         note: root.querySelector("#fo-spot-note").value.trim()
       };
-      await saveFirstOff(wo, (f) => void (f.spots = [...(f.spots || []), spot]));
+      // Close the form before saving: the card redraws as soon as the data
+      // changes, so it would otherwise redraw with the form still open.
+      spotOpen = false;
+      const saved = await saveFirstOff(wo, (f) => void (f.spots = [...(f.spots || []), spot]));
+      if (!saved) spotOpen = true;
       return;
-    }
-    if (t.id === "fo-machine-add") {
-      const name = root.querySelector("#fo-machine-name").value.trim();
-      const number = root.querySelector("#fo-machine-number").value.trim();
-      if (!name && !number) {
-        toast("Enter a machine name or number.");
-        return;
-      }
-      await addMachine({ name, number });
-      toast("Machine saved.");
-      renderFirstOff(wo, root);
     }
   };
 
@@ -530,11 +517,6 @@ export async function renderFirstOff(wo, root) {
     const t = e.target;
     const i = Number(t.dataset.op);
     if (t.dataset.file !== undefined) return uploadAttachment(wo, Number(t.dataset.file), t.files[0], root);
-    if (t.dataset.pull) {
-      if (t.checked) pullSel.add(t.dataset.pull);
-      else pullSel.delete(t.dataset.pull);
-      return void renderFirstOff(wo, root);
-    }
     if (!t.dataset.field) return;
 
     const field = t.dataset.field;

@@ -13,6 +13,7 @@ import {
   subscribeIdns,
   subscribeRecentBookIns,
   subscribeStockItems,
+  productionParts,
   remainingQty,
   completedQtyOf,
   isLowStock,
@@ -72,7 +73,7 @@ export function renderDashboardView() {
     refresh();
   });
   stockUnsub = subscribeStockItems((items) => {
-    allStock = items;
+    allStock = productionParts(items);
     refresh();
   });
 
@@ -227,7 +228,7 @@ function attentionHTML(lowStock, negativeStock, orders) {
   negativeStock.forEach((i) => rows.push({ text: i.partNumber, pill: "Negative stock", cls: "status-negative", hash: "#/item/" + encodeURIComponent(i.partNumber) }));
   lowStock
     .filter((i) => !hasNegativeStock(i))
-    .forEach((i) => rows.push({ text: i.partNumber, pill: `Low · ${cyclesRemaining(i)} cycles`, cls: "status-red", hash: "#/item/" + encodeURIComponent(i.partNumber) }));
+    .forEach((i) => rows.push({ text: i.partNumber, pill: `Low · ${cyclesRemaining(i)} robot${cyclesRemaining(i) === 1 ? "" : "s"}`, cls: "status-red", hash: "#/item/" + encodeURIComponent(i.partNumber) }));
 
   if (rows.length === 0) return `<div class="empty-state">All clear.</div>`;
   const extra = rows.length - 8;

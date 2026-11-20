@@ -24,6 +24,7 @@ import { renderRejectReportView } from "./js/views/reject-report.js";
 import { renderStockAddedView } from "./js/views/stock-added.js";
 import { renderFloorHomeView, renderFloorAddView } from "./js/views/floor.js";
 import { renderRouteCardsListView } from "./js/views/route-cards-list.js";
+import { renderMachinesView } from "./js/views/machines.js";
 import { renderRouteCardNewView } from "./js/views/route-card-new.js";
 import { renderRouteCardDetailView } from "./js/views/route-card-detail.js";
 import { USE_MOCK } from "./firebase-config.js";
@@ -102,6 +103,8 @@ function route() {
     renderFloorAddView("production");
   } else if (path === "#/floor/add/prototype") {
     renderFloorAddView("prototype");
+  } else if (path === "#/machines") {
+    renderMachinesView();
   } else if (path === "#/route-cards") {
     renderRouteCardsListView();
   } else if (path === "#/route-cards/new") {

@@ -87,8 +87,8 @@ async function renderBody(item) {
         <div class="kv-row"><span class="k">Stock size</span><span class="v">${esc(item.stockSize) || "—"}</span></div>
         <div class="kv-row"><span class="k">Form</span><span class="v">${esc(item.form) || "—"}</span></div>
         <div class="kv-row"><span class="k">Pieces per blank</span><span class="v">${esc(item.piecesPerBlank || 1)} pcs</span></div>
-        <div class="kv-row"><span class="k">Qty / 7 Sec robot</span><span class="v">${esc(item.perRobotCycle)} pcs</span></div>
-        <div class="kv-row"><span class="k">Qty / 10 Sec robot</span><span class="v">${esc(item.perRobotCycle10Sec || 1)} pcs</span></div>
+        <div class="kv-row"><span class="k">Qty per 7-section robot</span><span class="v">${esc(item.perRobotCycle)} pcs</span></div>
+        <div class="kv-row"><span class="k">Qty per 10-section robot</span><span class="v">${esc(item.perRobotCycle10Sec || 1)} pcs</span></div>
       </div>
     </section>
 
@@ -117,7 +117,7 @@ async function renderBody(item) {
         }
         <div class="kv-row"><span class="k">Parts we can make</span><span class="v"><b>${makeablePieces(item)} pcs</b></span></div>
       </div>
-      <div class="hint" style="padding:8px 16px 0;">Work orders only ever deduct from Production — ${cycles === Infinity ? "No robot uses this part." : `~${cycles} robot cycles remaining between Production and Farm combined.`}</div>
+      <div class="hint" style="padding:8px 16px 0;">Work orders only ever deduct from Production — ${cycles === Infinity ? "No robot uses this part." : `Stock for ~${cycles} robot${cycles === 1 ? "" : "s"} between Production and Farm combined.`}</div>
     </section>
 
     <section>

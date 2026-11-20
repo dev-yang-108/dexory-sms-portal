@@ -11,7 +11,7 @@
 */
 
 import { esc, mount, setViewCleanup, toast } from "../render.js";
-import { subscribeStockItems, areaQty, DEDUCTION_AREA, blankYield } from "../db.js";
+import { subscribeStockItems, productionParts, areaQty, DEDUCTION_AREA, blankYield } from "../db.js";
 import { dxNavHTML, wireSectionNav } from "../section-nav.js";
 
 let itemsUnsub = null;
@@ -33,11 +33,11 @@ export function renderOrderCalculatorView() {
 
           <div class="form-grid2" style="margin:0 16px 4px;">
             <div class="form-group">
-              <label>7 Sec robots to build</label>
+              <label>7-section robots to build</label>
               <input type="number" min="0" step="1" id="calc-qty7" placeholder="e.g. 50" />
             </div>
             <div class="form-group">
-              <label>10 Sec robots to build</label>
+              <label>10-section robots to build</label>
               <input type="number" min="0" step="1" id="calc-qty10" placeholder="e.g. 0" />
             </div>
           </div>
@@ -76,7 +76,7 @@ export function renderOrderCalculatorView() {
   document.getElementById("btn-calc-download").onclick = downloadCsv;
 
   itemsUnsub = subscribeStockItems((items) => {
-    allItems = items;
+    allItems = productionParts(items);
     renderBody();
   });
 

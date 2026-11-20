@@ -667,6 +667,20 @@ section{padding:0 16px 8px;}
 .fo-result button.is-fail{background:var(--red-bg);color:var(--red);border-color:var(--red);}
 .fo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0 12px;}
 .fo-stamp{font-size:11px;color:var(--sub);margin-top:3px;min-height:14px;}
+/* Simplified route card: work orders box, section title rows, and the two
+   plain boxes for machine shop and quality. */
+.fo-wos{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 8px;}
+.fo-wo{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:10px;padding:8px 12px;background:var(--card-bg);}
+.fo-addwo{padding:0 16px 6px;}
+.fo-addwo input{width:100%;box-sizing:border-box;min-height:42px;}
+.fo-match{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 16px 6px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);}
+.fo-title-row{display:flex;justify-content:space-between;align-items:center;}
+.fo-op select[data-field=machine]{min-height:46px;font-size:16px;}
+.fo-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 16px;}
+.fo-box{background:var(--panel);border-radius:12px;padding:14px;}
+.fo-box-title{font-weight:700;margin-bottom:10px;}
+.fo-btns{display:flex;flex-wrap:wrap;gap:8px;}
+@media (max-width:720px){.fo-two{grid-template-columns:1fr;}}
 .fo-attach{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:0 16px 8px;}
 .fo-op .fo-attach{padding:0;}
 .fo-chip{font-size:12px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:3px 9px;color:var(--text);text-decoration:none;}

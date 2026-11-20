@@ -83,15 +83,20 @@ export async function renderFormView(existingPartNumber, opts) {
 
       <div class="form-grid2">
         <div class="form-group">
-          <label>Qty / 7 Sec robot cycle</label>
+          <label>Qty per 7-section robot</label>
           <input name="perRobotCycle" type="number" min="1" step="1" value="${esc(item.perRobotCycle)}" required />
         </div>
         <div class="form-group">
-          <label>Qty / 10 Sec robot cycle</label>
+          <label>Qty per 10-section robot</label>
           <input name="perRobotCycle10Sec" type="number" min="1" step="1" value="${esc(item.perRobotCycle10Sec || 1)}" required />
         </div>
       </div>
-      <div class="hint" style="margin:-8px 16px 14px;">Low stock alerts use whichever robot (7 Sec or 10 Sec) would run out first.</div>
+      <div class="hint" style="margin:-8px 16px 14px;">Low stock alerts use whichever robot (7-section or 10-section) would run out first.</div>
+
+      <label class="form-group" style="display:flex;gap:10px;align-items:flex-start;">
+        <input type="checkbox" name="isPrototype" ${item.isPrototype ? "checked" : ""} style="width:auto;margin-top:3px;" />
+        <span><b>Prototype part</b><span class="hint" style="display:block;">One-off or odd-size material. It shows on the Prototype stock page only, and is left out of the Order calculator, Stock availability, Low stock and the dashboard counts.</span></span>
+      </label>
 
       <div class="form-group">
         <label>Pieces per blank</label>
@@ -209,6 +214,7 @@ async function submitForm(e, originalItem, isEdit) {
         perRobotCycle: Number(fd.get("perRobotCycle")) || 1,
         perRobotCycle10Sec: Number(fd.get("perRobotCycle10Sec")) || 1,
         piecesPerBlank: Number(fd.get("piecesPerBlank")) || 1,
+        isPrototype: fd.get("isPrototype") === "on",
         comments: fd.get("comments") || ""
       };
       AREAS.forEach((a) => {
@@ -231,6 +237,7 @@ async function submitForm(e, originalItem, isEdit) {
         perRobotCycle: Number(fd.get("perRobotCycle")) || 1,
         perRobotCycle10Sec: Number(fd.get("perRobotCycle10Sec")) || 1,
         piecesPerBlank: Number(fd.get("piecesPerBlank")) || 1,
+        isPrototype: fd.get("isPrototype") === "on",
         areas,
         comments: fd.get("comments") || ""
       });

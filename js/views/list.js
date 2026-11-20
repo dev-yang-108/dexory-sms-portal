@@ -6,7 +6,7 @@
    the dx-* rules in style.css). */
 
 import { esc, mount, setViewCleanup } from "../render.js";
-import { subscribeStockItems, AREA_LABELS, areaQty, areaLocation, makeablePieces, blankYield, worstCyclesRemaining } from "../db.js";
+import { subscribeStockItems, productionParts, AREA_LABELS, areaQty, areaLocation, makeablePieces, blankYield, worstCyclesRemaining } from "../db.js";
 import { sectionTabsHTML, dxNavHTML, wireSectionNav } from "../section-nav.js";
 import { openQtyModal } from "../qty-modal.js";
 import { openMoveModal } from "../move-modal.js";
@@ -134,7 +134,7 @@ export function renderListView() {
   });
 
   listUnsub = subscribeStockItems((items) => {
-    allItems = items;
+    allItems = productionParts(items);
     renderFiltered();
   });
   setViewCleanup(() => {
@@ -240,12 +240,12 @@ function stockTone(item) {
 
 function cyclesLabel(item) {
   const cycles = worstCyclesRemaining(item);
-  return cycles === Infinity ? "" : `${cycles} robot cycle${cycles === 1 ? "" : "s"}`;
+  return cycles === Infinity ? "" : `${cycles} robot${cycles === 1 ? "" : "s"}`;
 }
 
 function detailLine(item) {
   const parts = [
-    `${esc(item.perRobotCycle ?? 1)} pcs/cycle`,
+    `${esc(item.perRobotCycle ?? 1)} pcs/robot`,
     [item.form, item.stockSize].filter(Boolean).map(esc).join(", "),
     item.comments ? `"${esc(item.comments)}"` : ""
   ].filter(Boolean);

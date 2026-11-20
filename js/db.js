@@ -57,6 +57,19 @@ function blankArea() {
   return { qty: 0, location: "" };
 }
 
+// A part that only exists as Prototype stock (one-offs, odd sizes, and parts a
+// CoC created that weren't in the stock list). It lives on the Prototype stock
+// page only: the calculator, Stock availability, Low stock, the dashboard
+// counts and the Production stock list leave it out. Set by the "Prototype
+// part" tick on the item form.
+export function isPrototypePart(item) {
+  return !!item && item.isPrototype === true;
+}
+
+export function productionParts(items) {
+  return (items || []).filter((i) => !isPrototypePart(i));
+}
+
 export function areaQty(item, area) {
   return (item.areas && item.areas[area] && item.areas[area].qty) || 0;
 }
@@ -359,6 +372,16 @@ export async function addMachine({ name, number }) {
   return next;
 }
 
+// Takes a machine off the saved list. Route cards that already used it keep
+// the name they were filled in with.
+export async function removeMachine(machine) {
+  const list = await listMachines();
+  const label = machineLabel(machine).toLowerCase();
+  const next = list.filter((m) => machineLabel(m).toLowerCase() !== label);
+  await setDoc(machinesRef(), { list: next, updatedAt: Date.now() });
+  return next;
+}
+
 export const blankFirstOffOp = () => ({
   machine: "",
   operatedBy: "",
@@ -378,7 +401,9 @@ export const blankFirstOffOp = () => ({
 export const newFirstOffAttempt = (n) => ({
   n,
   startedAt: Date.now(),
-  ops: Array.from({ length: 3 }, blankFirstOffOp)
+  // One operation to start with; "+ Add operation" adds more for parts that
+  // need them.
+  ops: [blankFirstOffOp()]
 });
 
 // A route card is a first-off started for one or more work orders of the same
@@ -728,6 +753,7 @@ function addLineBookInOps(batch, { cocKey, line, stockItem, existingBatch, user,
       comments: `Created from CoC ${cocKey} - not in the stock list, so booked into Prototype. Needs its details filling in.`,
       fromCoc: cocKey,
       needsReview: true,
+      isPrototype: true,
       createdAt: now,
       updatedAt: now
     });

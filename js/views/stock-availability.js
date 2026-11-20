@@ -18,7 +18,7 @@
 */
 
 import { esc, mount, setViewCleanup } from "../render.js";
-import { subscribeStockItems, areaQty, areaLocation, hasNegativeStock, worstCyclesRemaining, isLowStock, blankYield } from "../db.js";
+import { subscribeStockItems, productionParts, areaQty, areaLocation, hasNegativeStock, worstCyclesRemaining, isLowStock, blankYield } from "../db.js";
 import { lowStockAction } from "../low-stock.js";
 import { dxNavHTML, wireSectionNav } from "../section-nav.js";
 import { navigate } from "../../app.js";
@@ -43,15 +43,15 @@ export function renderStockAvailabilityView() {
       <div class="dx-main">
         <div class="dx-content" style="max-width:1240px;">
           <div class="dash-title">Stock Availability</div>
-          <div class="dash-sub">Production + Farm stock per part, colored by how many robot cycles it covers. Click a part for full details.</div>
+          <div class="dash-sub">Production + Farm stock per part, colored by how many robots it covers. Click a part for full details.</div>
 
           <div class="chip-row" style="padding:0 16px;">
             <input type="search" id="avail-search" placeholder="Search part number, name…" style="flex:1;" />
-            <input type="number" min="0" step="1" id="avail-max-cycles" placeholder="Max cycles left" style="width:140px;" />
+            <input type="number" min="0" step="1" id="avail-max-cycles" placeholder="Max robots left" style="width:140px;" />
             <button class="chip-toggle ${lowOnly ? "is-active" : ""}" id="btn-avail-low">Low stock only</button>
             <button class="chip-toggle ${showEmpty ? "is-active" : ""}" id="btn-avail-show-empty">Show 0 pcs too</button>
           </div>
-          <div class="hint" style="margin:0 0 10px 16px;">"Low stock only" shows parts under 5 robot cycles, with what to move or order. "Max cycles left" narrows the list to parts at or below that many cycles. Cycles use whichever of the two robots runs out first.</div>
+          <div class="hint" style="margin:0 0 10px 16px;">"Low stock only" shows parts with stock for under 5 robots, with what to move or order. "Max robots left" narrows the list to parts at or below that many robots. It uses whichever of the two robots (7-section or 10-section) runs out first.</div>
 
           <div id="avail-body" style="padding:16px;"><div class="empty-state">Loading…</div></div>
         </div>
@@ -80,7 +80,7 @@ export function renderStockAvailabilityView() {
   };
 
   itemsUnsub = subscribeStockItems((items) => {
-    allItems = items;
+    allItems = productionParts(items);
     renderBody();
   });
 
@@ -102,9 +102,10 @@ function statusOf(cycles, item) {
   // Distinct from plain "<5 cycles" red - this item has actually been
   // over-deducted (see hasNegativeStock()), not just running low.
   if (item && hasNegativeStock(item)) return { cls: "status-negative", label: "⚠ Negative" };
-  if (cycles < 5) return { cls: "status-red", label: cycles === Infinity ? "—" : `${cycles} cycles` };
-  if (cycles < 10) return { cls: "status-orange", label: `${cycles} cycles` };
-  return { cls: "status-green", label: cycles === Infinity ? "—" : `${cycles}+ cycles` };
+  const robots = (n) => `${n} robot${n === 1 ? "" : "s"}`;
+  if (cycles < 5) return { cls: "status-red", label: cycles === Infinity ? "—" : robots(cycles) };
+  if (cycles < 10) return { cls: "status-orange", label: robots(cycles) };
+  return { cls: "status-green", label: cycles === Infinity ? "—" : `${cycles}+ robots` };
 }
 
 // Only a low-stock part needs doing something about: bring Farm stock into

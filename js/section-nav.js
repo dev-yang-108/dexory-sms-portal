@@ -46,7 +46,8 @@ export const NAV_GROUPS = [
       { key: "order-calculator", label: "Order calculator", hash: "#/order-calculator" }
     ]
   },
-  { label: "Reports", items: [{ key: "reject-report", label: "Rejects", hash: "#/reject-report" }] }
+  { label: "Reports", items: [{ key: "reject-report", label: "Rejects", hash: "#/reject-report" }] },
+  { label: "Settings", items: [{ key: "machines", label: "Machines", hash: "#/machines" }] }
 ];
 
 export function navEntry(key) {
@@ -70,6 +71,7 @@ export function navKeyForHash(hash) {
   if (path === "#/verda-stock") return "verda-stock";
   if (path === "#/reject-report") return "reject-report";
   if (path === "#/stock-added") return "stock-added";
+  if (path === "#/machines") return "machines";
   // Add CoC is reached from Floor view now, so it sits under it.
   if (path.startsWith("#/coc")) return "floor";
   return "stock";
